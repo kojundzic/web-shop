@@ -9,7 +9,7 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. USIDRENI TEKSTOVI I KONFIGURACIJA SUČELJA ---
+# --- 2. USIDRENI TEKSTOVI ---
 T = {
     "nav_shop": "🏬 TRGOVINA", 
     "nav_horeca": "🏨 ZA UGOSTITELJE", 
@@ -56,13 +56,13 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
-# --- 4. SESSION STATE INICIJALIZACIJA ---
+# --- 4. INICIJALIZACIJA SESSION STATEA ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
 
-# Rezervirano mjesto za skočni prozor na vrhu ekrana
+# Kontejner za skočni prozor
 pop_up_placeholder = st.empty()
 
 col_left, col_right = st.columns([0.65, 0.35])
@@ -79,14 +79,16 @@ with col_left:
                 st.subheader(p["name"])
                 st.write(f"**{p['price']:.2f} €** / {T['unit_'+p['unit']]}")
                 
-                # Trenutna vrijednost iz session state-a
+                # Dohvati trenutnu vrijednost
                 curr_val = float(st.session_state.cart.get(p["id"], 0.0))
                 step = 0.5 if p["unit"] == "kg" else 1.0
                 
-                # Unos količine
-                new_val = st.number_input(f"Količina ({T['unit_'+p['unit']]})", min_value=0.0, step=step, value=curr_val, key=f"f_{p['id']}")
+                # Unos količine s ključem
+                new_val = st.number_input(f"Količina ({T['unit_'+p['unit']]})", 
+                                         min_value=0.0, step=step, value=curr_val, key=f"input_{p['id']}")
                 
-                # LOGIKA VAGE ZA KILOGRAME (0.0 -> 1.0 i 1.0 -> 0.0)
+                # --- POPRAVLJENA LOGIKA DODAVANJA ---
+                # Logika vage za kilograme
                 if p["unit"] == "kg":
                     if curr_val == 0.0 and new_val == 0.5:
                         new_val = 1.0
@@ -97,28 +99,34 @@ with col_left:
                         st.session_state.cart.pop(p["id"], None)
                         st.rerun()
                 
-                # Ažuriranje košarice
+                # Standardno ažuriranje košarice za sve artikle
                 if new_val != curr_val:
-                    if new_val > 0: st.session_state.cart[p["id"]] = new_val
-                    else: st.session_state.cart.pop(p["id"], None)
+                    if new_val > 0:
+                        st.session_state.cart[p["id"]] = new_val
+                    else:
+                        st.session_state.cart.pop(p["id"], None)
                     st.rerun()
 
-    with tabs[1]: st.markdown("### 🏨 HoReCa"); st.write("Program za ugostitelje. Kontakt: tomislavtomi90@gmail.com")
-    with tabs[2]: st.markdown("### 🚜 Podrijetlo"); st.write("Meso s domaćih pašnjaka Banovine i Posavine.")
-    with tabs[3]: st.markdown("### 🛡️ HACCP"); st.write("Potpuna kontrola i veterinarski nadzor.")
-    with tabs[4]: st.markdown("### ℹ️ O nama"); st.write("📍 Gradska tržnica Kontroba, Sisak.")
+    # Ostali tabovi ostaju usidreni
+    with tabs[1]: st.write(T["horeca_text"])
+    with tabs[2]: st.write(T["suppliers_text"])
+    with tabs[3]: st.write(T["haccp_text"])
+    with tabs[4]: st.write(T["info_text"])
 
 with col_right:
     st.markdown(f"### {T['cart_title']}")
     ukupan_iznos = 0.0
+    
     if not st.session_state.cart:
         st.info(T["cart_empty"])
     else:
+        # Prikaz artikala i izračun cijene
         for pid, kolicina in list(st.session_state.cart.items()):
-            p_podaci = next(item for item in PRODUCTS if item["id"] == pid)
-            sub = kolicina * p_podaci["price"]
-            ukupan_iznos += sub
-            st.write(f"✅ **{p_podaci['name']}**: {kolicina} {T['unit_'+p_podaci['unit']]} = **{sub:.2f} €**")
+            p_podaci = next((item for item in PRODUCTS if item["id"] == pid), None)
+            if p_podaci:
+                sub = kolicina * p_podaci["price"]
+                ukupan_iznos += sub
+                st.write(f"✅ **{p_podaci['name']}**: {kolicina} {T['unit_'+p_podaci['unit']]} = **{sub:.2f} €**")
     
     st.divider()
     st.metric(label=T["total"], value=f"{ukupan_iznos:.2f} €")
@@ -129,17 +137,15 @@ with col_right:
         st.markdown(f"#### {T['shipping_info']}")
         ime = st.text_input(T["form_name"])
         tel = st.text_input(T["form_tel"])
-        drzava = st.text_input(T["form_country"], value="Hrvatska") # USIDRENA RUBRIKA DRŽAVA
+        drzava = st.text_input(T["form_country"], value="Hrvatska")
         grad = st.text_input(T["form_city"])
         adresa = st.text_input(T["form_addr"])
         posalji = st.form_submit_button(T["btn_order"])
         
         if posalji:
             if ime and tel and drzava and adresa and st.session_state.cart:
-                stavke = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
-                
-                # USIDRENA PORUKA ZA E-MAIL (UKLJUČUJE DRŽAVU)
-                poruka = f"Kupac: {ime}\nTel: {tel}\nDržava: {drzava}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
+                stavke_email = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
+                poruka = f"Kupac: {ime}\nTel: {tel}\nDržava: {drzava}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke_email}\nUkupno: {ukupan_iznos:.2f} €"
                 
                 try:
                     server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
@@ -152,18 +158,16 @@ with col_right:
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     
-                    # LOGIKA TAJMERA I OBAVIJESTI
-                    pop_up_placeholder.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!") # Skočni prozor (5s)
-                    st.success(T["success"]) # Bočna obavijest (10s)
+                    # LOGIKA TAJMERA
+                    pop_up_placeholder.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!")
+                    st.success(T["success"])
                     
-                    st.session_state.cart = {} # Trajno pražnjenje košarice nakon slanja
-                    
+                    st.session_state.cart = {}
                     time.sleep(5)
-                    pop_up_placeholder.empty() # Skriva skočni prozor
-                    time.sleep(5) # Ukupno čekanje 10s
+                    pop_up_placeholder.empty()
+                    time.sleep(5)
                     st.rerun()
-
                 except Exception as e:
-                    st.error(f"Detalji greške: {e}")
+                    st.error(f"Greška: {e}")
             else:
-                st.warning("Provjerite unos: Ime, Tel, Adresa i košarica ne smiju biti prazni.")
+                st.warning("Provjerite unos podataka i košaricu.")
