@@ -21,8 +21,8 @@ T = {
     "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
     "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna.",
-    "note_vaga": "⚖️ **VAŽNO:** Cijene proizvoda su fiksne, dok je ukupni iznos u košarici informativne naravi. Budući da su naši proizvodi rezani ručno, stvarna težina može minimalno varirati. Mi ćemo se truditi da težina paketa i konačan račun budu što bliži Vašoj narudžbi, a točan iznos znat ćete prilikom preuzimanja.",
-    "note_cod": "💳 **NAČIN PLAĆANJA:** Plaćanje se vrši gotovinom prilikom preuzimanja pošiljke (pouzećem).",
+    "note_vaga": "⚖️ **VAŽNO:** Istaknute cijene su fiksne, dok je ukupni iznos u košarici informativne naravi. Budući da se naši proizvodi pripremaju i režu ručno, stvarna težina može minimalno odstupati. Svaku narudžbu nastojimo pripremiti s maksimalnom pažnjom kako bi količina i cijena u potpunosti odgovarali Vašem odabiru, a točan iznos znat ćete pri preuzimanju.",
+    "note_cod": "💳 **NAČIN PLAĆANJA:** Plaćanje se vrši gotovinom prilikom preuzimanja (pouzećem).",
     "form_fname": "Ime*", "form_lname": "Prezime*", "form_tel": "Kontakt telefon*", "form_country": "Država*", "form_city": "Grad/Mjesto*", "form_addr": "Ulica i kućni broj*",
     "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", 
     "err_fields": "🛑 Narudžba se ne može poslati dok ne ispunite sva obavezna polja!",
@@ -51,6 +51,7 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
+# --- 3. INICIJALIZACIJA ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
@@ -99,8 +100,12 @@ with col_right:
     st.divider()
     st.metric(label=T["total"], value=f"{ukupan_iznos:.2f} €")
     
-    # OKVIR ZA PLAĆANJE POUZEĆEM
-    st.warning(T["note_cod"])
+    # OKVIR ZA PLAĆANJE POUZEĆEM (Ispod iznosa)
+    st.markdown(f"""
+        <div style="padding: 15px; border-radius: 10px; background-color: #f0f2f6; border-left: 5px solid #ff4b4b; color: #1f1f1f; font-weight: bold;">
+            {T['note_cod']}
+        </div>
+    """, unsafe_allow_html=True)
     
     st.divider()
     
