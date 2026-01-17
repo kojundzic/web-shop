@@ -3,29 +3,62 @@ import smtplib
 from email.mime.text import MIMEText
 import time
 
-# --- 1. FIKSNA KONFIGURACIJA (NE MIJENJATI) ---
+# --- 1. KONFIGURACIJA ---
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
 MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. USIDRENI PRIJEVODI I TEKSTOVI ---
+# --- 2. USIDRENI PROŠIRENI TEKSTOVI ---
 T = {
     "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
     "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna. Molimo odaberite proizvode iz ponude.",
-    "note_vaga": "⚖️ **VAŽNA NAPOMENA O VAGANJU:** Cijene proizvoda su fiksne po jedinici mjere, no točan iznos Vašeg računa znat ćemo tek nakon preciznog vaganja neposredno prije pakiranja.",
-    "note_delivery": "🚚 **DOSTAVA I PLAĆANJE:** Proizvode šaljemo u termo-izoliranoj ambalaži. Plaćanje se vrši **isključivo pouzećem** (gotovinom prilikom preuzimanja).",
-    "horeca_title": "HoReCa Partnerstvo: Vrhunska sirovina",
-    "horeca_text": "Za restorane, hotele i ugostitelje nudimo posebne uvjete suradnje. Sve dogovore i narudžbe za ugostitelje molimo vršite izravno putem e-maila: [tomislavtomi90@gmail.com](mailto:tomislavtomi90@gmail.com)",
-    "suppliers_title": "🚜 Podrijetlo: Banovina, Posavina i Lonjsko polje",
-    "suppliers_text": "Svo meso koje prerađujemo dolazi isključivo s domaćih pašnjaka i farmi s područja Banovine, Posavine i Lonjskog polja. Kratak lanac opskrbe jamči svježinu.",
-    "haccp_title": "🛡️ Sigurnost hrane i HACCP",
-    "haccp_text": "Primjenjujemo najstrože higijenske standarde uz potpunu digitalnu sljedivost od farme do Vašeg stola pod stalnim veterinarskim nadzorom.",
-    "info_title": "ℹ️ O nama i Lokacija",
-    "info_text": "Obitelj Kojundžić u Sisku čuva vještinu tradicionalne pripreme mesa. \n📍 **LOKACIJA:** Nalazimo se u Sisku, na Gradskoj tržnici Kontroba.",
-    "form_name": "Ime i Prezime primatelja*", "form_tel": "Kontakt telefon*", "form_country": "Država*", "form_city": "Grad/Mjesto*", "form_zip": "Poštanski broj*", "form_addr": "Ulica i kućni broj*",
-    "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "total": "Informativni iznos računa", "shipping_info": "📍 PODACI ZA DOSTAVU",
+    
+    # PROŠIRENE RUBRIKE
+    "horeca_title": "🏨 HoReCa Partnerstvo: Vrhunska sirovina za Vaš ugostiteljski objekt",
+    "horeca_text": """
+    Kao pouzdan partner brojnim restoranima i hotelima, Mesnica Kojundžić nudi namjenski program za HoReCa sektor. 
+    Razumijemo specifične potrebe modernog ugostiteljstva te osiguravamo:
+    * **Konstantnu kvalitetu:** Meso s kontroliranim udjelom masnoće i preciznim rezovima prema Vašim specifikacijama.
+    * **Fleksibilnu dostavu:** Prilagođavamo termine dostave Vašem radnom vremenu u hladnom lancu.
+    * **Veleprodajne cijene:** Posebni cjenici za stalne partnere i veće količine.
+    * **Savjetovanje:** Pomoć pri odabiru rezova za specifična jela (dry age, pečenja, roštilj program).
+    
+    Za ponudu i dogovor termina prezentacije kontaktirajte nas izravno na: [tomislavtomi90@gmail.com](mailto:tomislavtomi90@gmail.com)
+    """,
+    
+    "suppliers_title": "🚜 Podrijetlo: Iz srca Banovine, Posavine i Lonjskog polja",
+    "suppliers_text": """
+    Temelj naše kvalitete su naši dobavljači – mali obiteljski OPG-ovi koji dijele našu viziju.
+    * **Lokalni uzgoj:** Svo meso dolazi s farmi iz okolice Siska, Gline i Petrinje. Kratak put od pašnjaka do prerade jamči svježinu koju ne možete naći u trgovačkim lancima.
+    * **Prirodna prehrana:** Životinje se hrane domaćim žitaricama, bez uporabe GMO dodataka, što rezultira bogatim okusom i optimalnom teksturom mesa.
+    * **Poticanje sela:** Kupnjom kod nas izravno pomažete opstanku malih proizvođača u našoj županiji.
+    """,
+    
+    "haccp_title": "🛡️ Sigurnost hrane: Najviši standardi higijene",
+    "haccp_text": """
+    U Mesnici Kojundžić sigurnost potrošača je prioritet broj jedan. Naš proces proizvodnje strogo prati **HACCP (Hazard Analysis and Critical Control Points)** sustav.
+    * **Digitalna sljedivost:** Svaki komad mesa ima zabilježen put od farme do prodajnog pulta.
+    * **Stalna kontrola:** Redovito provodimo mikrobiološke analize u suradnji s ovlaštenim laboratorijima.
+    * **Veterinarski nadzor:** Svi procesi klanja i prerade vrše se pod stalnim nadzorom državne veterinarske službe.
+    * **Higijenski režim:** Naši djelatnici prolaze stalne edukacije o higijeni, a prostor se dezinficira svakodnevno najmodernijim ekološkim sredstvima.
+    """,
+    
+    "info_title": "ℹ️ O nama: Tradicija sisačkog mesarstva",
+    "info_text": """
+    Obitelj Kojundžić već generacijama čuva tajne tradicionalne pripreme mesa. Naša priča počinje u Sisku, s vizijom da građanima ponudimo izvorne okuse domaćeg doma.
+    Danas smo moderna prerada koja spaja djedove recepte za dimljenje mesa na prirodnom drvetu s najsuvremenijom tehnologijom pakiranja. 
+    Ponosni smo što se naši proizvodi, poput slavonske kobasice i pancete, i dalje pripremaju bez nepotrebnih aditiva.
+    
+    📍 **LOKACIJA:** Nađite nas svaki dan na Gradskoj tržnici Kontroba u Sisku. Dođite, probajte i uvjerite se u kvalitetu koju stvaramo s ljubavlju.
+    """,
+
+    # OSTALI ELEMENTI
+    "note_vaga": "⚖️ **VAŽNA NAPOMENA:** Cijene su fiksne po jedinici mjere, no točan iznos računa znat ćemo tek nakon preciznog vaganja prije pakiranja.",
+    "note_delivery": "🚚 **DOSTAVA:** Šaljemo u termo-izoliranoj ambalaži. Plaćanje **pouzećem**.",
+    "form_name": "Ime i Prezime*", "form_tel": "Kontakt telefon*", "form_country": "Država*", "form_city": "Grad/Mjesto*", "form_zip": "Poštanski broj*", "form_addr": "Ulica i kućni broj*",
+    "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", "unit_kg": "kg", "unit_pc": "kom", "total": "Informativni iznos", "shipping_info": "📍 PODACI ZA DOSTAVU",
     "p1": "Dimljeni hamburger", "p2": "Dimljeni buncek", "p3": "Dimljeni prsni vršci", "p4": "Slavonska kobasica", "p5": "Domaća salama", "p6": "Dimljene kosti",
     "p7": "Dimljene nogice mix", "p8": "Panceta", "p9": "Dimljeni vrat (BK)", "p10": "Dimljeni kare (BK)", "p11": "Dimljena pečenica", "p12": "Domaći čvarci",
     "p13": "Svinjska mast (kanta)", "p14": "Krvavice", "p15": "Pečenice za roštilj", "p16": "Suha rebra", "p17": "Dimljena glava", "p18": "Slanina sapunara"
@@ -56,7 +89,7 @@ with col_left:
     st.header(T["title_sub"])
     tabs = st.tabs([T["nav_shop"], T["nav_horeca"], T["nav_suppliers"], T["nav_haccp"], T["nav_info"]])
     
-    with tabs[0]:
+    with tabs[0]: # TRGOVINA
         st.info(T["note_vaga"])
         c1, c2 = st.columns(2)
         for i, p in enumerate(PRODUCTS):
@@ -67,7 +100,6 @@ with col_left:
                 curr_val = st.session_state.cart.get(p["id"], 0.0)
                 step = 0.5 if p["unit"] == "kg" else 1.0
                 
-                # --- USIDRENA LOGIKA VAGE (0 -> 1.0 kg) ---
                 new_val = st.number_input(f"Količina ({T['unit_'+p['unit']]})", min_value=0.0, step=step, value=float(curr_val), key=f"f_{p['id']}")
                 
                 if p["unit"] == "kg" and curr_val == 0.0 and new_val == 0.5:
@@ -114,28 +146,19 @@ with col_right:
         
         if posalji:
             if ime and tel and adresa and st.session_state.cart:
-                stavke = ""
-                for pid, q in st.session_state.cart.items():
-                    u = next(it["unit"] for it in PRODUCTS if it["id"] == pid)
-                    stavke += f"- {T[pid]}: {q} {T['unit_'+u]}\n"
-                
+                stavke = "".join([f"- {T[pid]}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
                 poruka = f"Kupac: {ime}\nTel: {tel}\nAdresa: {adresa}, {zip_kod} {grad}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
-                
                 try:
                     server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-                    server.starttls()
-                    server.login(MOJ_EMAIL, MOJA_LOZINKA)
-                    msg = MIMEText(poruka)
-                    msg['Subject'] = f"Narudžba 2026 - {ime}"
-                    msg['From'] = MOJ_EMAIL
-                    msg['To'] = MOJ_EMAIL
+                    server.starttls(); server.login(MOJ_EMAIL, MOJA_LOZINKA)
+                    msg = MIMEText(poruka); msg['Subject'] = f"Narudžba 2026 - {ime}"
+                    msg['From'] = MOJ_EMAIL; msg['To'] = MOJ_EMAIL
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     st.success(T["success"])
                     st.session_state.cart = {}
-                    time.sleep(2)
-                    st.rerun()
-                except Exception:
-                    st.error("Došlo je do pogreške prilikom slanja e-maila.")
+                    time.sleep(2); st.rerun()
+                except:
+                    st.error("Greška s mail serverom.")
             else:
-                st.error("Molimo popunite sva polja označena zvjezdicom (*) i dodajte proizvode u košaricu.")
+                st.error("Popunite polja (*) i dodajte proizvode.")
