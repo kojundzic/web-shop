@@ -87,7 +87,7 @@ if 'cart' not in st.session_state: st.session_state.cart = {}
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
 T = LANG[st.session_state.sel_lang_key]
 
-# --- LAYOUT I FUNKCIJE ---
+# --- GLAVNE KOMPONENTE ---
 pop_placeholder = st.empty()
 col_left, col_right = st.columns([0.65, 0.35])
 
@@ -95,12 +95,11 @@ with col_left:
     st.header(T["title"])
     t1, t2, t3, t4, t5, t6 = st.tabs([T["nav_shop"], T["nav_horeca"], T["nav_suppliers"], T["nav_haccp"], T["nav_info"], T["nav_lang"]])
     
-    with t1: # SHOP S LOGIKOM VAGE
+    with t1: # SHOP S ISPRAVLJENOM LOGIKOM VAGE
         st.info(T["note_vaga"])
         c1, c2 = st.columns(2)
         BASE_PRICES = [9.5, 7.8, 6.5, 14.2, 17.5, 3.8, 4.5, 16.9, 12.5, 13.5, 15.0, 18.0, 10.0, 9.0, 10.5, 8.5, 5.0, 9.0]
         UNITS = ["kg", "pc", "pc", "kg", "kg", "kg", "kg", "kg", "kg", "kg", "kg", "kg", "pc", "kg", "kg", "kg", "pc", "kg"]
-        
         for i in range(18):
             pid = f"p{i+1}"
             with (c1 if i % 2 == 0 else c2):
@@ -124,7 +123,10 @@ with col_left:
     with t5: st.markdown(T["about_txt"])
     with t6: # JEZIK
         st.write("### Choose your language / Odaberite jezik")
-        new_lang = st.radio("Selection:", list(LANG.keys()), index=list(LANG.keys()).index(st.session_state.sel_lang_key))
+        izbor = list(LANG.keys())
+        try: default_idx = izbor.index(st.session_state.sel_lang_key)
+        except: default_idx = 0
+        new_lang = st.radio("Selection:", izbor, index=default_idx)
         if new_lang != st.session_state.sel_lang_key:
             st.session_state.sel_lang_key = new_lang
             st.rerun()
@@ -137,13 +139,10 @@ with col_right:
     else:
         for pid, q in list(st.session_state.cart.items()):
             idx = int(pid[1:]) - 1
-            sub = q * BASE_PRICES[idx]
-            suma += sub
+            sub = q * BASE_PRICES[idx]; suma += sub
             st.write(f"✅ **{T['products'][idx]}**: {q} = **{sub:.2f} €**")
     
-    st.divider()
-    st.metric(label=T["total"], value=f"{suma:.2f} €")
-    st.warning(T["note_cod"])
+    st.divider(); st.metric(label=T["total"], value=f"{suma:.2f} €"); st.warning(T["note_cod"])
     
     with st.form("form_final"):
         st.markdown(f"#### {T['form_title']}")
@@ -157,28 +156,13 @@ with col_right:
             else:
                 try:
                     detalji = "".join([f"- {T['products'][int(p[1:])-1]}: {q}\n" for p, q in st.session_state.cart.items()])
-                    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT); server.starttls(); server.login(MOJ_EMAIL, MOJA_LOZINKA)
                     msg = MIMEText(f"Kupac: {fi} {fp}\nTel: {ft}\nDržava: {f_drzava}\nAdresa: {fa}, {fg}\n\nNarudžba:\n{detalji}\nUKUPNO: {suma:.2f} €")
-                    msg['Subject'] = f"ORDER 2026: {fi} {fp}"; server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string()); server.quit()
-                    
+                    msg['Subject'] = f"ORDER 2026: {fi} {fp}"
+                    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT); server.starttls(); server.login(MOJ_EMAIL, MOJA_LOZINKA)
+                    server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string()); server.quit()
                     st.session_state.cart = {}
-                    # 🚀 SKOČNI PROZOR - SADA ZELENE BOJE
+                    # 🚀 ZELENI SKOČNI PROZOR 20x10 cm
                     with pop_placeholder.container():
-                        st.markdown(f"""
-                            <style>
-                            .ov {{ 
-                                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                                width: 20cm; height: 10cm; background: white; 
-                                border: 8px solid #28a745; border-radius: 25px; 
-                                display: flex; justify-content: center; align-items: center; 
-                                z-index: 999999; box-shadow: 0px 0px 60px rgba(0,0,0,0.6); 
-                            }} 
-                            .tx {{ 
-                                color: #28a745; font-size: 38px; font-weight: bold; 
-                                text-align: center; padding: 30px; font-family: Arial; 
-                            }}
-                            </style>
-                            <div class="ov"><div class="tx">{T['success_msg']}</div></div>
-                        """, unsafe_allow_html=True)
+                        st.markdown(f"""<style>.ov {{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20cm; height: 10cm; background: white; border: 8px solid #28a745; border-radius: 25px; display: flex; justify-content: center; align-items: center; z-index: 999999; box-shadow: 0px 0px 60px rgba(0,0,0,0.6); }} .tx {{ color: #28a745; font-size: 38px; font-weight: bold; text-align: center; padding: 30px; font-family: Arial; }}</style><div class="ov"><div class="tx">{T['success_msg']}</div></div>""", unsafe_allow_html=True)
                     time.sleep(4); pop_placeholder.empty(); st.rerun()
                 except Exception as e: st.error(f"Error: {e}")
