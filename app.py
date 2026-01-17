@@ -3,185 +3,196 @@ import smtplib
 from email.mime.text import MIMEText
 import time
 
-# --- 1. KONFIGURACIJA (TRAJNO ZAKLJUČANO) ---
+# --- 1. KONFIGURACIJA (STRIKTNO I PRIVATNO) ---
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
-MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
+MOJA_LOZINKA = "czdx ndpg owzy wgqu"  # Gmail App Password
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. PRIJEVODI I ARTIKLI (TRAJNO ZAKLJUČANO) ---
+# --- 2. PROŠIRENI MASTER PRIJEVODI (OSOBNI PRISTUP 2026.) ---
 LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🛒 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
-        "title_sub": "MESNICA I PRERADA MESA | 2026.", "cart_title": "🛍️ Vaša Košarica",
-        "cart_empty": "Vaša košarica je prazna.", 
-        "note_vaga": "⚖️ **Napomena:** Navedene cijene proizvoda su točne, dok je ukupni iznos u košarici informativan. Točan iznos bit će poznat nakon vaganja proizvoda.",
-        "total": "Približno", "form_name": "Ime i Prezime*", "form_tel": "Broj telefona*",
+        "title_sub": "MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.", 
+        "cart_title": "🛍️ Vaša Košarica", "cart_empty": "Vaša košarica je trenutno prazna. Odaberite domaće delicije iz ponude!",
+        "note_vaga": "⚖️ **Napomena o vaganju:** Naši su proizvodi ručno obrađeni i prirodni. Navedene cijene su fiksne po jedinici mjere, ali točan iznos Vašeg računa znat ćemo nakon preciznog vaganja svakog komada prije same isporuke.",
+        "total": "Informativni iznos", "form_name": "Ime i Prezime*", "form_tel": "Broj telefona za dostavu*",
         "form_city": "Grad*", "form_zip": "Poštanski broj*", "form_addr": "Ulica i kućni broj*",
-        "form_country": "Država*", "btn_order": "🚀 POTVRDI NARUDŽBU", "success": "Zaprimljeno! Hvala vam.",
-        "unit_kg": "kg", "unit_pc": "kom",
-        "horeca_title": "Profesionalna usluga za restorane i hotele",
-        "horeca_text": "Mesnica i prerada mesa Kojundžić nudi posebne pogodnosti:\n* **Uslužna proizvodnja:** Izrada po receptu.\n* **Veleprodajne cijene:** Za redovne isporuke.\n* **Dostava:** Vlastitim vozilima.",
-        "horeca_mail": "Ostale informacije dostupne su putem e-mail adrese:",
-        "haccp_title": "HACCP Standardi i Sigurnost",
-        "haccp_text": "Naša proizvodnja u 2026. odvija se pod najstrožim sanitarnim uvjetima.",
-        "info_title": "Obiteljska tradicija i kvaliteta",
-        "info_text": "Smješteni u srcu Siska, ponosni smo na dugogodišnje iskustvo. Naša se stoka kupuje isključivo na farmama malih proizvođača iz okolice Siska (Park prirode Lonjsko polje, Banovina, Posavina). Meso se priprema na tradicionalan način u modernom pogonu te se dimi isključivo izabranim drvetom kako bismo osigurali vrhunsku aromu i kvalitetu.",
-        "shipping_data": "Podaci za dostavu:",
-        "p1": "Dimljeni hamburger", "p2": "Dimljeni buncek", "p3": "Dimljeni prsni vršci", 
-        "p4": "Slavonska kobasica", "p5": "Domaća salama", "p6": "Dimljene kosti", 
-        "p7": "Dimljene nogice mix", "p8": "Panceta", "p9": "Dimljeni vrat (BK)", 
-        "p10": "Dimljeni kremenadl (BK)", "p11": "Dimljena pečenica", "p12": "Čvarci"
-    },
-    "EN 🇬🇧": {
-        "nav_shop": "🛒 SHOP", "nav_horeca": "🏨 B2B SERVICE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ABOUT US",
-        "title_sub": "BUTCHER SHOP & MEAT PROCESSING | 2026.", "cart_title": "🛍️ Your Cart",
-        "cart_empty": "Your cart is empty.", 
-        "note_vaga": "⚖️ **Note:** Final price confirmed after weighing.",
-        "total": "Approx.", "form_name": "Full Name*", "form_tel": "Phone*",
-        "form_city": "City*", "form_zip": "ZIP*", "form_addr": "Address*",
-        "form_country": "Country*", "btn_order": "🚀 CONFIRM ORDER", "success": "Thank you!",
-        "unit_kg": "kg", "unit_pc": "pcs",
-        "horeca_title": "B2B Service", "horeca_text": "Custom production and wholesale prices.",
-        "horeca_mail": "Info via email:", "haccp_title": "HACCP", "haccp_text": "Strict safety standards 2026.",
-        "info_title": "Tradition", "info_text": "Located in Sisak, traditional meat processing in modern facility.",
-        "shipping_data": "Shipping info:",
-        "p1": "Smoked bacon", "p2": "Smoked pork hock", "p3": "Smoked brisket tips",
-        "p4": "Slavonian sausage", "p5": "Homemade salami", "p6": "Smoked bones",
-        "p7": "Smoked pork feet", "p8": "Pancetta", "p9": "Smoked neck",
-        "p10": "Smoked loin", "p11": "Smoked tenderloin", "p12": "Pork rinds"
-    },
-    "DE 🇩🇪": {
-        "nav_shop": "🛒 SHOP", "nav_horeca": "🏨 GASTRONOMIE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ÜBER UNS",
-        "title_sub": "METZGEREI & FLEISCHVERARBEITUNG | 2026.", "cart_title": "🛍️ Warenkorb",
-        "cart_empty": "Ihr Warenkorb ist leer.", 
-        "note_vaga": "⚖️ **Hinweis:** Endpreis nakon dem Wiegen.",
-        "total": "Gesamt ca.", "form_name": "Name*", "form_tel": "Telefon*",
-        "form_city": "Stadt*", "form_zip": "PLZ*", "form_addr": "Adresse*",
-        "form_country": "Land*", "btn_order": "🚀 BESTELLUNG BESTÄTIGEN", "success": "Vielen Dank!",
-        "unit_kg": "kg", "unit_pc": "Stk",
-        "horeca_title": "Gastronomie", "horeca_text": "Lohnfertigung und Großhandelspreise.",
-        "horeca_mail": "Infos per E-Mail:", "haccp_title": "HACCP", "haccp_text": "Produktion 2026.",
-        "info_title": "Tradition", "info_text": "In Sisak ansässig, traditionelle Zubereitung.",
-        "shipping_data": "Versanddetails:",
-        "p1": "Geräucherter Hamburger", "p2": "Geräucherte Stelze", "p3": "Geräucherte Brustspitzen",
-        "p4": "Slawonische Wurst", "p5": "Hausgemachte Salami", "p6": "Geräucherte Knochen",
-        "p7": "Geräucherte Füße", "p8": "Pancetta", "p9": "Geräucherter Nacken",
-        "p10": "Geräuchertes Karree", "p11": "Geräucherte Lende", "p12": "Grieben"
+        "form_country": "Država*", "btn_order": "🚀 POTVRDI NARUDŽBU", "success": "Hvala Vam! Narudžba je zaprimljena, javit ćemo Vam se ubrzo!",
+        "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "tax": "PDV uključen", "shipping_info": "PODACI ZA DOSTAVU",
+        
+        "horeca_title": "Partnerstvo temeljeno na povjerenju i tradiciji",
+        "horeca_text": """Kao obiteljski posao, duboko cijenimo rad naših kolega u ugostiteljstvu. Razumijemo da vrhunski tanjur u restoranu ili hotelu počinje s beskompromisnom sirovinom. 
+        \n**Što nudimo našim HoReCa partnerima u 2026. godini:**
+        \n* **Krojenje po mjeri:** Naši mesari pripremaju rezove točno prema željama Vašeg chefa – od debljine odreska do specifičnog postotka masnoće.
+        \n* **Autentični miris dima:** Posjedujemo vlastite komore za tradicionalno dimljenje na hladnom dimu bukve i graba, što Vašim jelima daje onaj prepoznatljiv, domaći potpis.
+        \n* **Sigurna dostava:** Raspolažemo vlastitim vozilima s kontroliranim temperaturnim režimom (hladnjače), jamčeći svježinu u svakoj isporuci.
+        \n* **Veleprodajna podrška:** Redovnim partnerima osiguravamo prioritetnu obradu narudžbi i stabilne uvjete poslovanja.""",
+        "horeca_mail": "Za kreiranje individualnog cjenika i dogovor o suradnji, pišite nam na:",
+        
+        "haccp_title": "Sigurnost hrane: Od polja do Vašeg stola",
+        "haccp_text": """U mesnici Kojundžić, higijena nije samo zakonska obveza, već temelj našeg obraza. U 2026. godini primjenjujemo najstrože standarde kontrole kvalitete.
+        \n* **Potpuna sljedivost:** Svaki komad mesa u našoj ponudi ima svoj 'rodni list'. Točno znamo s koje farme dolazi i tko ga je uzgojio.
+        \n* **Strogi HACCP protokoli:** Naš moderni pogon u Sisku pod stalnim je nadzorom. Svaki korak – od prijema stoke, preko zrenja i dimljenja, do finalnog pakiranja – odvija se u sterilnim i temperaturno kontroliranim uvjetima.
+        \n* **EU Certifikacija:** Naša proizvodnja u potpunosti zadovoljava visoke kriterije Europske unije o sigurnosti hrane, uz redovite laboratorijske analize.""",
+        
+        "info_title": "Naša priča: Obitelj, Sisak i istinska kvaliteta",
+        "info_text": """Smješteni u srcu Siska, obitelj Kojundžić već naraštajima čuva vještinu pretvaranja najboljeg domaćeg mesa u vrhunske delicije. Naša filozofija je jednostavna: Poštuj prirodu i ona će ti uzvratiti najboljim okusima.
+        \n**Zašto odabrati nas?**
+        \nVjerujemo da se prava kvaliteta ne može postići industrijskom brzinom. Naša stoka dolazi isključivo od malih, provjerenih uzgajivača s pašnjaka Lonjskog polja, Banovine i Posavine. Meso pripremamo polako, uz prirodne začine i bez nepotrebnih aditiva.
+        \nKada kupujete kod nas, podržavate lokalne farmere i tradiciju koja izumire. Naša misija je donijeti miris domaće kuhinje u Vaš dom, baš onako kako su to radili naši stari. Hvala Vam na povjerenju!""",
+        
+        "footer": "© 2026 Mesnica Kojundžić Sisak | Tradicija kojoj vjerujete", "status_msg": "Slanje narudžbe...", "err_msg": "Greška! Molimo pokušajte ponovo.",
+        "p1": "Dimljeni hamburger", "p2": "Dimljeni buncek", "p3": "Dimljeni prsni vršci", "p4": "Slavonska kobasica", "p5": "Domaća salama", "p6": "Dimljene kosti",
+        "p7": "Dimljene nogice mix", "p8": "Panceta (Vrhunska)", "p9": "Dimljeni vrat (BK)", "p10": "Dimljeni kremenadl (BK)", "p11": "Dimljena pečenica", "p12": "Domaći čvarci",
+        "p13": "Svinjska mast (kanta)", "p14": "Krvavice (domaće)", "p15": "Pečenice za roštilj", "p16": "Suha rebra", "p17": "Dimljena glava", "p18": "Slanina sapunara"
     }
 }
 
-st.set_page_config(page_title="Kojundžić | 2026", page_icon="🥩", layout="wide")
+# --- 3. PODACI O PROIZVODIMA ---
+PRODUCTS = [
+    {"id": "p1", "price": 9.50, "unit": "kg"}, {"id": "p2", "price": 7.80, "unit": "kg"},
+    {"id": "p3", "price": 6.50, "unit": "kg"}, {"id": "p4", "price": 14.20, "unit": "kg"},
+    {"id": "p5", "price": 17.50, "unit": "kg"}, {"id": "p6", "price": 3.80, "unit": "kg"},
+    {"id": "p7", "price": 4.50, "unit": "kg"}, {"id": "p8", "price": 16.90, "unit": "kg"},
+    {"id": "p9", "price": 11.20, "unit": "kg"}, {"id": "p10", "price": 12.50, "unit": "kg"},
+    {"id": "p11", "price": 15.00, "unit": "kg"}, {"id": "p12", "price": 19.50, "unit": "kg"},
+    {"id": "p13", "price": 24.00, "unit": "pc"}, {"id": "p14", "price": 7.90, "unit": "kg"},
+    {"id": "p15", "price": 9.20, "unit": "kg"}, {"id": "p16", "price": 8.90, "unit": "kg"},
+    {"id": "p17", "price": 4.20, "unit": "kg"}, {"id": "p18", "price": 7.50, "unit": "kg"}
+]
 
-# --- 3. FUNKCIJA ZA EMAIL (TRAJNO ZAKLJUČANO) ---
-def posalji_email(ime, telefon, grad, adr, detalji, ukupno, jezik, country, ptt):
-    predmet = f"🔴 NOVA NARUDŽBA 2026: {ime}"
-    tijelo = f"Kupac: {ime}\nTel: {telefon}\nZemlja: {country}\nLokacija: {ptt} {grad}\nAdresa: {adr}\nJezik: {jezik}\n\nArtikli:\n{detalji}\n\nUkupno: {ukupno} €"
-    msg = MIMEText(tijelo); msg['Subject'] = predmet; msg['From'] = MOJ_EMAIL; msg['To'] = MOJ_EMAIL
+# --- 4. FUNKCIJE ---
+def send_order_email(client_info, cart_items, lang_code):
+    T = LANG_MAP[lang_code]
+    summary = "\n".join([f"- {item['name']}: {item['qty']} {item['unit']} ({item['sub']:.2f}€)" for item in cart_items])
+    
+    email_body = f"""
+    NOVA NARUDŽBA - WEB TRGOVINA 2026
+    ---------------------------------
+    KLIJENT: {client_info['name']}
+    TEL: {client_info['tel']}
+    ADRESA: {client_info['addr']}, {client_info['zip']} {client_info['city']}
+    DRŽAVA: {client_info['country']}
+    
+    STAVKE NARUDŽBE:
+    {summary}
+    
+    UKUPNO (INFORMATIVNO): {client_info['total']:.2f} EUR
+    ---------------------------------
+    Sustav Mesnice Kojundžić Sisak
+    """
+    
+    msg = MIMEText(email_body)
+    msg['Subject'] = f"Narudžba: {client_info['name']}"
+    msg['From'] = MOJ_EMAIL
+    msg['To'] = MOJ_EMAIL
+
     try:
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls(); server.login(MOJ_EMAIL, MOJA_LOZINKA)
-        server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string()); server.quit()
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(MOJ_EMAIL, MOJA_LOZINKA)
+            server.send_message(msg)
         return True
-    except: return False
+    except:
+        return False
 
-# --- 4. DIZAJN (SMANJENO ZA 30% - TRAJNO ZAKLJUČANO) ---
-st.markdown("""<style>
-    .brand-name { color: #8B0000; font-size: 35px; font-weight: 900; text-align: center; margin:0; }
-    .brand-sub { color: #333; font-size: 14px; text-align: center; margin-bottom: 15px; }
-    .product-card { background: white; border-radius: 8px; padding: 8px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 5px; }
-    .product-card h4 { font-size: 13px; margin: 3px 0; }
-    .product-card p { font-size: 12px; color: #8B0000; font-weight: bold; }
-    .qty-display { font-size: 14px; font-weight: bold; color: #8B0000; text-align: center; }
-    .stButton>button { height: 24px; line-height: 24px; padding: 0 6px; font-size: 10px; }
-</style>""", unsafe_allow_html=True)
+# --- 5. STREAMLIT UI ---
+st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide", page_icon="🥩")
 
-if "cart" not in st.session_state:
+# Inicijalizacija košarice
+if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
-# --- 5. NAVIGACIJA (TRAJNO ZAKLJUČANO) ---
-izabrani_jezik = st.sidebar.selectbox("Jezik / Language / Sprache", list(LANG_MAP.keys()), index=0)
-T = LANG_MAP[izabrani_jezik]
-choice = st.sidebar.radio("Meni", [T["nav_shop"], T["nav_horeca"], T["nav_haccp"], T["nav_info"]])
+# Sidebar - Odabir jezika i navigacija
+with st.sidebar:
+    st.title("⚙️ Postavke")
+    current_lang = st.selectbox("Izaberite jezik / Choose language", list(LANG_MAP.keys()))
+    T = LANG_MAP[current_lang]
+    st.divider()
+    menu = st.radio("Navigacija", [T["nav_shop"], T["nav_horeca"], T["nav_haccp"], T["nav_info"]])
+    st.divider()
+    st.markdown(f"*{T['footer']}*")
 
-# --- 6. TRGOVINA ---
-if choice == T["nav_shop"]:
-    st.markdown(f'<p class="brand-name">KOJUNDŽIĆ</p>', unsafe_allow_html=True)
-    st.markdown(f'<p class="brand-sub">{T["title_sub"]}</p>', unsafe_allow_html=True)
+# --- STRANICA: TRGOVINA ---
+if menu == T["nav_shop"]:
+    st.title("🥩 " + T["title_sub"])
+    
+    shop_col, cart_col = st.columns([2, 1])
+    
+    with shop_col:
+        st.subheader(T["nav_shop"])
+        # Prikaz proizvoda u gridu
+        p_cols = st.columns(2)
+        for idx, p in enumerate(PRODUCTS):
+            with p_cols[idx % 2]:
+                with st.expander(f"**{T[p['id']]}**", expanded=True):
+                    st.write(f"Cijena: {p['price']:.2f} {T['curr']} / {T['unit_'+p['unit']]}")
+                    qty = st.number_input(f"Količina ({T['unit_'+p['unit']]})", min_value=0.0, step=0.5, key=f"input_{p['id']}")
+                    if qty > 0:
+                        st.session_state.cart[p['id']] = qty
+                    elif p['id'] in st.session_state.cart:
+                        del st.session_state.cart[p['id']]
 
-    col_proizvodi, col_desno = st.columns([0.65, 0.35])
-
-    with col_proizvodi:
-        proizvodi = [
-            {"id": 1, "name": T["p1"], "price": 12.0, "type": "kg"},
-            {"id": 2, "name": T["p2"], "price": 8.0, "type": "pc"},
-            {"id": 3, "name": T["p3"], "price": 9.0, "type": "pc"},
-            {"id": 4, "name": T["p4"], "price": 16.0, "type": "kg"},
-            {"id": 5, "name": T["p5"], "price": 25.0, "type": "kg"},
-            {"id": 6, "name": T["p6"], "price": 2.5, "type": "kg"},
-            {"id": 7, "name": T["p7"], "price": 2.5, "type": "kg"},
-            {"id": 8, "name": T["p8"], "price": 17.0, "type": "kg"},
-            {"id": 9, "name": T["p9"], "price": 15.0, "type": "kg"},
-            {"id": 10, "name": T["p10"], "price": 15.0, "type": "kg"},
-            {"id": 11, "name": T["p11"], "price": 20.0, "type": "kg"},
-            {"id": 12, "name": T["p12"], "price": 10.0, "type": "pc"}
-        ]
-        
-        cols = st.columns(3)
-        for i, p in enumerate(proizvodi):
-            sa_kolonom = cols[i % 3]
-            with sa_kolonom:
-                st.markdown(f'<div class="product-card"><h4>{p["name"]}</h4><p>{p["price"]:.2f} €</p></div>', unsafe_allow_html=True)
-                c1, c2, c3 = st.columns([1,1,1])
-                if c1.button("➖", key=f"m_{p['id']}"):
-                    if st.session_state.cart.get(p['id'], 0) > 0:
-                        st.session_state.cart[p['id']] -= 1
-                        st.rerun()
-                c2.markdown(f'<p class="qty-display">{st.session_state.cart.get(p["id"], 0)}</p>', unsafe_allow_html=True)
-                if c3.button("➕", key=f"p_{p['id']}"):
-                    st.session_state.cart[p['id']] = st.session_state.cart.get(p['id'], 0) + 1
-                    st.rerun()
-
-    with col_desno:
+    with cart_col:
         st.subheader(T["cart_title"])
-        ukupno_eur = 0.0
-        detalji_narudzbe = ""
-        for p in proizvodi:
-            kol = st.session_state.cart.get(p['id'], 0)
-            if kol > 0:
-                iznos = kol * p['price']
-                ukupno_eur += iznos
-                st.write(f"🥩 {p['name']}: {kol} x {p['price']}€ = {iznos:.2f} €")
-                detalji_narudzbe += f"- {p['name']}: {kol} ({iznos:.2f} €)\n"
-        
-        if ukupno_eur > 0:
+        if not st.session_state.cart:
+            st.info(T["cart_empty"])
+        else:
+            total_sum = 0
+            summary_list = []
+            for pid, q in st.session_state.cart.items():
+                p_data = next(x for x in PRODUCTS if x['id'] == pid)
+                sub = q * p_data['price']
+                total_sum += sub
+                st.write(f"**{T[pid]}**")
+                st.write(f"{q} {T['unit_'+p_data['unit']]} x {p_data['price']:.2f} = {sub:.2f} €")
+                summary_list.append({'name': T[pid], 'qty': q, 'unit': T['unit_'+p_data['unit']], 'sub': sub})
+            
             st.divider()
-            st.markdown(f"### {T['total']}: **{ukupno_eur:.2f} €**")
+            st.markdown(f"### {T['total']}: {total_sum:.2f} €")
             st.caption(T["note_vaga"])
-            with st.form("narudzba"):
-                ime = st.text_input(T["form_name"])
-                tel = st.text_input(T["form_tel"])
-                grad = st.text_input(T["form_city"])
-                adr = st.text_input(T["form_addr"])
-                ptt = st.text_input(T["form_zip"])
-                drv = st.text_input(T["form_country"])
+            
+            # Forma za narudžbu
+            with st.form("checkout_form"):
+                st.write(f"✍️ **{T['shipping_info']}**")
+                c_name = st.text_input(T["form_name"])
+                c_tel = st.text_input(T["form_tel"])
+                c_addr = st.text_input(T["form_addr"])
+                c_city = st.text_input(T["form_city"])
+                c_zip = st.text_input(T["form_zip"])
+                c_country = st.text_input(T["form_country"])
+                
                 if st.form_submit_button(T["btn_order"]):
-                    if ime and tel and grad:
-                        if posalji_email(ime, tel, grad, adr, detalji_narudzbe, ukupno_eur, izabrani_jezik, drv, ptt):
+                    if c_name and c_tel and c_addr:
+                        info = {"name": c_name, "tel": c_tel, "addr": c_addr, "city": c_city, "zip": c_zip, "country": c_country, "total": total_sum}
+                        if send_order_email(info, summary_list, current_lang):
                             st.success(T["success"])
                             st.session_state.cart = {}
-                            time.sleep(2)
+                            time.sleep(3)
                             st.rerun()
-        else:
-            st.info(T["cart_empty"])
+                        else:
+                            st.error(T["err_msg"])
+                    else:
+                        st.warning("Molimo ispunite obavezna polja označena sa *")
 
-elif choice == T["nav_horeca"]:
+# --- STRANICA: HORECA ---
+elif menu == T["nav_horeca"]:
     st.header(T["horeca_title"])
     st.write(T["horeca_text"])
-    st.info(f"{T['horeca_mail']} **{MOJ_EMAIL}**")
-elif choice == T["nav_haccp"]:
+    st.info(f"📧 {T['horeca_mail']} **{MOJ_EMAIL}**")
+    st.image("https://images.unsplash.com") # Slika restorana
+
+# --- STRANICA: HACCP ---
+elif menu == T["nav_haccp"]:
     st.header(T["haccp_title"])
     st.write(T["haccp_text"])
-elif choice == T["nav_info"]:
+    st.success("✅ Certificirana proizvodnja 2026.")
+    st.image("https://images.unsplash.com") # Slika laboratorija/kontrole
+
+# --- STRANICA: O NAMA ---
+elif menu == T["nav_info"]:
     st.header(T["info_title"])
     st.write(T["info_text"])
+    st.markdown("📍 **Gdje nas pronaći?** Sisak, Hrvatska - posjetite našu matičnu mesnicu!")
+    st.image("https://images.unsplash.com") # Slika tradicionalnog mesa
