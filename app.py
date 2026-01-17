@@ -9,18 +9,21 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. TEKSTOVI ---
+# --- 2. USIDRENI TEKSTOVI ---
 T = {
     "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
     "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna.",
     "note_vaga": "⚖️ **VAŽNO:** Cijene su točne, dok je ukupni iznos informativan. Točan iznos znat ćete pri preuzimanju.",
-    "note_delivery": "🚚 **DOSTAVA:** Proizvode šaljemo dostavom, plaćanje pouzećem.",
+    "note_delivery": "🚚 **DOSTAVA:** Proizvode šaljemo dostavom, plaćate ih pouzećem.",
     "form_name": "Ime i Prezime primatelja*", "form_tel": "Kontakt telefon*", "form_country": "Država*", "form_city": "Grad/Mjesto*", "form_addr": "Ulica i kućni broj*",
-    "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", "unit_kg": "kg", "unit_pc": "kom", "total": "Ukupni informativni iznos", "shipping_info": "📍 PODACI ZA DOSTAVU"
+    "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", 
+    "err_fields": "🛑 Narudžba se ne može poslati dok ne ispunite sve podatke za dostavu!",
+    "err_cart": "🛑 Vaša košarica je prazna! Dodajte artikle prije slanja.",
+    "unit_kg": "kg", "unit_pc": "kom", "total": "Ukupni informativni iznos", "shipping_info": "📍 PODACI ZA DOSTAVU"
 }
 
-# --- 3. PROIZVODI ---
+# --- 3. FIKSNI POPIS PROIZVODA ---
 PRODUCTS = [
     {"id": "p1", "price": 9.50, "unit": "kg", "name": "Dimljeni hamburger"},
     {"id": "p2", "price": 7.80, "unit": "pc", "name": "Dimljeni buncek"},
@@ -42,12 +45,13 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
-# --- 4. INICIJALIZACIJA ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
-pop_up_placeholder = st.empty()
+
+# Kontejner za skočni prozor (Obavijesti)
+msg_placeholder = st.empty()
 
 col_left, col_right = st.columns([0.65, 0.35])
 
@@ -62,49 +66,37 @@ with col_left:
             with (c1 if i % 2 == 0 else c2):
                 st.subheader(p["name"])
                 st.write(f"**{p['price']:.2f} €** / {T['unit_'+p['unit']]}")
-                
-                # Dohvati vrijednost iz košarice
                 current_qty = float(st.session_state.cart.get(p["id"], 0.0))
+                step = 0.5 if p["unit"] == "kg" else 1.0
+                new_qty = st.number_input(f"Količina ({T['unit_'+p['unit']]})", min_value=0.0, step=step, value=current_qty, key=f"f_{p['id']}")
                 
-                # Input polje
-                new_qty = st.number_input(f"Količina ({T['unit_'+p['unit']]})", 
-                                         min_value=0.0, step=(0.5 if p["unit"] == "kg" else 1.0), 
-                                         value=current_qty, key=f"input_{p['id']}")
-                
-                # --- LOGIKA VAGE I TRENUTNO AŽURIRANJE ---
+                # Logika vage
                 if p["unit"] == "kg":
-                    if current_qty == 0.0 and new_qty == 0.5:
-                        new_qty = 1.0
-                    elif current_qty == 1.0 and new_qty == 0.5:
-                        new_qty = 0.0
+                    if current_qty == 0.0 and new_qty == 0.5: new_qty = 1.0
+                    elif current_qty == 1.0 and new_qty == 0.5: new_qty = 0.0
 
                 if new_qty != current_qty:
-                    if new_qty > 0:
-                        st.session_state.cart[p["id"]] = new_qty
-                    else:
-                        st.session_state.cart.pop(p["id"], None)
+                    if new_qty > 0: st.session_state.cart[p["id"]] = new_qty
+                    else: st.session_state.cart.pop(p["id"], None)
                     st.rerun()
 
 with col_right:
     st.markdown(f"### {T['cart_title']}")
     ukupan_iznos = 0.0
-    
     if not st.session_state.cart:
         st.info(T["cart_empty"])
     else:
         for pid, qty in list(st.session_state.cart.items()):
             p_info = next((item for item in PRODUCTS if item["id"] == pid), None)
             if p_info:
-                subtotal = qty * p_info["price"]
-                ukupan_iznos += subtotal
-                st.write(f"✅ **{p_info['name']}**: {qty} {T['unit_'+p_info['unit']]} = **{subtotal:.2f} €**")
+                sub = qty * p_info["price"]
+                ukupan_iznos += sub
+                st.write(f"✅ **{p_info['name']}**: {qty} {T['unit_'+p_info['unit']]} = **{sub:.2f} €**")
     
     st.divider()
-    # USIDRENA METRIKA CIJENE
     st.metric(label=T["total"], value=f"{ukupan_iznos:.2f} €")
-    st.markdown(T["note_delivery"])
     
-    with st.form("forma_dostave"):
+    with st.form("forma_dostave", clear_on_submit=False):
         st.markdown(f"#### {T['shipping_info']}")
         ime = st.text_input(T["form_name"])
         tel = st.text_input(T["form_tel"])
@@ -114,7 +106,20 @@ with col_right:
         posalji = st.form_submit_button(T["btn_order"])
         
         if posalji:
-            if ime and tel and adresa and st.session_state.cart:
+            # 1. PROVJERA: Prazna košarica
+            if not st.session_state.cart:
+                msg_placeholder.error(T["err_cart"])
+                time.sleep(5)
+                msg_placeholder.empty()
+            
+            # 2. PROVJERA: Prazna polja
+            elif not (ime and tel and grad and adresa and drzava):
+                msg_placeholder.error(T["err_fields"])
+                time.sleep(5)
+                msg_placeholder.empty()
+            
+            # 3. SLANJE NARUDŽBE
+            else:
                 stavke = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
                 poruka = f"Kupac: {ime}\nTel: {tel}\nDržava: {drzava}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
                 
@@ -129,11 +134,13 @@ with col_right:
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     
-                    pop_up_placeholder.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!")
+                    # USPJEH: Skočni prozor (5s) i poruka u formi (10s)
+                    msg_placeholder.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!")
                     st.success(T["success"])
                     st.session_state.cart = {}
+                    
                     time.sleep(5)
-                    pop_up_placeholder.empty()
+                    msg_placeholder.empty()
                     time.sleep(5)
                     st.rerun()
                 except Exception as e:
