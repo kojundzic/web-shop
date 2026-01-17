@@ -3,13 +3,12 @@ import smtplib
 from email.mime.text import MIMEText
 import time
 
-# --- 1. FIKSNA USIDRENA KONFIGURACIJA (SISAK 2026) ---
+# --- 1. USIDRENA KONFIGURACIJA ---
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
 MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# Popis država EU za padajući izbornik
 EU_DRZAVE = [
     "Hrvatska", "Austrija", "Belgija", "Bugarska", "Cipar", "Češka", "Danska", "Estonija", 
     "Finska", "Francuska", "Grčka", "Irska", "Italija", "Latvija", "Litva", "Luksemburg", 
@@ -17,7 +16,6 @@ EU_DRZAVE = [
     "Slovačka", "Slovenija", "Španjolska", "Švedska", "Druga država (upiši sam)"
 ]
 
-# --- 2. USIDRENI TEKSTOVI ---
 T = {
     "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
@@ -31,7 +29,6 @@ T = {
     "unit_kg": "kg", "unit_pc": "kom", "total": "Ukupni informativni iznos", "shipping_info": "📍 PODACI ZA DOSTAVU"
 }
 
-# --- 3. FIKSNI POPIS PROIZVODA ---
 PRODUCTS = [
     {"id": "p1", "price": 9.50, "unit": "kg", "name": "Dimljeni hamburger"},
     {"id": "p2", "price": 7.80, "unit": "pc", "name": "Dimljeni buncek"},
@@ -53,6 +50,7 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
+# --- 2. INICIJALIZACIJA ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
@@ -72,27 +70,36 @@ with col_left:
             with (c1 if i % 2 == 0 else c2):
                 st.subheader(p["name"])
                 st.write(f"**{p['price']:.2f} €** / {T['unit_'+p['unit']]}")
-                current_qty = float(st.session_state.cart.get(p["id"], 0.0))
-                step = 0.5 if p["unit"] == "kg" else 1.0
-                new_qty = st.number_input(f"Količina ({T['unit_'+p['unit']]})", min_value=0.0, step=step, value=current_qty, key=f"f_{p['id']}")
                 
+                # KLJUČNA LOGIKA: Session state se koristi kao primarni izvor istine
+                current_qty = st.session_state.cart.get(p["id"], 0.0)
+                step = 0.5 if p["unit"] == "kg" else 1.0
+                
+                # Widget koji reagira na promjenu
+                val = st.number_input(f"Količina ({T['unit_'+p['unit']]})", 
+                                     min_value=0.0, step=step, value=float(current_qty), key=f"f_{p['id']}")
+                
+                # Logika vage za KG
                 if p["unit"] == "kg":
-                    if current_qty == 0.0 and new_qty == 0.5: new_qty = 1.0
-                    elif current_qty == 1.0 and new_qty == 0.5: new_qty = 0.0
+                    if current_qty == 0.0 and val == 0.5: val = 1.0
+                    elif current_qty == 1.0 and val == 0.5: val = 0.0
 
-                if new_qty != current_qty:
-                    if new_qty > 0: st.session_state.cart[p["id"]] = new_qty
+                # Ako je došlo do promjene, upiši u košaricu i ODMAH osvježi da se cijena izračuna
+                if val != current_qty:
+                    if val > 0: st.session_state.cart[p["id"]] = val
                     else: st.session_state.cart.pop(p["id"], None)
                     st.rerun()
 
 with col_right:
     st.markdown(f"### {T['cart_title']}")
     ukupan_iznos = 0.0
+    
+    # IZRAČUN CIJENA - OVO SADA RADI U REALNOM VREMENU
     if not st.session_state.cart:
         st.info(T["cart_empty"])
     else:
         for pid, qty in list(st.session_state.cart.items()):
-            p_info = next((item for item in PRODUCTS if item["id"] == pid), None)
+            p_info = next((x for x in PRODUCTS if x["id"] == pid), None)
             if p_info:
                 sub = qty * p_info["price"]
                 ukupan_iznos += sub
@@ -103,16 +110,13 @@ with col_right:
     
     with st.form("forma_dostave"):
         st.markdown(f"#### {T['shipping_info']}")
-        c_name1, c_name2 = st.columns(2)
-        with c_name1: ime = st.text_input(T["form_fname"])
-        with c_name2: prezime = st.text_input(T["form_lname"])
+        c_n1, c_n2 = st.columns(2)
+        with c_n1: ime = st.text_input(T["form_fname"])
+        with c_n2: prezime = st.text_input(T["form_lname"])
         
         tel = st.text_input(T["form_tel"])
-        
-        # --- DRŽAVA PADJUĆI IZBORNIK ---
         drzava_izbor = st.selectbox(T["form_country"], options=EU_DRZAVE)
         drzava_final = drzava_izbor
-        
         if drzava_izbor == "Druga država (upiši sam)":
             drzava_final = st.text_input("Upišite naziv države*")
         
@@ -121,35 +125,28 @@ with col_right:
         posalji = st.form_submit_button(T["btn_order"])
         
         if posalji:
-            # Provjera podataka
             if not st.session_state.cart:
                 msg_placeholder.error(T["err_cart"])
                 time.sleep(5); msg_placeholder.empty()
-            
             elif not (ime and prezime and tel and grad and adresa and drzava_final):
                 msg_placeholder.error(T["err_fields"])
                 time.sleep(5); msg_placeholder.empty()
-            
             else:
                 stavke = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
                 poruka = f"Kupac: {ime} {prezime}\nTel: {tel}\nDržava: {drzava_final}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
                 
                 try:
                     server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-                    server.starttls()
-                    server.login(MOJ_EMAIL, MOJA_LOZINKA)
+                    server.starttls(); server.login(MOJ_EMAIL, MOJA_LOZINKA)
                     msg = MIMEText(poruka)
                     msg['Subject'] = f"Narudžba 2026 - {ime} {prezime}"
-                    msg['From'] = MOJ_EMAIL
-                    msg['To'] = MOJ_EMAIL
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     
                     msg_placeholder.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!")
                     st.success(T["success"])
                     st.session_state.cart = {}
-                    
                     time.sleep(5); msg_placeholder.empty()
                     time.sleep(5); st.rerun()
                 except Exception as e:
-                    st.error(f"Greška: {e}")
+                    st.error(f"E-mail greška: {e}")
