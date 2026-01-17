@@ -2,14 +2,15 @@ import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 import pandas as pd
+import time
 
-# --- 1. KONFIGURACIJA (ZAKLJUČANO) ---
+# --- 1. KONFIGURACIJA (FIKSNA) ---
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
 MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. MASTER PRIJEVODI (PROŠIRENO I TOČNO) ---
+# --- 2. MASTER PRIJEVODI (PROŠIRENI - HR, EN, DE) ---
 LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
@@ -19,57 +20,28 @@ LANG_MAP = {
         "note_delivery": """🚚 **Dostava i plaćanje:** Naručene artikle dostaviti će Vam dostavna služba na kućnu adresu. Alternativno, možete ih preusmjeriti u najbliži paketomat. Plaćanja se vrše **isključivo pouzećem** (prilikom preuzimanja paketa).""",
         "horeca_title": "Partnerstvo temeljeno na povjerenju i tradiciji",
         "horeca_text": """Kao obiteljski posao, duboko cijenimo rad naših kolega u ugostiteljstvu. Razumijemo da vrhunski tanjur u restoranu ili hotelu počinje s beskompromisnom sirovinom. 
-**Što nudimo našim HoReCa partnerima u 2026. godini:**
+\n**Što nudimo našim HoReCa partnerima u 2026. godini:**
 * **Autentični miris dima:** Posjedujemo vlastite komore za tradicionalno dimljenje na hladnom dimu bukve i graba.
 * **Sigurna dostava:** Raspolažemo vlastitim vozilima s kontroliranim temperaturnim režimom (hladnjače).
 * **Veleprodajna podrška:** Redovnim partnerima osiguravamo prioritetnu obradu narudžbi i prilagođene rezove mesa.""",
         "haccp_title": "Sigurnost hrane: Od polja do Vašeg stola",
         "haccp_text": """U mesnici Kojundžić, higijena je temelj našeg obraza. U 2026. godini primjenjujemo najstrože standarde kontrole kvalitete.
 * **Potpuna sljedivost:** Svaki komad mesa u našoj ponudi ima svoj 'rodni list' – točno znamo s koje farme dolazi.
-* **Strogi HACCP protokoli:** Naš moderni pogon u Sisku pod stalnim je nadzorom, uz redovite laboratorijske kontrole i sanitarne standarde.""",
+* **Strogi HACCP protokoli:** Naš moderni pogon u Sisku pod stalnim je nadzorom.""",
         "info_title": "Naša priča: Obitelj, Sisak i istinska kvaliteta",
-        "info_text": """Smješteni u srcu Siska, obitelj Kojundžić već naraštajima čuva vještinu tradicionalne pripreme mesa. Naša filozofija je jednostavna: Poštuj prirodu i ona će ti uzvratiti najboljim okusima. 
-Meso pripremamo polako, uz korištenje isključivo prirodnih začina, bez nepotrebnih aditiva i kemijskih dodataka. 
+        "info_text": """Smješteni u srcu Siska, obitelj Kojundžić već naraštajima čuva vještinu tradicionalne pripreme mesa. Meso pripremamo polako, uz prirodne začine, bez aditiva. 
 \n📍 **Glavno prodajno mjesto:** Tržnica Caprag, Sisak. \nRadno vrijeme: Pon-Sub: 07:00 - 13:00""",
         "p1": "Dimljeni hamburger", "p2": "Dimljeni buncek", "p3": "Dimljeni prsni vršci", "p4": "Slavonska kobasica", "p5": "Domaća salama", "p6": "Dimljene kosti",
         "p7": "Dimljene nogice mix", "p8": "Panceta (Vrhunska)", "p9": "Dimljeni vrat (BK)", "p10": "Dimljeni kremenadl (BK)", "p11": "Dimljena pečenica", "p12": "Domaći čvarci",
         "p13": "Svinjska mast (kanta)", "p14": "Krvavice (domaće)", "p15": "Pečenice za roštilj", "p16": "Suha rebra", "p17": "Dimljena glava", "p18": "Slanina sapunara",
         "form_name": "Ime i Prezime*", "form_tel": "Broj telefona za dostavu*", "form_city": "Grad*", "form_zip": "Poštanski broj*", "form_addr": "Ulica i kućni broj*",
-        "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "Zaprimljeno!", "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "total": "Informativni iznos", "shipping_info": "PODACI ZA DOSTAVU"
+        "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA! HVALA VAM.", "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "total": "Informativni iznos", "shipping_info": "PODACI ZA DOSTAVU"
     },
-    "EN 🇬🇧": {
-        "nav_shop": "🏬 SHOP", "nav_horeca": "🏨 FOR HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ABOUT US",
-        "title_sub": "KOJUNDŽIĆ BUTCHERY | SISAK 2026.",
-        "cart_title": "🛒 Your Cart", "cart_empty": "is empty",
-        "note_vaga": """⚖️ **Weight Note:** Prices are fixed, but the exact total will be confirmed after weighing. You will know the final amount upon delivery (COD). We strive for minimal differences between estimated and final weight.""",
-        "note_delivery": """🚚 **Shipping & Payment:** Items are delivered to your home address or a parcel locker. Payment is **Cash on Delivery (COD)** only.""",
-        "horeca_title": "Partnership Based on Trust and Tradition",
-        "horeca_text": "We provide beech-smoked traditional meats, refrigerated delivery, and wholesale support for restaurants and hotels.",
-        "haccp_title": "Food Safety: From Field to Table",
-        "haccp_text": "Highest HACCP standards, full traceability, and regular laboratory controls in our modern facility in Sisak.",
-        "info_title": "Our Story: Family, Sisak, and Quality",
-        "info_text": "The Kojundžić family preserves traditional meat preparation using only natural spices and slow-smoking techniques.\n📍 **Main Shop:** Caprag Market, Sisak.",
-        "form_name": "Full Name*", "form_tel": "Phone Number*", "form_city": "City*", "form_zip": "ZIP Code*", "form_addr": "Street & Number*",
-        "btn_order": "🚀 SEND ORDER", "success": "Received!", "unit_kg": "kg", "unit_pc": "pcs", "curr": "€", "total": "Estimated Total", "shipping_info": "SHIPPING DETAILS"
-    },
-    "DE 🇩🇪": {
-        "nav_shop": "🏬 SHOP", "nav_horeca": "🏨 FÜR HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ÜBER UNS",
-        "title_sub": "METZGEREI KOJUNDŽIĆ | SISAK 2026.",
-        "cart_title": "🛒 Warenkorb", "cart_empty": "ist leer",
-        "note_vaga": """⚖️ **Hinweis zum Wiegen:** Die Preise sind fest, der genaue Rechnungsbetrag wird jedoch erst nach dem Wiegen ermittelt. Den Endbetrag bezahlen Sie bei Lieferung (Nachnahme).""",
-        "note_delivery": """🚚 **Lieferung & Zahlung:** Zustellung an Ihre Adresse oder Packstation. Bezahlung erfolgt **ausschließlich per Nachnahme**.""",
-        "horeca_title": "Partnerschaft auf Vertrauen und Tradition",
-        "horeca_text": "Buchenholzrauch-Produkte, Kühltransport und Großhandelsunterstützung für Gastronomiebetriebe.",
-        "haccp_title": "Lebensmittelsicherheit",
-        "haccp_text": "Strenge HACCP-Protokolle, lückenlose Rückverfolgbarkeit und modernste Hygienestandards in Sisak.",
-        "info_title": "Unsere Geschichte",
-        "info_text": "Die Familie Kojundžić bewahrt die Kunst der traditionellen Fleischzubereitung mit Naturgewürzen.\n📍 **Hauptstandort:** Markt Caprag, Sisak.",
-        "form_name": "Vor- und Nachname*", "form_tel": "Telefonnummer*", "form_city": "Stadt*", "form_zip": "PLZ*", "form_addr": "Straße & Hausnummer*",
-        "btn_order": "🚀 BESTELLUNG SENDEN", "success": "Eingegangen!", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "total": "Gesamtsumme (ca.)", "shipping_info": "LIEFERDATEN"
-    }
+    "EN 🇬🇧": { "nav_shop": "🏬 SHOP", "cart_title": "🛒 Your Cart", "cart_empty": "is empty", "btn_order": "🚀 SEND ORDER", "success": "ORDER SUCCESSFULLY SUBMITTED! THANK YOU.", "unit_kg": "kg", "unit_pc": "pcs", "curr": "€", "total": "Estimated Total", "shipping_info": "SHIPPING DETAILS", "note_vaga": "⚖️ Prices are fixed, final total confirmed after weighing.", "note_delivery": "🚚 COD Payment only.", "form_name": "Name*", "form_tel": "Phone*", "form_city": "City*", "form_zip": "ZIP*", "form_addr": "Address*", "horeca_title": "HoReCa 2026", "horeca_text": "Professional meat supply for hospitality.", "haccp_title": "Safety", "haccp_text": "Full HACCP compliance.", "info_title": "About Us", "info_text": "Tradition from Sisak." },
+    "DE 🇩🇪": { "nav_shop": "🏬 SHOP", "cart_title": "🛒 Warenkorb", "cart_empty": "ist leer", "btn_order": "🚀 SENDEN", "success": "BESTELLUNG ERFOLGREICH ÜBERMITTELT! DANKE.", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "total": "Summe", "shipping_info": "LIEFERDATEN", "note_vaga": "⚖️ Endpreis nach Wiegen.", "note_delivery": "🚚 Nachnahme.", "form_name": "Name*", "form_tel": "Telefon*", "form_city": "Stadt*", "form_zip": "PLZ*", "form_addr": "Straße*", "horeca_title": "Gastronomie", "horeca_text": "Fleischlieferung für Profis.", "haccp_title": "HACCP", "haccp_text": "Lebensmittelsicherheit.", "info_title": "Über uns", "info_text": "Tradition aus Sisak." }
 }
 
-# --- 3. PROIZVODI (ZAKLJUČANO) ---
+# --- 3. PROIZVODI ---
 PRODUCTS = [
     {"id": "p1", "price": 9.50, "unit": "kg"}, {"id": "p2", "price": 7.80, "unit": "pc"},
     {"id": "p3", "price": 6.50, "unit": "pc"}, {"id": "p4", "price": 14.20, "unit": "kg"},
@@ -92,7 +64,7 @@ def send_email(info, cart_items):
         return True
     except: return False
 
-# --- 4. UI LOGIKA ---
+# --- 4. UI ---
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
 if 'cart' not in st.session_state: st.session_state.cart = {}
 
@@ -110,7 +82,6 @@ if menu == T["nav_shop"]:
         for idx, p in enumerate(PRODUCTS):
             with p_cols[idx % 2]:
                 with st.container(border=True):
-                    # Vraćeni nazivi proizvoda iz T rječnika
                     name_p = T.get(p["id"], p["id"])
                     st.write(f"**{name_p}**")
                     st.write(f"{p['price']:.2f} € / {T['unit_'+p['unit']]}")
@@ -120,6 +91,7 @@ if menu == T["nav_shop"]:
                     elif p['id'] in st.session_state.cart: del st.session_state.cart[p['id']]
 
     with col2:
+        # KOŠARICA
         status = f" {T['cart_empty']}" if not st.session_state.cart else ""
         st.subheader(f"{T['cart_title']}{status}")
         
@@ -131,14 +103,13 @@ if menu == T["nav_shop"]:
             st.write(f"✅ {p_name}: {q} {T['unit_'+pd['unit']]} = {sub:.2f} €")
             items_mail.append({'name': p_name, 'qty': q, 'unit': T['unit_'+pd['unit']]})
         
+        # STALNO VIDLJIVE NAPOMENE (Izvan uvjeta košarice)
+        st.divider()
+        st.info(T["note_vaga"])
+        st.warning(T["note_delivery"])
+        
         if st.session_state.cart:
-            st.divider()
             st.write(f"### {T['total']}: {tot:.2f} €")
-            
-            # STALNO VIDLJIVE NAPOMENE
-            st.info(T["note_vaga"])
-            st.warning(T["note_delivery"])
-            
             with st.form("checkout"):
                 st.write(f"### {T['shipping_info']}")
                 name = st.text_input(T["form_name"])
@@ -151,10 +122,13 @@ if menu == T["nav_shop"]:
                     if name and tel and addr:
                         info = {"name": name, "tel": tel, "addr": addr, "city": city, "zip": zip_c, "total": tot}
                         if send_email(info, items_mail):
-                            st.success(T["success"])
+                            success_placeholder = st.empty()
+                            success_placeholder.success(T["success"])
                             st.session_state.cart = {}
+                            time.sleep(10) # Čeka 10 sekundi
+                            success_placeholder.empty()
                             st.rerun()
-                    else: st.error("Molimo ispunite polja / Please fill all fields.")
+                    else: st.error("Ispunite obavezna polja (*)")
 
 elif menu == T["nav_info"]:
     st.title(T["info_title"])
@@ -162,8 +136,7 @@ elif menu == T["nav_info"]:
     st.subheader("📍 Lokacija: Tržnica Caprag, Sisak")
     map_data = pd.DataFrame({'lat': [45.4622], 'lon': [16.3755]})
     st.map(map_data)
-
 else:
-    key_prefix = "horeca" if menu == T["nav_horeca"] else "haccp"
-    st.title(T[f"{key_prefix}_title"])
-    st.markdown(T[f"{key_prefix}_text"])
+    key_p = "horeca" if menu == T["nav_horeca"] else "haccp"
+    st.title(T[f"{key_p}_title"])
+    st.markdown(T[f"{key_p}_text"])
