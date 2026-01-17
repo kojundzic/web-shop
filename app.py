@@ -22,7 +22,7 @@ EU_DRZAVE = [
 # Fiksni tekstualni resursi (usidreni)
 T = {
     "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
-    "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
+    "title_sub": "KOJUNDŽIĆ mesnica i prerada mesa | SISAK 2026.",
     "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna.",
     "note_vaga": "⚖️ **VAŽNO:** Istaknute cijene proizvoda su točno navedene, dok je ukupni iznos u košarici informativne naravi. Budući da se naši proizvodi pripremaju i režu ručno, stvarna težina može malo odstupati. Svaku narudžbu nastojimo pripremiti s maksimalnom pažnjom kako bi količina i cijena što točnije odgovarali Vašem odabiru, a točan iznos znat ćete pri preuzimanju.",
     "note_cod": "🚚 **Plaćanje pouzećem**",
@@ -55,22 +55,19 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
-# Inicijalizacija stanja sesije (ključno za usidrenje UI interakcija)
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
 
-# Kontejner za skočni prozor zahvale
 placeholder_overlay = st.empty()
-
 col_left, col_right = st.columns([0.65, 0.35])
 
 with col_left:
     st.header(T["title_sub"])
     tabs = st.tabs([T["nav_shop"], T["nav_horeca"], T["nav_suppliers"], T["nav_haccp"], T["nav_info"]])
     
-    with tabs: # SHOP
+    with tabs[0]: # SHOP
         st.info(T["note_vaga"])
         c1, c2 = st.columns(2)
         for i, p in enumerate(PRODUCTS):
@@ -84,7 +81,6 @@ with col_left:
                 new_qty = st.number_input(f"Količina ({T['unit_'+p['unit']]})", 
                                          min_value=0.0, step=step, value=float(cur_qty), key=f"f_{p['id']}")
                 
-                # Logika vage za kilograme
                 if p["unit"] == "kg":
                     if cur_qty == 0.0 and new_qty == 0.5: 
                         new_qty = 1.0
@@ -95,7 +91,6 @@ with col_left:
                         st.session_state.cart.pop(p["id"], None)
                         st.rerun()
 
-                # Ažuriranje košarice i refresh UI-a
                 if new_qty != cur_qty:
                     if new_qty > 0: st.session_state.cart[p["id"]] = new_qty
                     else: st.session_state.cart.pop(p["id"], None)
@@ -118,7 +113,6 @@ with col_right:
     st.divider()
     st.metric(label=T["total"], value=f"{ukupan_iznos:.2f} €")
     
-    # Istaknuti okvir za plaćanje pouzećem
     st.markdown(f"""
         <div style="padding: 15px; border-radius: 10px; background-color: #f0f2f6; border-left: 5px solid #ff4b4b; color: #1f1f1f; font-weight: bold; font-size: 1.1em;">
             {T['note_cod']}
@@ -132,28 +126,20 @@ with col_right:
         cn1, cn2 = st.columns(2)
         with cn1: ime = st.text_input(T["form_fname"])
         with cn2: prezime = st.text_input(T["form_lname"])
-        
         tel = st.text_input(T["form_tel"])
-        
         drzava_izbor = st.selectbox(T["form_country"], options=EU_DRZAVE)
-        drzava_final = drzava_izbor
-        if drzava_izbor == "Druga država (upiši sam)":
-            drzava_final = st.text_input("Upišite naziv države*")
-            
         grad = st.text_input(T["form_city"])
         adresa = st.text_input(T["form_addr"])
         posalji = st.form_submit_button(T["btn_order"])
         
         if posalji:
-            # Validacija unosa
             if not st.session_state.cart:
                 st.error(T["err_cart"])
-            elif not (ime and prezime and tel and grad and adresa and drzava_final):
+            elif not (ime and prezime and tel and grad and adresa):
                 st.error(T["err_fields"])
             else:
-                # Slanje narudžbe i potvrda
                 stavke = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
-                poruka = f"Kupac: {ime} {prezime}\nTel: {tel}\nDržava: {drzava_final}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
+                poruka = f"Kupac: {ime} {prezime}\nTel: {tel}\nDržava: {drzava_izbor}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
                 
                 try:
                     server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
@@ -164,17 +150,9 @@ with col_right:
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     
-                    # Skočni prozor (4 sekunde)
-                    confirm_html = f"""
-                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 250px; background-color: #FF4B4B; color: white; border: 10px solid #FFFFFF; border-radius: 20px; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 28px; font-weight: bold; z-index: 9999; box-shadow: 0px 0px 50px rgba(0,0,0,0.5);">
-                        VAŠA NARUDŽBA JE PREDANA, HVALA!
-                    </div>
-                    """
-                    placeholder_overlay.markdown(confirm_html, unsafe_allow_html=True)
-                    
+                    st.success(T["success"])
                     st.session_state.cart = {}
-                    time.sleep(4)
-                    placeholder_overlay.empty()
+                    time.sleep(2)
                     st.rerun()
                 except Exception as e:
-                    st.error(f"Greška prilikom slanja e-maila: {e}")
+                    st.error(f"Greška pri slanju: {e}")
