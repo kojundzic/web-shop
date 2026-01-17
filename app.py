@@ -29,11 +29,11 @@ LANG_MAP = {
 * **Potpuna sljedivost (Traceability):** Svaki komad mesa ima dokumentiran put – točno znamo s koje farme dolazi i kada je prerađen.
 * **Moderni pogon:** Naš objekt u Sisku pod stalnim je veterinarskim nadzorom.""",
         "info_title": "Naša priča: Obitelj, Sisak i istinska kvaliteta",
-        "info_text": """Smješteni u srcu Siska, obitelj Kojundžić već naraštajima čuva vještinu tradicionalne pripreme mesa. Meso pripremamo polako, uz korištenje isključivo domaćih začina, bez aditiva.\n📍 **Glavno prodajno mjesto:** Tržnica Sisak.\n🕒 **Radno vrijeme:** Pon-Sub: 07:00 - 13:00""",
+        "info_text": """Smješteni u srcu Siska, obitelj Kojundžić već naraštajima čuva vještinu tradicionalne pripreme mesa. Naša filozofija je jednostavna: Poštuj prirodu i ona će ti uzvratiti najboljim okusima. Meso pripremamo polako, uz korištenje isključivo domaćih začina, bez aditiva.\n📍 **Glavno prodajno mjesto:** Tržnica Sisak.\n🕒 **Radno vrijeme:** Pon-Sub: 07:00 - 13:00""",
         "form_name": "Ime i Prezime*", "form_tel": "Broj telefona za dostavu*", "form_city": "Grad*", "form_zip": "Poštanski broj*", "form_addr": "Ulica i kućni broj*",
         "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA! HVALA VAM NA POVJERENJU.", "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "total": "Informativni iznos", "shipping_info": "PODACI ZA DOSTAVU",
         "p1": "Dimljeni hamburger", "p2": "Dimljeni buncek", "p3": "Dimljeni prsni vršci", "p4": "Slavonska kobasica", "p5": "Domaća salama", "p6": "Dimljene kosti",
-        "p7": "Dimljene nogice mix", "p8": "Panceta (Vrhunska)", "p9": "Dimljeni vrat (BK)", "p10": "Dimljeni kremenadl (BK)", "p11": "Dimljena pečenica", "p12": "Domaći čvarci",
+        "p7": "Dimljeni nogice mix", "p8": "Panceta (Vrhunska)", "p9": "Dimljeni vrat (BK)", "p10": "Dimljeni kremenadl (BK)", "p11": "Dimljena pečenica", "p12": "Domaći čvarci",
         "p13": "Svinjska mast (kanta)", "p14": "Krvavice (domaće)", "p15": "Pečenice za roštilj", "p16": "Suha rebra", "p17": "Dimljena glava", "p18": "Slanina sapunara"
     },
     "EN 🇬🇧": {
@@ -124,6 +124,7 @@ if menu == T["nav_shop"]:
                     elif p['id'] in st.session_state.cart: del st.session_state.cart[p['id']]
 
     with col2:
+        # --- 1. KOŠARICA I INFORMATIVNI IZNOS (UVIJEK VIDLJIVO) ---
         st.subheader(T["cart_title"])
         tot = 0; items_mail = []
         if not st.session_state.cart:
@@ -135,13 +136,18 @@ if menu == T["nav_shop"]:
                 p_name = T.get(pid, pid)
                 st.write(f"✅ {p_name}: {q} {T['unit_'+pd['unit']]} = {sub:.2f} €")
                 items_mail.append({'name': p_name, 'qty': q, 'unit': T['unit_'+pd['unit']]})
-            st.write(f"### {T['total']}: {tot:.2f} €")
+        
+        # Informativni iznos je sada izvan "if st.session_state.cart" bloka
+        st.write(f"### {T['total']}: {tot:.2f} €")
         
         st.divider()
+
+        # --- 2. STALNE NAPOMENE ---
         st.info(T["note_vaga"])
         st.info(T["note_delivery"])
         st.divider()
 
+        # --- 3. PODACI ZA DOSTAVU (FIKSNI OBRAZAC) ---
         with st.form("checkout_form"):
             st.write(f"### {T['shipping_info']}")
             name = st.text_input(T.get("form_name", "Ime i Prezime*"))
