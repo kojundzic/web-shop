@@ -3,13 +3,15 @@ import smtplib
 from email.mime.text import MIMEText
 import time
 
-# --- 1. FIKSNA USIDRENA KONFIGURACIJA (SISAK 2026) ---
+# --- APLIKACIJA ZA NARUČIVANJE: TRAJNO USIDRENI IZVORNI KOD (SISAK 2026) ---
+
+# Fiksna konfiguracija
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
 MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# Popis država EU (Usidreno)
+# Fiksni popis država EU za padajući izbornik
 EU_DRZAVE = [
     "Hrvatska", "Austrija", "Belgija", "Bugarska", "Cipar", "Češka", "Danska", "Estonija", 
     "Finska", "Francuska", "Grčka", "Irska", "Italija", "Latvija", "Litva", "Luksemburg", 
@@ -17,34 +19,21 @@ EU_DRZAVE = [
     "Slovačka", "Slovenija", "Španjolska", "Švedska", "Druga država (upiši sam)"
 ]
 
-# --- 2. USIDRENI TEKSTOVI I NAPOMENE ---
+# Fiksni tekstualni resursi (usidreni)
 T = {
-    "nav_shop": "🏬 TRGOVINA", 
-    "nav_horeca": "🏨 ZA UGOSTITELJE", 
-    "nav_suppliers": "🚜 DOBAVLJAČI", 
-    "nav_haccp": "🛡️ HACCP", 
-    "nav_info": "ℹ️ O NAMA",
+    "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
-    "cart_title": "🛒 Vaša košarica", 
-    "cart_empty": "Vaša košarica je trenutno prazna.",
+    "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna.",
     "note_vaga": "⚖️ **VAŽNO:** Istaknute cijene proizvoda su točno navedene, dok je ukupni iznos u košarici informativne naravi. Budući da se naši proizvodi pripremaju i režu ručno, stvarna težina može malo odstupati. Svaku narudžbu nastojimo pripremiti s maksimalnom pažnjom kako bi količina i cijena što točnije odgovarali Vašem odabiru, a točan iznos znat ćete pri preuzimanju.",
     "note_cod": "🚚 **Plaćanje pouzećem**",
-    "form_fname": "Ime*", 
-    "form_lname": "Prezime*", 
-    "form_tel": "Kontakt telefon*", 
-    "form_country": "Država*", 
-    "form_city": "Grad/Mjesto*", 
-    "form_addr": "Ulica i kućni broj*",
-    "btn_order": "🚀 POŠALJI NARUDŽBU", 
-    "success": "NARUDŽBA JE USPJEŠNO PREDANA!", 
+    "form_fname": "Ime*", "form_lname": "Prezime*", "form_tel": "Kontakt telefon*", "form_country": "Država*", "form_city": "Grad/Mjesto*", "form_addr": "Ulica i kućni broj*",
+    "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", 
     "err_fields": "🛑 Narudžba se ne može poslati dok ne ispunite sva obavezna polja!",
     "err_cart": "🛑 Vaša košarica je prazna! Dodajte artikle prije slanja.",
-    "unit_kg": "kg", 
-    "unit_pc": "kom", 
-    "total": "Ukupni informativni iznos"
+    "unit_kg": "kg", "unit_pc": "kom", "total": "Ukupni informativni iznos"
 }
 
-# --- 3. FIKSNI POPIS PROIZVODA (USIDRENO) ---
+# Fiksni popis proizvoda (usidren)
 PRODUCTS = [
     {"id": "p1", "price": 9.50, "unit": "kg", "name": "Dimljeni hamburger"},
     {"id": "p2", "price": 7.80, "unit": "pc", "name": "Dimljeni buncek"},
@@ -66,13 +55,13 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
-# --- 4. INICIJALIZACIJA STANJA (USIDRENO) ---
+# Inicijalizacija stanja sesije (ključno za usidrenje UI interakcija)
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
 
-# Kontejner za skočni prozor zahvale (CSS Overlay)
+# Kontejner za skočni prozor zahvale
 placeholder_overlay = st.empty()
 
 col_left, col_right = st.columns([0.65, 0.35])
@@ -81,7 +70,7 @@ with col_left:
     st.header(T["title_sub"])
     tabs = st.tabs([T["nav_shop"], T["nav_horeca"], T["nav_suppliers"], T["nav_haccp"], T["nav_info"]])
     
-    with tabs[0]: # SHOP
+    with tabs: # SHOP
         st.info(T["note_vaga"])
         c1, c2 = st.columns(2)
         for i, p in enumerate(PRODUCTS):
@@ -89,15 +78,13 @@ with col_left:
                 st.subheader(p["name"])
                 st.write(f"**{p['price']:.2f} €** / {T['unit_'+p['unit']]}")
                 
-                # Trenutno stanje
                 cur_qty = st.session_state.cart.get(p["id"], 0.0)
                 step = 0.5 if p["unit"] == "kg" else 1.0
                 
-                # Widget unosa
                 new_qty = st.number_input(f"Količina ({T['unit_'+p['unit']]})", 
                                          min_value=0.0, step=step, value=float(cur_qty), key=f"f_{p['id']}")
                 
-                # USIDRENA LOGIKA VAGE (0.0 -> 1.0 kg)
+                # Logika vage za kilograme
                 if p["unit"] == "kg":
                     if cur_qty == 0.0 and new_qty == 0.5: 
                         new_qty = 1.0
@@ -108,7 +95,7 @@ with col_left:
                         st.session_state.cart.pop(p["id"], None)
                         st.rerun()
 
-                # Provjera promjene za ostale vrijednosti
+                # Ažuriranje košarice i refresh UI-a
                 if new_qty != cur_qty:
                     if new_qty > 0: st.session_state.cart[p["id"]] = new_qty
                     else: st.session_state.cart.pop(p["id"], None)
@@ -131,7 +118,7 @@ with col_right:
     st.divider()
     st.metric(label=T["total"], value=f"{ukupan_iznos:.2f} €")
     
-    # USIDRENI OKVIR ZA PLAĆANJE POUZEĆEM
+    # Istaknuti okvir za plaćanje pouzećem
     st.markdown(f"""
         <div style="padding: 15px; border-radius: 10px; background-color: #f0f2f6; border-left: 5px solid #ff4b4b; color: #1f1f1f; font-weight: bold; font-size: 1.1em;">
             {T['note_cod']}
@@ -142,14 +129,12 @@ with col_right:
     
     with st.form("forma_dostave", clear_on_submit=False):
         st.markdown("#### 📍 PODACI ZA DOSTAVU")
-        # Razdvojena polja Ime i Prezime
         cn1, cn2 = st.columns(2)
         with cn1: ime = st.text_input(T["form_fname"])
         with cn2: prezime = st.text_input(T["form_lname"])
         
         tel = st.text_input(T["form_tel"])
         
-        # Padajući izbornik EU država
         drzava_izbor = st.selectbox(T["form_country"], options=EU_DRZAVE)
         drzava_final = drzava_izbor
         if drzava_izbor == "Druga država (upiši sam)":
@@ -160,13 +145,13 @@ with col_right:
         posalji = st.form_submit_button(T["btn_order"])
         
         if posalji:
-            # Validacija košarice i polja
+            # Validacija unosa
             if not st.session_state.cart:
                 st.error(T["err_cart"])
             elif not (ime and prezime and tel and grad and adresa and drzava_final):
                 st.error(T["err_fields"])
             else:
-                # Slanje narudžbe
+                # Slanje narudžbe i potvrda
                 stavke = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
                 poruka = f"Kupac: {ime} {prezime}\nTel: {tel}\nDržava: {drzava_final}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
                 
@@ -179,7 +164,7 @@ with col_right:
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     
-                    # SPECIJALNI SKOČNI PROZOR (4 sekunde)
+                    # Skočni prozor (4 sekunde)
                     confirm_html = f"""
                     <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 250px; background-color: #FF4B4B; color: white; border: 10px solid #FFFFFF; border-radius: 20px; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 28px; font-weight: bold; z-index: 9999; box-shadow: 0px 0px 50px rgba(0,0,0,0.5);">
                         VAŠA NARUDŽBA JE PREDANA, HVALA!
@@ -187,10 +172,9 @@ with col_right:
                     """
                     placeholder_overlay.markdown(confirm_html, unsafe_allow_html=True)
                     
-                    # Resetiranje košarice
                     st.session_state.cart = {}
                     time.sleep(4)
                     placeholder_overlay.empty()
                     st.rerun()
                 except Exception as e:
-                    st.error(f"Greška prilikom slanja: {e}")
+                    st.error(f"Greška prilikom slanja e-maila: {e}")
