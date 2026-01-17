@@ -10,7 +10,7 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. MASTER PRIJEVODI (POTPUNI - 2026.) ---
+# --- 2. MASTER PRIJEVODI (KORIGIRANI I PROŠIRENI - 2026.) ---
 LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🏬 TRGOVINA", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
@@ -19,7 +19,7 @@ LANG_MAP = {
         "note_vaga": """⚖️ **Napomena o vaganju:** Cijene proizvoda su fiksne, no točan iznos Vašeg računa znat ćemo tek nakon preciznog vaganja neposredno prije pakiranja. Konačan iznos znati ćete kada Vam paket stigne i kada ga budete plaćali pouzećem. Trudimo se da se pridržavamo naručenih količina i da informativni iznos i konačni iznos imaju što manju razliku.""",
         "note_delivery": """🚚 **Dostava i plaćanje:** Naručene artikle šaljemo putem provjerene dostavne službe na kućnu adresu ili u najbliži paketomat, ovisno o Vašem izboru pri preusmjeravanju. Plaćanje se vrši **isključivo pouzećem** (gotovinom dostavljaču), čime jamčimo sigurnost transakcije.""",
         "suppliers_title": "Naši partneri: Snaga lokalnog uzgoja",
-        "suppliers_text": """Kvaliteta mesa u Mesnici Kojundžić izravan je rezultat suradnje s malim obiteljskim gospodarstvima iz našeg neposrednog okruženja. Vjerujemo u kratke lance opskrbe i podršku lokalnoj zajednici.
+        "suppliers_text": """Kvaliteta mesa u Mesnici Kojundžić izravan je rezultat suradnje s malim obiteljskim gospodarstmima iz našeg neposrednog okruženja. Vjerujemo u kratke lance opskrbe i podršku lokalnoj zajednici.
 \n**Područja s kojih nabavljamo sirovinu u 2026. godini:**
 * **Banovina i Posavina:** Naši glavni izvori vrhunske svinjetine i junetine. Životinje se uzgajaju na tradicionalan način, uz prirodnu ishranu, što rezultira savršenom teksturom mesa.
 * **Lonjsko polje:** Posebno smo ponosni na suradnju s uzgajivačima čija stoka boravi na slobodnoj ispaši u netaknutoj prirodi parka prirode.
@@ -82,7 +82,7 @@ LANG_MAP = {
         "suppliers_text": """Die Fleischqualität in der Metzgerei Kojundžić ist das direkte Ergebnis der Zusammenarbeit mit kleinen Familienbetrieben aus unserer unmittelbaren Umgebung. Wir glauben an kurze Lieferketten und die Unterstützung der lokalen Gemeinschaft.
 \n**Gebiete, aus denen wir im Jahr 2026 Rohstoffe beziehen:**
 * **Banovina und Posavina:** Unsere Hauptquellen für erstklassiges Schweine- und Rindfleisch. Die Tiere werden auf traditionelle Weise mit natürlicher Ernährung aufgezogen, was zu einer perfekten Fleischtextur führt.
-* **Lonjsko Polje:** Wir are besonders stolz auf die Zusammenarbeit mit Züchtern, deren Vieh auf freien Weiden in der unberührten Natur des Naturparks lebt.
+* **Lonjsko Polje:** Wir sind besonders stolz auf die Zusammenarbeit mit Züchtern, deren Vieh auf freien Weiden in der unberührten Natur des Naturparks lebt.
 * **Umgebung von Sisak:** Die tägliche Zusammenarbeit mit lokalen Landwirten stellt sicher, dass das Fleisch in kürzester Zeit vom Feld in unsere Metzgerei gelangt, was maximale Frische garantiert.""",
         "horeca_title": "HoReCa-Partnerschaft: Fundament erstklassiger Gastronomie",
         "horeca_text": """Als familiengeführtes Unternehmen respektieren wir zutiefst die Bemühungen unserer Kollegen im Gastrosektor. Wir verstehen, dass jedes erstklassige Gericht in einem Restaurant oder Hotel mit kompromissloser Rohstoffqualität beginnt.
@@ -104,7 +104,7 @@ LANG_MAP = {
     }
 }
 
-# --- PROIZVODI ---
+# --- 3. PROIZVODI ---
 PROIZVODI = [
     {"id": "p1", "cijena": 9.50, "jed": "kg"}, {"id": "p2", "cijena": 5.50, "jed": "kg"},
     {"id": "p3", "cijena": 5.50, "jed": "kg"}, {"id": "p4", "cijena": 13.00, "jed": "kg"},
@@ -117,13 +117,29 @@ PROIZVODI = [
     {"id": "p17", "cijena": 2.50, "jed": "kg"}, {"id": "p18", "cijena": 8.00, "jed": "kg"}
 ]
 
-# --- SESSION STATE ---
-if 'cart' not in st.session_state:
-    st.session_state.cart = {}
+# --- 4. FUNKCIJA ZA EMAIL ---
+def posalji_email(sadrzaj, kupac_info):
+    poruka_tekst = f"NOVA NARUDŽBA (2026):\n\nKUPAC:\n{kupac_info}\n\nSTAVKE:\n{sadrzaj}"
+    msg = MIMEText(poruka_tekst)
+    msg['Subject'] = f"Narudžba - {kupac_info.split(',')[0]}"
+    msg['From'] = MOJ_EMAIL
+    msg['To'] = MOJ_EMAIL
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(MOJ_EMAIL, MOJA_LOZINKA)
+            server.send_message(msg)
+        return True
+    except:
+        return False
 
-# --- UI START ---
+# --- 5. STREAMLIT UI ---
 st.set_page_config(page_title="Mesnica Kojundžić", layout="wide")
-lang = st.sidebar.selectbox("Jezik", list(LANG_MAP.keys()))
+
+if 'kosarica' not in st.session_state:
+    st.session_state.kosarica = {}
+
+lang = st.sidebar.selectbox("Jezik / Language", list(LANG_MAP.keys()))
 T = LANG_MAP[lang]
 
 tabs = st.tabs([T["nav_shop"], T["nav_suppliers"], T["nav_horeca"], T["nav_haccp"], T["nav_info"]])
@@ -139,7 +155,7 @@ with tabs[0]: # SHOP
         target_col = col1 if i % 2 == 0 else col2
         with target_col:
             if p["jed"] == "kg":
-                # Logika: 0 -> 1.0 -> +0.5
+                # LOGIKA: 0 -> 1.0 -> +0.5
                 val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0.0, step=0.5, format="%.1f", key=p["id"])
                 if 0.0 < val < 1.0:
                     val = 1.0
@@ -149,51 +165,55 @@ with tabs[0]: # SHOP
                 val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0, step=1, key=p["id"])
             
             if val > 0:
-                st.session_state.cart[p["id"]] = {"qty": val, "price": p["cijena"], "unit": p["jed"]}
-            elif p["id"] in st.session_state.cart:
-                del st.session_state.cart[p["id"]]
+                st.session_state.kosarica[p["id"]] = {"qty": val, "price": p["cijena"], "unit": p["jed"]}
+            elif p["id"] in st.session_state.kosarica:
+                del st.session_state.kosarica[p["id"]]
 
-    if st.session_state.cart:
+    if st.session_state.kosarica:
         st.divider()
         st.header(T["cart_title"])
-        total = 0
-        summary = ""
-        for pid, d in st.session_state.cart.items():
+        ukupno = 0
+        prikaz_narudzbe = ""
+        for pid, d in st.session_state.kosarica.items():
             sub = d['qty'] * d['price']
-            total += sub
-            line = f"{T[pid]}: {d['qty']} {T['unit_'+d['unit']]} x {d['price']} = {sub:.2f} {T['curr']}"
-            st.write(line)
-            summary += line + "\n"
+            ukupno += sub
+            linija = f"{T[pid]}: {d['qty']} {T['unit_'+d['unit']]} x {d['price']} = {sub:.2f} {T['curr']}"
+            st.write(linija)
+            prikaz_narudzbe += linija + "\n"
         
-        st.subheader(f"{T['total']}: {total:.2f} {T['curr']}")
+        st.subheader(f"{T['total']}: {ukupno:.2f} {T['curr']}")
         
         with st.form("order_form"):
             st.write(T["shipping_info"])
-            name = st.text_input(T["form_name"])
-            tel = st.text_input(T["form_tel"])
-            city = st.text_input(T["form_city"])
-            zipc = st.text_input(T["form_zip"])
-            addr = st.text_input(T["form_addr"])
+            f_ime = st.text_input(T["form_name"])
+            f_tel = st.text_input(T["form_tel"])
+            f_grad = st.text_input(T["form_city"])
+            f_zip = st.text_input(T["form_zip"])
+            f_adr = st.text_input(T["form_addr"])
             
             if st.form_submit_button(T["btn_order"]):
-                if name and tel and addr:
-                    st.success(T["success"])
-                    st.session_state.cart = {}
-                    time.sleep(2)
-                    st.rerun()
+                if f_ime and f_tel and f_adr:
+                    info = f"{f_ime}, Tel: {f_tel}, Grad: {f_grad}, ZIP: {f_zip}, Adresa: {f_adr}"
+                    if posalji_email(prikaz_narudzbe, info):
+                        st.success(T["success"])
+                        st.session_state.kosarica = {}
+                        time.sleep(3)
+                        st.rerun()
+                else:
+                    st.error("Molimo ispunite obavezna polja!")
 
-with tabs[1]: # SUPPLIERS
+with tabs[1]:
     st.header(T["suppliers_title"])
     st.write(T["suppliers_text"])
 
-with tabs[2]: # HORECA
+with tabs[2]:
     st.header(T["horeca_title"])
     st.write(T["horeca_text"])
 
-with tabs[3]: # HACCP
+with tabs[3]:
     st.header(T["haccp_title"])
     st.write(T["haccp_text"])
 
-with tabs[4]: # INFO
+with tabs[4]:
     st.header(T["info_title"])
     st.write(T["info_text"])
