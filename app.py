@@ -146,6 +146,7 @@ tabs = st.tabs([T["nav_shop"], T["nav_suppliers"], T["nav_horeca"], T["nav_haccp
 
 with tabs[0]: # SHOP
     st.title(T["title_sub"])
+    
     st.divider()
     col_proizvodi, col_kosarica = st.columns([1.5, 1])
     
@@ -155,7 +156,6 @@ with tabs[0]: # SHOP
             target_col = p_col1 if i % 2 == 0 else p_col2
             with target_col:
                 if p["jed"] == "kg":
-                    # Logika: 0 -> 1.0 -> +0.5
                     val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0.0, step=0.5, format="%.1f", key=p["id"])
                     if 0.0 < val < 1.0:
                         val = 1.0
@@ -182,6 +182,8 @@ with tabs[0]: # SHOP
                 prikaz_narudzbe += linija + "\n"
             
             st.subheader(f"{T['total']}: {ukupno:.2f} {T['curr']}")
+            
+            # NAPOMENE PREBAČENE OVDJE (Ispod košarice, iznad forme)
             st.info(T["note_vaga"])
             st.warning(T["note_delivery"])
             
@@ -206,18 +208,18 @@ with tabs[0]: # SHOP
         else:
             st.write(T["cart_empty"])
 
-with tabs[1]: # SUPPLIERS
+with tabs[1]:
     st.header(T["suppliers_title"])
     st.write(T["suppliers_text"])
 
-with tabs[2]: # HORECA
+with tabs[2]:
     st.header(T["horeca_title"])
     st.write(T["horeca_text"])
 
-with tabs[3]: # HACCP
+with tabs[3]:
     st.header(T["haccp_title"])
     st.write(T["haccp_text"])
 
-with tabs[4]: # INFO
+with tabs[4]:
     st.header(T["info_title"])
     st.write(T["info_text"])
