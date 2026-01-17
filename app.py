@@ -3,7 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 import time
 
-# --- 1. USIDRENA KONFIGURACIJA ---
+# --- 1. FIKSNA USIDRENA KONFIGURACIJA (SISAK 2026) ---
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
 MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
 SMTP_SERVER = "smtp.gmail.com"
@@ -16,6 +16,7 @@ EU_DRZAVE = [
     "Slovačka", "Slovenija", "Španjolska", "Švedska", "Druga država (upiši sam)"
 ]
 
+# --- 2. USIDRENI TEKSTOVI ---
 T = {
     "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
@@ -50,12 +51,14 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
-# --- 2. INICIJALIZACIJA ---
+# --- 3. INICIJALIZACIJA ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
-msg_placeholder = st.empty()
+
+# Kontejner za skočni prozor
+placeholder_overlay = st.empty()
 
 col_left, col_right = st.columns([0.65, 0.35])
 
@@ -70,21 +73,17 @@ with col_left:
             with (c1 if i % 2 == 0 else c2):
                 st.subheader(p["name"])
                 st.write(f"**{p['price']:.2f} €** / {T['unit_'+p['unit']]}")
-                
-                # KLJUČNA LOGIKA: Session state se koristi kao primarni izvor istine
                 current_qty = st.session_state.cart.get(p["id"], 0.0)
                 step = 0.5 if p["unit"] == "kg" else 1.0
                 
-                # Widget koji reagira na promjenu
                 val = st.number_input(f"Količina ({T['unit_'+p['unit']]})", 
                                      min_value=0.0, step=step, value=float(current_qty), key=f"f_{p['id']}")
                 
-                # Logika vage za KG
+                # Logika vage
                 if p["unit"] == "kg":
                     if current_qty == 0.0 and val == 0.5: val = 1.0
                     elif current_qty == 1.0 and val == 0.5: val = 0.0
 
-                # Ako je došlo do promjene, upiši u košaricu i ODMAH osvježi da se cijena izračuna
                 if val != current_qty:
                     if val > 0: st.session_state.cart[p["id"]] = val
                     else: st.session_state.cart.pop(p["id"], None)
@@ -93,8 +92,6 @@ with col_left:
 with col_right:
     st.markdown(f"### {T['cart_title']}")
     ukupan_iznos = 0.0
-    
-    # IZRAČUN CIJENA - OVO SADA RADI U REALNOM VREMENU
     if not st.session_state.cart:
         st.info(T["cart_empty"])
     else:
@@ -110,9 +107,9 @@ with col_right:
     
     with st.form("forma_dostave"):
         st.markdown(f"#### {T['shipping_info']}")
-        c_n1, c_n2 = st.columns(2)
-        with c_n1: ime = st.text_input(T["form_fname"])
-        with c_n2: prezime = st.text_input(T["form_lname"])
+        cn1, cn2 = st.columns(2)
+        with cn1: ime = st.text_input(T["form_fname"])
+        with cn2: prezime = st.text_input(T["form_lname"])
         
         tel = st.text_input(T["form_tel"])
         drzava_izbor = st.selectbox(T["form_country"], options=EU_DRZAVE)
@@ -126,16 +123,15 @@ with col_right:
         
         if posalji:
             if not st.session_state.cart:
-                msg_placeholder.error(T["err_cart"])
-                time.sleep(5); msg_placeholder.empty()
+                st.error(T["err_cart"])
             elif not (ime and prezime and tel and grad and adresa and drzava_final):
-                msg_placeholder.error(T["err_fields"])
-                time.sleep(5); msg_placeholder.empty()
+                st.error(T["err_fields"])
             else:
                 stavke = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
                 poruka = f"Kupac: {ime} {prezime}\nTel: {tel}\nDržava: {drzava_final}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
                 
                 try:
+                    # Slanje E-maila
                     server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
                     server.starttls(); server.login(MOJ_EMAIL, MOJA_LOZINKA)
                     msg = MIMEText(poruka)
@@ -143,10 +139,38 @@ with col_right:
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     
-                    msg_placeholder.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!")
-                    st.success(T["success"])
+                    # --- SPECIJALNI SKOČNI PROZOR (20x10 cm stil) ---
+                    # Koristimo CSS za fiksno pozicioniranje na sredini
+                    confirm_html = f"""
+                    <div style="
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 500px;
+                        height: 250px;
+                        background-color: #FF4B4B;
+                        color: white;
+                        border: 10px solid #FFFFFF;
+                        border-radius: 20px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        text-align: center;
+                        font-size: 28px;
+                        font-weight: bold;
+                        z-index: 9999;
+                        box-shadow: 0px 0px 50px rgba(0,0,0,0.5);
+                    ">
+                        VAŠA NARUDŽBA JE PREDANA, HVALA!
+                    </div>
+                    """
+                    placeholder_overlay.markdown(confirm_html, unsafe_allow_html=True)
+                    
                     st.session_state.cart = {}
-                    time.sleep(5); msg_placeholder.empty()
-                    time.sleep(5); st.rerun()
+                    time.sleep(4) # Trajanje 4 sekunde
+                    placeholder_overlay.empty()
+                    st.rerun()
+
                 except Exception as e:
                     st.error(f"E-mail greška: {e}")
