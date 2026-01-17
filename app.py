@@ -12,7 +12,7 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- VIŠEJEZIČNI RJEČNIK S PROŠIRENIM STRUČNIM TEKSTOVIMA ---
+# --- VIŠEJEZIČNI RJEČNIK S NOVIM TEKSTOM ZA DOBAVLJAČE ---
 LANG = {
     "HR 🇭🇷": {
         "title": "KOJUNDŽIĆ mesnica i prerada mesa | SISAK 2026.",
@@ -27,10 +27,10 @@ LANG = {
         "err_fields": "🛑 NARUDŽBA ODBIJENA: Molimo ispunite sva polja označena zvjezdicom (*).",
         "err_cart": "🛑 NARUDŽBA ODBIJENA: Vaša košarica ne smije biti prazna!",
         "success_msg": "Vaša narudžba je zaprimljena, hvala!",
-        "about_txt": "### Obiteljska tradicija i vizija\nObitelj Kojundžić generacijama predstavlja sinonim za vrhunsku mesnu struku u Sisačko-moslavačkoj županiji. Naš pristup temelji se na spoju povijesnih receptura sisačkog kraja i suvremenih tehnoloških procesa. Svaki komad mesa ručno obrađuju naši majstori mesari, osiguravajući da tekstura i kvaliteta zadovoljavaju najstrože gurmanske standarde. Naša pušnica koristi isključivo suho drvo bukve, čime postižemo onaj prepoznatljivi, blagi miris dima koji je postao naš zaštitni znak.",
-        "horeca_txt": "### Partnerstvo za vrhunsku gastronomiju\nRazumijemo dinamiku modernog ugostiteljstva i potrebu za besprijekornom sirovinom. Za naše HORECA partnere (hotele, restorane i catering službe) nudimo sustav 'preciznog rezanja' i kalibracije proizvoda prema specifičnim normativima vaših jelovnika. Jamčimo kontinuitet kvalitete kroz cijelu godinu te stabilne lance opskrbe. Naša logistička mreža osigurava dostavu u kontroliranim temperaturnim uvjetima, poštujući vaše rokove i specifične zahtjeve skladištenja.",
-        "suppliers_txt": "### Kratki lanci opskrbe i lokalni uzgoj\nSnaga naših proizvoda leži u porijeklu sirovine. Surađujemo isključivo s provjerenim OPG-ovima s područja Banovine i Posavine, promičući održivi razvoj lokalne zajednice. Naša goveda i svinje uzgajani su na tradicionalan način, uz prirodnu prehranu bez GMO dodataka. Ovakav pristup rezultira mesom bogatim intramuskularnom masnoćom, što je ključno za sočnost i bogatstvo okusa koje naši kupci cijene.",
-        "haccp_txt": "### Beskompromisna sigurnost hrane\nU pogonima Kojundžić sigurnost potrošača je imperativ. Implementirani HACCP sustav (Hazard Analysis and Critical Control Points) nije samo zakonska obveza, već temelj našeg poslovanja. Provodimo rigorozne kontrole u svakoj fazi – od ulaza sirovine, preko termičke obrade i dimljenja, do finalnog pakiranja. Redovito uzorkovanje i suradnja s ovlaštenim laboratorijima osiguravaju da je svaki proizvod koji stigne do vašeg stola mikrobiološki čist i zdravstveno ispravan.",
+        "about_txt": "### Obiteljska tradicija i vizija\nObitelj Kojundžić generacijama predstavlja sinonim za vrhunsku mesnu struku u Sisačko-moslavačkoj županiji. Naš pristup temelji se na spoju povijesnih receptura sisačkog kraja i suvremenih tehnoloških procesa.",
+        "horeca_txt": "### Partnerstvo za vrhunsku gastronomiju\nZa naše HORECA partnere nudimo sustav 'preciznog rezanja' i kalibracije proizvoda prema specifičnim normativima vaših jelovnika. Jamčimo kontinuitet kvalitete kroz cijelu godinu.",
+        "suppliers_txt": "### Od pašnjaka Lonjskog polja do vašeg stola\nBez posrednika i bez kompromisa. Ponosni smo na suradnju s provjerenim obiteljskim gospodarstvima Banovine i Posavine koja njeguju tradicionalan uzgoj na otvorenom. Prirodna prehrana bez dodataka osigurava meso najviše kategorije, prepoznatljivo po svojoj teksturi i bogatstvu okusa. Birajući naše proizvode, birate kvalitetu s potpisom domaće tradicije.",
+        "haccp_txt": "### Beskompromisna sigurnost hrane\nU pogonima Kojundžić sigurnost potrošača je imperativ. Implementirani HACCP sustav osigurava da je svaki proizvod mikrobiološki čist i zdravstveno ispravan.",
         "products": ["Dimljeni hamburger", "Dimljeni buncek", "Dimljeni prsni vršci", "Slavonska kobasica", "Domaća salama", "Dimljene kosti", "Dimljene nogice mix", "Panceta", "Dimljeni vrat (BK)", "Dimljeni kare (BK)", "Dimljena pečenica", "Domaći čvarci", "Svinjska mast (kanta)", "Krvavice", "Pečenice za roštilj", "Suha rebra", "Dimljena glava", "Slanina sapunara"]
     },
     "EN 🇬🇧": {
@@ -38,18 +38,18 @@ LANG = {
         "nav_shop": "🏬 SHOP", "nav_horeca": "🏨 HORECA", "nav_suppliers": "🚜 SUPPLIERS", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ABOUT US", "nav_lang": "🌍 LANGUAGE",
         "cart_title": "🛒 Your Cart", "cart_empty": "Your cart is currently empty.",
         "total": "Total informative amount", "unit_kg": "kg", "unit_pc": "pcs",
-        "note_vaga": "⚖️ **IMPORTANT:** Prices are exact, but weight may vary slightly due to manual cutting.",
+        "note_vaga": "⚖️ **IMPORTANT:** Prices are exact, but weight may vary slightly.",
         "note_cod": "🚚 Cash on Delivery",
         "form_title": "📍 DELIVERY INFORMATION",
         "fname": "First Name*", "lname": "Last Name*", "tel": "Phone*", "city": "City*", "addr": "Street & Number*",
         "btn_order": "🚀 PLACE ORDER",
-        "err_fields": "🛑 ORDER REJECTED: Please fill in all required fields (*).",
+        "err_fields": "🛑 ORDER REJECTED: Please fill in required fields (*).",
         "err_cart": "🛑 ORDER REJECTED: Your cart is empty!",
         "success_msg": "Your order has been received, thank you!",
-        "about_txt": "### Family Tradition and Vision\nThe Kojundžić family has been synonymous with top-tier butchery in the Sisak region for generations. Our approach combines historical local recipes with modern technological processes. Each piece of meat is handcrafted by our master butchers, ensuring that texture and quality meet the highest gourmet standards. We use exclusively dry beech wood for smoking, achieving the distinctive, mild smoky aroma that is our signature.",
-        "horeca_txt": "### Partnership for Superior Gastronomy\nWe understand the dynamics of modern hospitality and the need for flawless raw materials. For our HORECA partners, we offer 'precision cutting' and product calibration according to the specific standards of your menus. We guarantee quality consistency throughout the year and stable supply chains. Our logistics network ensures delivery under controlled temperature conditions.",
-        "suppliers_txt": "### Short Supply Chains and Local Breeding\nThe strength of our products lies in the origin of the raw materials. We cooperate exclusively with verified local family farms from the Banovina and Posavina regions. Our livestock is raised in a traditional way, with a natural diet free of GMO additives. This results in meat rich in intramuscular fat, which is key to the juiciness our customers value.",
-        "haccp_txt": "### Uncompromising Food Safety\nAt Kojundžić facilities, consumer safety is an imperative. Our implemented HACCP system is the foundation of our business. We conduct rigorous checks at every stage – from raw material entry to final packaging. Regular sampling and cooperation with certified laboratories ensure that every product reaching your table is microbiologically clean and healthy.",
+        "about_txt": "### Family Tradition and Vision\nThe Kojundžić family is a synonym for top-tier butchery. We combine local recipes with modern technology.",
+        "horeca_txt": "### Gastronomy Partnership\nWe offer precision cutting and calibration for HORECA partners, ensuring year-round quality.",
+        "suppliers_txt": "### From Lonjsko Polje Pastures to Your Table\nNo middlemen and no compromises. We are proud of our cooperation with verified family farms from Banovina and Posavina that nurture traditional outdoor breeding. Natural diet without additives ensures highest category meat, recognizable by its texture and richness of flavor. By choosing our products, you choose quality with the signature of domestic tradition.",
+        "haccp_txt": "### Food Safety\nConsumer safety is imperative. Our HACCP system ensures microbiologically clean and healthy products.",
         "products": ["Smoked Hamburger", "Smoked Pork Hock", "Smoked Brisket Tips", "Slavonian Sausage", "Homemade Salami", "Smoked Bones", "Smoked Trotters Mix", "Pancetta", "Smoked Neck (Boneless)", "Smoked Loin (Boneless)", "Smoked Pork Tenderloin", "Homemade Pork Rinds", "Lard (Bucket)", "Blood Sausages", "Grilling Sausages", "Dry Ribs", "Smoked Pig Head", "Soap Bacon"]
     },
     "DE 🇩🇪": {
@@ -62,13 +62,13 @@ LANG = {
         "form_title": "📍 LIEFERINFORMATIONEN",
         "fname": "Vorname*", "lname": "Nachname*", "tel": "Telefon*", "city": "Stadt*", "addr": "Straße & Hausnummer*",
         "btn_order": "🚀 BESTELLUNG ABSCHICKEN",
-        "err_fields": "🛑 ABGELEHNT: Bitte alle Pflichtfelder (*) ausfüllen.",
+        "err_fields": "🛑 ABGELEHNT: Pflichtfelder (*) ausfüllen.",
         "err_cart": "🛑 ABGELEHNT: Ihr Warenkorb ist leer!",
         "success_msg": "Ihre Bestellung ist eingegangen, danke!",
-        "about_txt": "### Familientradition und Vision\nDie Familie Kojundžić steht seit Generationen für erstklassiges Fleischerhandwerk in der Region Sisak. Unser Ansatz verbindet historische lokale Rezepte mit modernen technologischen Prozessen. Jedes Stück Fleisch wird von unseren Metzgermeistern handgefertigt, um sicherzustellen, dass Textur und Qualität den höchsten Gourmet-Standards entsprechen.",
-        "horeca_txt": "### Partnerschaft für erstklassige Gastronomie\nWir verstehen die Dynamik der modernen Hotellerie und den Bedarf an makellosen Rohstoffen. Für unsere HORECA-Partner bieten wir 'Präzisionsschnitt' und Produktkalibrierung nach den spezifischen Standards Ihrer Menüs an. Wir garantieren Qualitätskonstanz über das ganze Jahr und stabile Lieferketten.",
-        "suppliers_txt": "### Kurze Lieferketten und lokale Zucht\nDie Stärke unserer Produkte liegt in der Herkunft der Rohstoffe. Wir arbeiten ausschließlich mit geprüften lokalen Familienbetrieben zusammen. Unser Vieh wird auf traditionelle Weise mit natürlicher Ernährung ohne GVO-Zusätze aufgezogen. Dies führt zu Fleisch, das reich an intramuskulärem Fett ist – der Schlüssel zur Saftigkeit.",
-        "haccp_txt": "### Kompromisslose Lebensmittelsicherheit\nIn den Kojundžić-Betrieben hat die Verbrauchersicherheit oberste Priorität. Unser implementiertes HACCP-System ist das Fundament unseres Geschäfts. Wir führen in jeder Phase strenge Kontrollen durch. Regelmäßige Probenahmen und die Zusammenarbeit mit zertifizierten Labors stellen sicher, dass jedes Produkt mikrobiologisch einwandfrei ist.",
+        "about_txt": "### Tradition und Vision\nFamilie Kojundžić steht für erstklassiges Fleischerhandwerk. Wir verbinden Tradition mit moderner Technik.",
+        "horeca_txt": "### Gastronomie-Partnerschaft\nPräzisionsschnitt und Kalibrierung für HORECA-Partner mit garantierter Frische.",
+        "suppliers_txt": "### Von den Weiden von Lonjsko Polje auf Ihren Tisch\nOhne Zwischenhändler und ohne Kompromisse. Wir sind stolz auf die Zusammenarbeit mit geprüften Familienbetrieben aus Banovina und Posavina, die traditionelle Freilandhaltung pflegen. Natürliche Ernährung ohne Zusatzstoffe garantiert Fleisch der höchsten Kategorie, erkennbar an seiner Textur und seinem Geschmacksreichtum. Mit der Wahl unserer Produkte entscheiden Sie sich für Qualität mit der Handschrift heimischer Tradition.",
+        "haccp_txt": "### Lebensmittelsicherheit\nVerbrauchersicherheit ist oberstes Gebot. Unser HACCP-System garantiert mikrobiologisch einwandfreie Produkte.",
         "products": ["Geräucherter Hamburger", "Geräuchertes Eisbein", "Geräucherte Brustspitzen", "Slawonische Wurst", "Hausgemachte Salami", "Geräucherte Knochen", "Geräucherte Pfoten Mix", "Pancetta", "Geräucherter Nacken", "Geräuchertes Karree", "Geräuchertes Lendenstück", "Hausgemachte Grammeln", "Schweineschmalz", "Blutwurst", "Grillwürste", "Trockenrippen", "Geräucherter Schweinekopf", "Speck"]
     }
 }
@@ -86,7 +86,6 @@ col_left, col_right = st.columns([0.65, 0.35])
 
 with col_left:
     st.header(T["title"])
-    # Navigacija
     t1, t2, t3, t4, t5, t6 = st.tabs([T["nav_shop"], T["nav_horeca"], T["nav_suppliers"], T["nav_haccp"], T["nav_info"], T["nav_lang"]])
     
     with t1: # TRGOVINA
@@ -111,7 +110,7 @@ with col_left:
     with t4: st.markdown(T["haccp_txt"])
     with t5: st.markdown(T["about_txt"])
     with t6: # JEZIK
-        st.write("### Choose your language / Odaberite jezik / Sprache wählen")
+        st.write("### Choose your language / Odaberite jezik")
         new_lang = st.radio("Selection:", list(LANG.keys()), index=list(LANG.keys()).index(st.session_state.sel_lang_key), label_visibility="collapsed")
         if new_lang != st.session_state.sel_lang_key:
             st.session_state.sel_lang_key = new_lang
