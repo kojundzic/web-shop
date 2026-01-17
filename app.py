@@ -10,7 +10,7 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. MASTER PRIJEVODI (KORIGIRANI I PROŠIRENI - 2026.) ---
+# --- 2. MASTER PRIJEVODI (POTPUNI - 2026.) ---
 LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🏬 TRGOVINA", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
@@ -82,7 +82,7 @@ LANG_MAP = {
         "suppliers_text": """Die Fleischqualität in der Metzgerei Kojundžić ist das direkte Ergebnis der Zusammenarbeit mit kleinen Familienbetrieben aus unserer unmittelbaren Umgebung. Wir glauben an kurze Lieferketten und die Unterstützung der lokalen Gemeinschaft.
 \n**Gebiete, aus denen wir im Jahr 2026 Rohstoffe beziehen:**
 * **Banovina und Posavina:** Unsere Hauptquellen für erstklassiges Schweine- und Rindfleisch. Die Tiere werden auf traditionelle Weise mit natürlicher Ernährung aufgezogen, was zu einer perfekten Fleischtextur führt.
-* **Lonjsko Polje:** Wir sind besonders stolz auf die Zusammenarbeit mit Züchtern, deren Vieh auf freien Weiden in der unberührten Natur des Naturparks lebt.
+* **Lonjsko Polje:** Wir are besonders stolz auf die Zusammenarbeit mit Züchtern, deren Vieh auf freien Weiden in der unberührten Natur des Naturparks lebt.
 * **Umgebung von Sisak:** Die tägliche Zusammenarbeit mit lokalen Landwirten stellt sicher, dass das Fleisch in kürzester Zeit vom Feld in unsere Metzgerei gelangt, was maximale Frische garantiert.""",
         "horeca_title": "HoReCa-Partnerschaft: Fundament erstklassiger Gastronomie",
         "horeca_text": """Als familiengeführtes Unternehmen respektieren wir zutiefst die Bemühungen unserer Kollegen im Gastrosektor. Wir verstehen, dass jedes erstklassige Gericht in einem Restaurant oder Hotel mit kompromissloser Rohstoffqualität beginnt.
@@ -104,32 +104,31 @@ LANG_MAP = {
     }
 }
 
-# --- PROIZVODI (CIJENE I JEDINICE) ---
+# --- PROIZVODI ---
 PROIZVODI = [
-    {"id": "p1", "price": 9.50, "unit": "kg"}, {"id": "p2", "price": 5.50, "unit": "kg"},
-    {"id": "p3", "price": 5.50, "unit": "kg"}, {"id": "p4", "price": 13.00, "unit": "kg"},
-    {"id": "p5", "price": 16.00, "unit": "kg"}, {"id": "p6", "price": 2.50, "unit": "kg"},
-    {"id": "p7", "price": 2.50, "unit": "kg"}, {"id": "p8", "price": 16.00, "unit": "kg"},
-    {"id": "p9", "price": 11.00, "unit": "kg"}, {"id": "p10", "price": 10.00, "unit": "kg"},
-    {"id": "p11", "price": 12.00, "unit": "kg"}, {"id": "p12", "price": 18.00, "unit": "kg"},
-    {"id": "p13", "price": 18.00, "unit": "pc"}, {"id": "p14", "price": 8.00, "unit": "kg"},
-    {"id": "p15", "price": 8.00, "unit": "kg"}, {"id": "p16", "price": 9.00, "unit": "kg"},
-    {"id": "p17", "price": 2.50, "unit": "kg"}, {"id": "p18", "price": 8.00, "unit": "kg"}
+    {"id": "p1", "cijena": 9.50, "jed": "kg"}, {"id": "p2", "cijena": 5.50, "jed": "kg"},
+    {"id": "p3", "cijena": 5.50, "jed": "kg"}, {"id": "p4", "cijena": 13.00, "jed": "kg"},
+    {"id": "p5", "cijena": 16.00, "jed": "kg"}, {"id": "p6", "cijena": 2.50, "jed": "kg"},
+    {"id": "p7", "cijena": 2.50, "jed": "kg"}, {"id": "p8", "cijena": 16.00, "jed": "kg"},
+    {"id": "p9", "cijena": 11.00, "jed": "kg"}, {"id": "p10", "cijena": 10.00, "jed": "kg"},
+    {"id": "p11", "cijena": 12.00, "jed": "kg"}, {"id": "p12", "cijena": 18.00, "jed": "kg"},
+    {"id": "p13", "cijena": 18.00, "jed": "pc"}, {"id": "p14", "cijena": 8.00, "jed": "kg"},
+    {"id": "p15", "cijena": 8.00, "jed": "kg"}, {"id": "p16", "cijena": 9.00, "jed": "kg"},
+    {"id": "p17", "cijena": 2.50, "jed": "kg"}, {"id": "p18", "cijena": 8.00, "jed": "kg"}
 ]
 
 # --- SESSION STATE ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
-# --- UI POSTAVKE ---
+# --- UI START ---
 st.set_page_config(page_title="Mesnica Kojundžić", layout="wide")
-lang_choice = st.sidebar.selectbox("Jezik", list(LANG_MAP.keys()))
-T = LANG_MAP[lang_choice]
+lang = st.sidebar.selectbox("Jezik", list(LANG_MAP.keys()))
+T = LANG_MAP[lang]
 
-# --- NAVIGACIJA ---
-tab_shop, tab_supp, tab_horeca, tab_haccp, tab_info = st.tabs([T["nav_shop"], T["nav_suppliers"], T["nav_horeca"], T["nav_haccp"], T["nav_info"]])
+tabs = st.tabs([T["nav_shop"], T["nav_suppliers"], T["nav_horeca"], T["nav_haccp"], T["nav_info"]])
 
-with tab_shop:
+with tabs[0]: # SHOP
     st.title(T["title_sub"])
     st.info(T["note_vaga"])
     st.warning(T["note_delivery"])
@@ -139,18 +138,18 @@ with tab_shop:
     for i, p in enumerate(PROIZVODI):
         target_col = col1 if i % 2 == 0 else col2
         with target_col:
-            # --- LOGIKA KOLIČINE: 0 -> 1.0 -> +0.5 ---
-            if p["unit"] == "kg":
-                current_val = st.number_input(f"{T[p['id']]} ({p['price']:.2f} {T['curr']})", min_value=0.0, step=0.5, format="%.1f", key=p["id"])
-                if 0.0 < current_val < 1.0:
+            if p["jed"] == "kg":
+                # Logika: 0 -> 1.0 -> +0.5
+                val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0.0, step=0.5, format="%.1f", key=p["id"])
+                if 0.0 < val < 1.0:
+                    val = 1.0
                     st.session_state[p["id"]] = 1.0
                     st.rerun()
-                val = current_val
             else:
-                val = st.number_input(f"{T[p['id']]} ({p['price']:.2f} {T['curr']})", min_value=0, step=1, key=p["id"])
+                val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0, step=1, key=p["id"])
             
             if val > 0:
-                st.session_state.cart[p["id"]] = {"qty": val, "price": p["price"], "unit": p["unit"]}
+                st.session_state.cart[p["id"]] = {"qty": val, "price": p["cijena"], "unit": p["jed"]}
             elif p["id"] in st.session_state.cart:
                 del st.session_state.cart[p["id"]]
 
@@ -158,13 +157,13 @@ with tab_shop:
         st.divider()
         st.header(T["cart_title"])
         total = 0
-        order_msg = ""
-        for pid, data in st.session_state.cart.items():
-            sub = data['qty'] * data['price']
+        summary = ""
+        for pid, d in st.session_state.cart.items():
+            sub = d['qty'] * d['price']
             total += sub
-            line = f"{T[pid]}: {data['qty']} {T['unit_'+data['unit']]} x {data['price']} = {sub:.2f} {T['curr']}"
+            line = f"{T[pid]}: {d['qty']} {T['unit_'+d['unit']]} x {d['price']} = {sub:.2f} {T['curr']}"
             st.write(line)
-            order_msg += line + "\n"
+            summary += line + "\n"
         
         st.subheader(f"{T['total']}: {total:.2f} {T['curr']}")
         
@@ -173,30 +172,28 @@ with tab_shop:
             name = st.text_input(T["form_name"])
             tel = st.text_input(T["form_tel"])
             city = st.text_input(T["form_city"])
-            zip_code = st.text_input(T["form_zip"])
+            zipc = st.text_input(T["form_zip"])
             addr = st.text_input(T["form_addr"])
             
             if st.form_submit_button(T["btn_order"]):
                 if name and tel and addr:
-                    full_info = f"Kupac: {name}\nTel: {tel}\nAdresa: {addr}, {zip_code} {city}"
-                    # Email funkcija (MimeText/SMTP) ovdje...
                     st.success(T["success"])
                     st.session_state.cart = {}
                     time.sleep(2)
                     st.rerun()
 
-with tab_supp:
+with tabs[1]: # SUPPLIERS
     st.header(T["suppliers_title"])
     st.write(T["suppliers_text"])
 
-with tab_horeca:
+with tabs[2]: # HORECA
     st.header(T["horeca_title"])
     st.write(T["horeca_text"])
 
-with tab_haccp:
+with tabs[3]: # HACCP
     st.header(T["haccp_title"])
     st.write(T["haccp_text"])
 
-with tab_info:
+with tabs[4]: # INFO
     st.header(T["info_title"])
     st.write(T["info_text"])
