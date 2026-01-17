@@ -14,7 +14,7 @@ LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🛒 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
         "title_sub": "MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.", 
-        "cart_title": "🧺", "cart_empty": "Košarica je trenutno prazna. Odaberite domaće delicije iz ponude!",
+        "cart_title": "🛒", "cart_empty": "prazna",
         "note_vaga": """⚖️ **Napomena o vaganju:** Cijene proizvoda su fiksne, no točan iznos Vašeg računa znat ćemo nakon vaganja. 
         Konačan iznos znati ćete kada Vam paket stigne i kada ga budete plaćali pouzećem. 
         Mi ćemo se truditi da se pridržavamo naručenih količina i da informativni iznos i konačni iznos imaju što manju razliku.""",
@@ -22,7 +22,7 @@ LANG_MAP = {
         Alternativno, možete ih preusmjeriti u najbliži paketomat. Plaćanja se vrše **isključivo pouzećem** (prilikom preuzimanja paketa).""",
         "total": "Informativni iznos", "form_name": "Ime i Prezime*", "form_tel": "Broj telefona za dostavu*",
         "form_city": "Grad*", "form_zip": "Poštanski broj*", "form_addr": "Ulica i kućni broj*",
-        "form_country": "Država*", "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "Zaprimljeno! Kontaktirat ćemo Vas uskoro.",
+        "form_country": "Država*", "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "Zaprimljeno!",
         "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "tax": "PDV uključen", "shipping_info": "PODACI ZA DOSTAVU",
         "horeca_title": "Partnerstvo temeljeno na povjerenju i tradiciji",
         "horeca_text": """Kao obiteljski posao, duboko cijenimo rad naših kolega u ugostiteljstvu. Razumijemo da vrhunski tanjur u restoranu ili hotelu počinje s beskompromisnom sirovinom. 
@@ -45,31 +45,27 @@ LANG_MAP = {
     "EN 🇬🇧": {
         "nav_shop": "🛒 SHOP", "nav_horeca": "🏨 FOR CATERERS", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ABOUT US",
         "title_sub": "BUTCHER SHOP & MEAT PROCESSING KOJUNDŽIĆ | SISAK 2026.", 
-        "cart_title": "🧺", "cart_empty": "Your basket is currently empty.",
-        "note_vaga": """⚖️ **Note on weighing:** Prices are fixed, but the exact total will be known after weighing. Final amount upon delivery.""",
-        "note_delivery": """🚚 **Delivery:** Items delivered to your address. Payments are **exclusively cash on delivery**.""",
-        "total": "Informative amount", "form_name": "Full Name*", "form_tel": "Phone*", "form_city": "City*", "form_zip": "Zip*", "form_addr": "Street*", "form_country": "Country*", 
+        "cart_title": "🛒", "cart_empty": "empty",
+        "note_vaga": "⚖️ Note on weighing: Prices are fixed, but the exact total will be known after weighing.",
+        "note_delivery": "🚚 Delivery: Items delivered to your address. Payments exclusively cash on delivery.",
+        "total": "Informative total", "form_name": "Full Name*", "form_tel": "Phone*", "form_city": "City*", "form_zip": "Zip*", "form_addr": "Street*", "form_country": "Country*", 
         "btn_order": "🚀 SEND ORDER", "success": "Received!", "unit_kg": "kg", "unit_pc": "pcs", "curr": "€", "tax": "VAT incl.", "shipping_info": "SHIPPING DETAILS",
         "horeca_title": "Partnership based on trust and tradition", "haccp_title": "Food Safety", "info_title": "Our Story",
-        "horeca_text": "As a family business, we deeply value our catering colleagues. Authentic smoke and safe delivery in 2026.",
-        "haccp_text": "In 2026, we apply the strictest standards and full traceability.",
-        "info_text": "Located in Sisak, we preserve traditional skills and use local livestock.",
+        "horeca_text": "Authentic smoke and safe delivery in 2026.", "haccp_text": "Highest standards and full traceability.", "info_text": "Traditional skills and local livestock.",
         "p1": "Smoked bacon", "p2": "Smoked pork hock", "p3": "Smoked brisket tips", "p4": "Slavonian sausage", "p5": "Homemade salami", "p6": "Smoked bones",
-        "p7": "Pork feet mix", "p8": "Pancetta (Premium)", "p9": "Smoked neck", "p10": "Smoked loin", "p11": "Smoked tenderloin", "p12": "Pork rinds",
+        "p7": "Pork feet mix", "p8": "Pancetta", "p9": "Smoked neck", "p10": "Smoked loin", "p11": "Smoked tenderloin", "p12": "Pork rinds",
         "p13": "Pork lard", "p14": "Blood sausage", "p15": "Grill sausages", "p16": "Dry ribs", "p17": "Smoked head", "p18": "Soap bacon"
     },
     "DE 🇩🇪": {
         "nav_shop": "🛒 SHOP", "nav_horeca": "🏨 GASTRONOMIE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ÜBER UNS",
         "title_sub": "METZGEREI KOJUNDŽIĆ | SISAK 2026.", 
-        "cart_title": "🧺", "cart_empty": "Ihr Korb ist leer.",
-        "note_vaga": """⚖️ **Wiegehinweis:** Die Preise sind fest, der Endbetrag wird nach dem Wiegen ermittelt.""",
-        "note_delivery": """🚚 **Lieferung:** Zustellung an Ihre Adresse. Zahlungen sind **ausschließlich per Nachnahme** möglich.""",
+        "cart_title": "🛒", "cart_empty": "leer",
+        "note_vaga": "⚖️ Wiegehinweis: Endbetrag wird nach dem Wiegen ermittelt.",
+        "note_delivery": "🚚 Lieferung: Nachnahme möglich.",
         "total": "Informativer Betrag", "form_name": "Name*", "form_tel": "Telefon*", "form_city": "Stadt*", "form_zip": "PLZ*", "form_addr": "Straße*", "form_country": "Land*", 
-        "btn_order": "🚀 BESTELLUNG SENDEN", "success": "Danke!", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "tax": "Inkl. MwSt.", "shipping_info": "LIEFERDATEN",
+        "btn_order": "🚀 BESTELLUNG SENDEN", "success": "Eingegangen!", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "tax": "Inkl. MwSt.", "shipping_info": "LIEFERDATEN",
         "horeca_title": "Vertrauen und Tradition", "haccp_title": "Lebensmittelsicherheit", "info_title": "Unsere Geschichte",
-        "horeca_text": "Authentisches Raucharoma und Großhandelsunterstützung im Jahr 2026.",
-        "haccp_text": "Vollständige Rückverfolgbarkeit und höchste Hygienestandards.",
-        "info_text": "Seit Generationen in Sisak, verarbeiten wir Fleisch regionaler Bauern.",
+        "horeca_text": "Traditionelles Räuchern im Jahr 2026.", "haccp_text": "Vollständige Rückverfolgbarkeit.", "info_text": "Regionale Qualität aus Sisak.",
         "p1": "Speck", "p2": "Stelze", "p3": "Brustspitzen", "p4": "Wurst", "p5": "Salami", "p6": "Knochen",
         "p7": "Füße mix", "p8": "Pancetta", "p9": "Nacken", "p10": "Karree", "p11": "Lende", "p12": "Grieben",
         "p13": "Schmalz", "p14": "Blutwurst", "p15": "Grillwürste", "p16": "Rippchen", "p17": "Kopf", "p18": "Seifenspeck"
@@ -133,10 +129,12 @@ if menu == T["nav_shop"]:
                     elif p['id'] in st.session_state.cart: del st.session_state.cart[p['id']]
 
     with col2:
-        st.markdown(f"## {T['cart_title']}")
+        # Zaglavlje košarice s ikonom 🛒 i statusom "prazna"
+        status_text = f" ({T['cart_empty']})" if not st.session_state.cart else ""
+        st.markdown(f"## {T['cart_title']}{status_text}")
+        
         total_price = 0; items_for_mail = []
-        if not st.session_state.cart: st.info(T["cart_empty"])
-        else:
+        if st.session_state.cart:
             for pid, q in st.session_state.cart.items():
                 p_data = next(x for x in PRODUCTS if x['id'] == pid)
                 sub = q * p_data['price']; total_price += sub
@@ -155,13 +153,14 @@ if menu == T["nav_shop"]:
             n = st.text_input(T["form_name"]); t = st.text_input(T["form_tel"]); a = st.text_input(T["form_addr"])
             c = st.text_input(T["form_city"]); z = st.text_input(T["form_zip"]); co = st.text_input(T["form_country"])
             if st.form_submit_button(T["btn_order"]):
-                if not st.session_state.cart: st.error("Empty!")
+                if not st.session_state.cart: st.error("Košarica je prazna!")
                 elif n and t and a:
                     if send_email({'name':n,'tel':t,'addr':a,'city':c,'total':total_price}, items_for_mail, lang_choice):
-                        st.success(T["success"]); st.session_state.cart = {}
+                        st.success(T["success"])
+                        st.session_state.cart = {}
                         for p in PRODUCTS: 
                             if f"state_{p['id']}" in st.session_state: st.session_state[f"state_{p['id']}"] = 0.0
-                        time.sleep(2); st.rerun()
+                        time.sleep(7); st.rerun()
                 else: st.warning("!!!")
 
 elif menu == T["nav_horeca"]:
