@@ -2,56 +2,29 @@ import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 
-# --- 1. KONFIGURACIJA ---
+# --- 1. KONFIGURACIJA (FIKSNA) ---
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
 MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. MASTER PRIJEVODI (SA SVIM NAPOMENAMA) ---
+# --- 2. MASTER PRIJEVODI (SA STALNIM NAPOMENAMA I LOKACIJOM) ---
 LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
         "title_sub": "MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
         "cart_title": "🛒 Vaša košarica", "cart_empty": "je prazna",
-        # --- PUNE NAPOMENE ---
         "note_vaga": """⚖️ **Napomena o vaganju:** Cijene proizvoda su fiksne, no točan iznos Vašeg računa znat ćemo nakon vaganja. Konačan iznos znati ćete kada Vam paket stigne i kada ga budete plaćali pouzećem. Mi ćemo se truditi da se pridržavamo naručenih količina i da informativni iznos i konačni iznos imaju što manju razliku.""",
         "note_delivery": """🚚 **Dostava i plaćanje:** Naručene artikle dostaviti će Vam dostavna služba na kućnu adresu. Alternativno, možete ih preusmjeriti u najbliži paketomat. Plaćanja se vrše **isključivo pouzećem** (prilikom preuzimanja paketa).""",
-        # ---------------------
         "horeca_title": "Partnerstvo temeljeno na povjerenju i tradiciji",
-        "horeca_text": """Kao obiteljski posao, duboko cijenimo rad naših kolega u ugostiteljstvu. Razumijemo da vrhunski tanjur u restoranu ili hotelu počinje s beskompromisnom sirovinom. 
-
-**Što nudimo našim HoReCa partnerima u 2026. godini:**
-* **Autentični miris dima:** Posjedujemo vlastite komore za tradicionalno dimljenje na hladnom dimu bukve i graba.
-* **Sigurna dostava:** Raspolažemo vlastitim vozilima s kontroliranim temperaturnim režimom (hladnjače).
-* **Veleprodajna podrška:** Redovnim partnerima osiguravamo prioritetnu obradu narudžbi i prilagođene rezove mesa.""",
+        "horeca_text": "Kao obiteljski posao, duboko cijenimo rad naših kolega u ugostiteljstvu...",
         "haccp_title": "Sigurnost hrane: Od polja do Vašeg stola",
-        "haccp_text": """U mesnici Kojundžić, higijena je temelj našeg obraza. U 2026. godini primjenjujemo najstrože standarde kontrole kvalitete.
-* **Potpuna sljedivost:** Svaki komad mesa u našoj ponudi ima svoj 'rodni list' – točno znamo s koje farme dolazi.
-* **Strogi HACCP protokoli:** Naš moderni pogon u Sisku pod stalnim je nadzorom, uz redovite laboratorijske kontrole i sanitarne standarde koji nadilaze zakonske okvire.""",
+        "haccp_text": "U mesnici Kojundžić, higijena je temelj našeg obraza...",
         "info_title": "Naša priča: Obitelj, Sisak i istinska kvaliteta",
-        "info_text": """Smješteni u srcu Siska, obitelj Kojundžić već naraštajima čuva vještinu tradicionalne pripreme mesa. Naša filozofija je jednostavna: Poštuj prirodu i ona će ti uzvratiti najboljim okusima. 
-Meso pripremamo polako, uz korištenje isključivo prirodnih začina, bez nepotrebnih aditiva i kemijskih dodataka. Mi ne proizvodimo samo hranu – mi čuvamo baštinu sisačkog kraja.""",
+        "info_text": """Smješteni u srcu Siska, obitelj Kojundžić već naraštajima čuva vještinu tradicionalne pripreme mesa. 
+\n📍 **Glavno prodajno mjesto:** Tržnica Caprag, Sisak. \nRadno vrijeme: Pon-Sub: 07:00 - 13:00""",
         "form_name": "Ime i Prezime*", "form_tel": "Broj telefona za dostavu*", "form_city": "Grad*", "form_zip": "Poštanski broj*", "form_addr": "Ulica i kućni broj*",
-        "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "Zaprimljeno! Javit ćemo Vam se uskoro.", "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "total": "Informativni iznos", "shipping_info": "PODACI ZA DOSTAVU",
-        "p1": "Dimljeni hamburger", "p2": "Dimljeni buncek", "p3": "Dimljeni prsni vršci", "p4": "Slavonska kobasica", "p5": "Domaća salama", "p6": "Dimljene kosti",
-        "p7": "Dimljene nogice mix", "p8": "Panceta (Vrhunska)", "p9": "Dimljeni vrat (BK)", "p10": "Dimljeni kremenadl (BK)", "p11": "Dimljena pečenica", "p12": "Domaći čvarci",
-        "p13": "Svinjska mast (kanta)", "p14": "Krvavice (domaće)", "p15": "Pečenice za roštilj", "p16": "Suha rebra", "p17": "Dimljena glava", "p18": "Slanina sapunara"
-    },
-    "EN 🇬🇧": {
-        "nav_shop": "🏬 SHOP", "nav_horeca": "🏨 FOR HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ABOUT US",
-        "title_sub": "KOJUNDŽIĆ BUTCHERY | SISAK 2026.",
-        "note_vaga": "⚖️ **Weight Note:** The exact total will be known after precise weighing before shipping.",
-        "note_delivery": "🚚 **Delivery:** Cash on delivery only. You can redirect the package to a parcel locker.",
-        "cart_title": "🛒 Your Cart", "cart_empty": "is empty", "btn_order": "🚀 SEND ORDER", "unit_kg": "kg", "unit_pc": "pcs", "total": "Total (Est.)", "success": "Order Sent!",
-        "shipping_info": "SHIPPING DETAILS", "form_name": "Full Name*", "form_tel": "Phone*", "form_city": "City*", "form_zip": "ZIP*", "form_addr": "Address*"
-    },
-    "DE 🇩🇪": {
-        "nav_shop": "🏬 SHOP", "nav_horeca": "🏨 FÜR HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ÜBER UNS",
-        "title_sub": "METZGEREI KOJUNDŽIĆ | SISAK 2026.",
-        "note_vaga": "⚖️ **Hinweis:** Der genaue Betrag wird nach dem Verwiegen ermittelt.",
-        "note_delivery": "🚚 **Lieferung:** Bezahlung ausschließlich per Nachnahme.",
-        "cart_title": "🛒 Warenkorb", "cart_empty": "ist leer", "btn_order": "🚀 ABSCHICKEN", "unit_kg": "kg", "unit_pc": "Stk", "total": "Summe", "success": "Erfolgreich!"
+        "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "Zaprimljeno! Javit ćemo Vam se uskoro.", "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "total": "Informativni iznos", "shipping_info": "PODACI ZA DOSTAVU"
     }
 }
 
@@ -70,7 +43,7 @@ PRODUCTS = [
 
 def send_email(info, cart_items):
     summary = "\n".join([f"- {i['name']}: {i['qty']} {i['unit']}" for i in cart_items])
-    body = f"NOVA NARUDŽBA 2026\n\nKupac: {info['name']}\nTel: {info['tel']}\nAdresa: {info['addr']}, {info['zip']} {info['city']}\n\nSTAVKE:\n{summary}\n\nUKUPNO: {info['total']:.2f} €"
+    body = f"NARUDŽBA 2026\n\nKupac: {info['name']}\nTel: {info['tel']}\nAdresa: {info['addr']}, {info['zip']} {info['city']}\n\nSTAVKE:\n{summary}\n\nUKUPNO: {info['total']:.2f} €"
     msg = MIMEText(body); msg['Subject'] = f"Narudžba: {info['name']}"; msg['From'] = MOJ_EMAIL; msg['To'] = MOJ_EMAIL
     try:
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as s:
@@ -79,7 +52,7 @@ def send_email(info, cart_items):
     except: return False
 
 # --- 4. UI ---
-st.set_page_config(page_title="Mesnica Kojundžić 2026", layout="wide")
+st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
 if 'cart' not in st.session_state: st.session_state.cart = {}
 
 with st.sidebar:
@@ -96,7 +69,8 @@ if menu == T["nav_shop"]:
         for idx, p in enumerate(PRODUCTS):
             with p_cols[idx % 2]:
                 with st.container(border=True):
-                    st.write(f"**{T.get(p['id'], p['id'])}**")
+                    name_p = T.get(f"p{idx+1}", f"Proizvod {idx+1}")
+                    st.write(f"**{name_p}**")
                     st.write(f"{p['price']:.2f} € / {T['unit_'+p['unit']]}")
                     step = 0.5 if p['unit'] == "kg" else 1.0
                     q = st.number_input(f"{T['unit_'+p['unit']]}", min_value=0.0, step=step, key=f"z_{p['id']}")
@@ -111,19 +85,20 @@ if menu == T["nav_shop"]:
         for pid, q in st.session_state.cart.items():
             pd = next(x for x in PRODUCTS if x['id'] == pid)
             sub = q * pd['price']; tot += sub
-            st.write(f"✅ {T.get(pid, pid)}: {q} {T['unit_'+pd['unit']]} = {sub:.2f} €")
-            items_mail.append({'name': T.get(pid, pid), 'qty': q, 'unit': T['unit_'+pd['unit']]})
+            p_name = T.get(pid, pid)
+            st.write(f"✅ {p_name}: {q} {T['unit_'+pd['unit']]} = {sub:.2f} €")
+            items_mail.append({'name': p_name, 'qty': q, 'unit': T['unit_'+pd['unit']]})
         
         if st.session_state.cart:
             st.divider()
             st.write(f"### {T['total']}: {tot:.2f} €")
             
-            # --- PRIKAZ NAPOMENA ISPOD KOŠARICE ---
+            # STALNO VIDLJIVE NAPOMENE ISPOD KOŠARICE
             st.info(T["note_vaga"])
             st.warning(T["note_delivery"])
             
             with st.form("checkout"):
-                st.write(f"**{T.get('shipping_info', 'DOSTAVA')}**")
+                st.write(f"### {T['shipping_info']}")
                 name = st.text_input(T["form_name"])
                 tel = st.text_input(T["form_tel"])
                 addr = st.text_input(T["form_addr"])
@@ -139,7 +114,16 @@ if menu == T["nav_shop"]:
                             st.rerun()
                     else: st.error("Ispunite obavezna polja (*)")
 
-elif menu in [T["nav_horeca"], T["nav_haccp"], T["nav_info"]]:
-    key_prefix = "horeca" if menu == T["nav_horeca"] else "haccp" if menu == T["nav_haccp"] else "info"
+elif menu == T["nav_info"]:
+    st.title(T["info_title"])
+    st.markdown(T["info_text"])
+    # KARTA I LOKACIJA
+    st.subheader("📍 Naša lokacija (Tržnica Caprag)")
+    import pandas as pd
+    map_data = pd.DataFrame({'lat': [45.4622], 'lon': [16.3755]}) # Koordinate Tržnice Caprag
+    st.map(map_data)
+
+else:
+    key_prefix = "horeca" if menu == T["nav_horeca"] else "haccp"
     st.title(T[f"{key_prefix}_title"])
     st.markdown(T[f"{key_prefix}_text"])
