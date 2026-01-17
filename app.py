@@ -24,7 +24,7 @@ LANG_MAP = {
 * **Tradicija dima:** Posjedujemo vlastite komore za tradicionalno dimljenje na hladnom dimu bukve i graba, bez tekućih pripravaka.
 * **Logistička izvrsnost:** Raspolažemo vlastitom flotom vozila s kontroliranim temperaturnim režimom (hladnjače).
 * **Veleprodajni standard:** Redovnim partnerima nudimo prioritetnu obradu, personalizirane rezove mesa i stabilnost cijena tijekom cijele godine.""",
-        "suppliers_title": "🚜 Naši dobavljači",
+        "suppliers_title": "Naši dobavljači",
         "suppliers_text": "Svo meso koje prerađujemo dolazi isključivo s domaćih pašnjaka i farmi s područja **Banovine, Posavine i Lonjskog polja**.",
         "haccp_title": "Sigurnost hrane i HACCP: Beskompromisni standardi",
         "haccp_text": """U Mesnici Kojundžić, higijena nije samo zakonska obveza, već temelj našeg obiteljskog ugleda. U 2026. godini primjenjujemo najnovije tehnologije nadzora kvalitete.
@@ -46,7 +46,7 @@ LANG_MAP = {
         "note_delivery": """🚚 **Shipping & Payment:** We ship via a verified service to your home or a parcel locker. Payment is **exclusively Cash on Delivery (COD)**.""",
         "horeca_title": "HoReCa Partnership",
         "horeca_text": "We offer beech-smoked products, refrigerated delivery, and wholesale support for the hospitality sector in 2026.",
-        "suppliers_title": "🚜 Our Suppliers",
+        "suppliers_title": "Our Suppliers",
         "suppliers_text": "All the meat we process comes exclusively from domestic pastures and farms in the regions of **Banovina, Posavina, and Lonjsko Polje**.",
         "haccp_title": "Food Safety",
         "haccp_text": "Strict HACCP protocols and full traceability at our Sisak facility.",
@@ -66,7 +66,7 @@ LANG_MAP = {
         "note_delivery": """🚚 **Lieferung & Zahlung:** Zustellung an Ihre Adresse oder Packstation. Die Zahlung erfolgt **ausschließlich per Nachnahme**.""",
         "horeca_title": "HoReCa-Partnerschaft",
         "horeca_text": "Traditionelle Räucherwaren und Kühltransporte für die Gastronomie im Jahr 2026.",
-        "suppliers_title": "🚜 Unsere Lieferanten",
+        "suppliers_title": "Unsere Lieferanten",
         "suppliers_text": "Sämtliches Fleisch, das wir verarbeiten, stammt ausschließlich von heimischen Weiden und Bauernhöfen aus den Regionen **Banovina, Posavina und Lonjsko Polje**.",
         "haccp_title": "Sicherheit",
         "haccp_text": "Strenge HACCP-Protokolle und Rückverfolgbarkeit in Sisak.",
@@ -93,4 +93,111 @@ PRODUCTS = [
     {"id": "p17", "price": 5.00, "unit": "pc"}, {"id": "p18", "price": 9.00, "unit": "kg"}
 ]
 
-# (Ovdje se nastavlja vaš originalni kod za UI, session_state i slanje maila bez izmjena)
+# --- 4. SESSION STATE ---
+if 'cart' not in st.session_state:
+    st.session_state.cart = {}
+
+# --- 5. UI POSTAVKE ---
+st.set_page_config(page_title="Mesnica Kojundžić 2026", layout="wide")
+lang_choice = st.sidebar.radio("Jezik / Language", list(LANG_MAP.keys()))
+T = LANG_MAP[lang_choice]
+
+# Navigacija kroz tabove
+tab_shop, tab_horeca, tab_suppliers, tab_haccp, tab_info = st.tabs([
+    T["nav_shop"], T["nav_horeca"], T["nav_suppliers"], T["nav_haccp"], T["nav_info"]
+])
+
+# --- TRGOVINA ---
+with tab_shop:
+    st.header(T["title_sub"])
+    st.info(T["note_vaga"])
+    st.warning(T["note_delivery"])
+    
+    # Prikaz artikala u 3 stupca
+    cols = st.columns(3)
+    for idx, p in enumerate(PRODUCTS):
+        with cols[idx % 3]:
+            st.subheader(T[p["id"]])
+            st.write(f"Cijena: {p['price']:.2f} {T['curr']} / {T['unit_'+p['unit']]}")
+            
+            step_val = 0.5 if p["unit"] == "kg" else 1.0
+            qty = st.number_input(f"{T['unit_'+p['unit']]}", min_value=0.0, step=step_val, key=f"q_{p['id']}")
+            
+            if qty > 0:
+                st.session_state.cart[p["id"]] = qty
+            elif p["id"] in st.session_state.cart:
+                del st.session_state.cart[p["id"]]
+
+    # Košarica i narudžba
+    st.markdown("---")
+    st.title(T["cart_title"])
+    
+    if not st.session_state.cart:
+        st.write(T["cart_empty"])
+    else:
+        cart_summary = []
+        total_val = 0.0
+        for pid, q in st.session_state.cart.items():
+            p_data = next(item for item in PRODUCTS if item["id"] == pid)
+            subtotal = q * p_data["price"]
+            total_val += subtotal
+            cart_summary.append({"Artikl": T[pid], "Količina": q, "Iznos": f"{subtotal:.2f} €"})
+        
+        st.table(pd.DataFrame(cart_summary))
+        st.metric(T["total"], f"{total_val:.2f} €")
+        
+        with st.form("form_order"):
+            st.subheader(T["shipping_info"])
+            f_name = st.text_input(T["form_name"])
+            f_tel = st.text_input(T["form_tel"])
+            f_city = st.text_input(T["form_city"])
+            f_zip = st.text_input(T["form_zip"])
+            f_addr = st.text_input(T["form_addr"])
+            
+            if st.form_submit_button(T["btn_order"]):
+                if f_name and f_tel and f_addr:
+                    # Slanje Emaila
+                    email_content = f"NARUDŽBA 2026\n\nKupac: {f_name}\nTel: {f_tel}\nAdresa: {f_addr}, {f_zip} {f_city}\n\nArtikli:\n"
+                    for pid, q in st.session_state.cart.items():
+                        email_content += f"- {T[pid]}: {q}\n"
+                    email_content += f"\nUkupni informativni iznos: {total_val:.2f} EUR"
+
+                    try:
+                        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+                        server.starttls()
+                        server.login(MOJ_EMAIL, MOJA_LOZINKA)
+                        msg = MIMEText(email_content)
+                        msg['Subject'] = f"Nova narudžba - {f_name}"
+                        msg['From'] = MOJ_EMAIL
+                        msg['To'] = MOJ_EMAIL
+                        server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
+                        server.quit()
+                        
+                        st.success(T["success"])
+                        st.session_state.cart = {}
+                        time.sleep(3)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Greška: {e}")
+                else:
+                    st.error("Ispunite obavezna polja!")
+
+# --- HORECA ---
+with tab_horeca:
+    st.header(T["horeca_title"])
+    st.write(T["horeca_text"])
+
+# --- DOBAVLJAČI ---
+with tab_suppliers:
+    st.header(T["suppliers_title"])
+    st.write(T["suppliers_text"])
+
+# --- HACCP ---
+with tab_haccp:
+    st.header(T["haccp_title"])
+    st.write(T["haccp_text"])
+
+# --- INFO ---
+with tab_info:
+    st.header(T["info_title"])
+    st.write(T["info_text"])
