@@ -10,7 +10,7 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. MASTER PRIJEVODI (KORIGIRANI I PROŠIRENI - 2026.) ---
+# --- 2. MASTER PRIJEVODI (KORIGIRANI S TITLE_SUB KLJUČEM - 2026.) ---
 LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🏬 TRGOVINA", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
@@ -29,7 +29,7 @@ LANG_MAP = {
 \n**Naša ponuda za partnere u 2026. godini:**
 * **Tradicija dima:** Posjedujemo vlastite komore za tradicionalno dimljenje na hladnom dimu bukve i graba.
 * **Logistička izvrsnost:** Vlastita flota vozila s kontroliranim temperaturnim režimom (hladnjače).
-* **Veleprodajni standard:** Prioritetna obradu i personalizirani rezovi mesa.""",
+* **Veleprodajni standard:** Prioritetna obrada i personalizirani rezovi mesa.""",
         "haccp_title": "Sigurnost hrane i HACCP: Beskompromisni standardi",
         "haccp_text": """U Mesnici Kojundžić, higijena je temelj našeg obiteljskog ugleda. U 2026. godini primjenjujemo najnovije tehnologije nadzora kvalitete.
 * **Potpuna sljedivost (Traceability):** Svaki komad mesa ima dokumentiran put – točno znamo s koje farme dolazi.
@@ -44,42 +44,44 @@ LANG_MAP = {
     },
     "EN 🇬🇧": {
         "nav_shop": "🏬 SHOP", "nav_suppliers": "🚜 SUPPLIERS", "nav_horeca": "🏨 FOR HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ABOUT US",
+        "title_sub": "KOJUNDŽIĆ BUTCHERY | SISAK 2026.",
         "suppliers_title": "Our Partners: The Strength of Local Farming",
         "suppliers_text": """The meat quality at Kojundžić Butchery is a direct result of our collaboration with small family farms in our immediate vicinity. We believe in short supply chains and supporting the local community.
 \n**Sourcing regions in 2026:**
-* **Banovina & Posavina:** Our primary sources for premium pork and beef. Animals are raised traditionally with natural diets, resulting in perfect meat texture.
-* **Lonjsko Polje:** We are proud to work with breeders whose livestock grazes freely in the untouched nature of the Nature Park.
-* **Sisak Surroundings:** Daily cooperation with local farmers ensures that meat travels from the field to our butchery in the shortest time possible, guaranteeing maximum freshness.""",
-        "horeca_title": "HoReCa Partnership: Culinary Excellence",
-        "horeca_text": "We provide beech-smoked traditional products, temperature-controlled logistics, and wholesale support with personalized meat cuts for our 2026 partners.",
-        "haccp_title": "Food Safety & HACCP: Uncompromising Standards",
-        "haccp_text": "Full traceability and strict HACCP protocols in our modern facility in Sisak under constant veterinary supervision.",
-        "info_title": "Our Story: Family, Sisak, and True Quality",
-        "info_text": " Generations of tradition in Sisak. We prepare our meat slowly, using only natural spices and zero additives.\n📍 **Main Shop:** Sisak City Market.",
+* **Banovina & Posavina:** Our primary sources for premium pork and beef.
+* **Lonjsko Polje:** We are proud to work with breeders whose livestock grazes freely in nature.
+* **Sisak Surroundings:** Short travel time from field to butchery guarantees maximum freshness.""",
+        "horeca_title": "HoReCa Partnership",
+        "horeca_text": "We provide beech-smoked traditional products, temperature-controlled logistics, and personalized meat cuts for our 2026 partners.",
+        "haccp_title": "Food Safety & HACCP",
+        "haccp_text": "Full traceability and strict HACCP protocols in our modern facility in Sisak.",
+        "info_title": "Our Story",
+        "info_text": "Generations of tradition in Sisak. We prepare our meat slowly, using only natural spices.\n📍 **Location:** Sisak City Market.",
         "p1": "Smoked Hamburger", "p2": "Smoked Pork Hock", "p3": "Smoked Brisket Tips", "p4": "Slavonian Sausage", "p5": "Homemade Salami", "p6": "Smoked Bones",
         "p7": "Smoked Trotters Mix", "p8": "Pancetta (Premium)", "p9": "Smoked Neck (Boneless)", "p10": "Smoked Pork Loin (Boneless)", "p11": "Smoked Tenderloin", "p12": "Homemade Cracklings",
         "p13": "Lard (Bucket)", "p14": "Blood Sausages", "p15": "Grill Sausages", "p16": "Dry Ribs", "p17": "Smoked Pork Head", "p18": "White Bacon",
-        "cart_title": "🛒 Your Cart", "cart_empty": "is empty", "btn_order": "🚀 SEND ORDER", "success": "ORDER SUCCESSFULLY SUBMITTED! THANK YOU.", "unit_kg": "kg", "unit_pc": "pcs", "curr": "€", "total": "Estimated Total", "shipping_info": "SHIPPING DETAILS", 
+        "cart_title": "🛒 Your Cart", "cart_empty": "is empty", "btn_order": "🚀 SEND ORDER", "success": "ORDER SUCCESSFULLY SUBMITTED!", "unit_kg": "kg", "unit_pc": "pcs", "curr": "€", "total": "Estimated Total", "shipping_info": "SHIPPING DETAILS", 
         "note_vaga": "⚖️ Final total confirmed after weighing.", "note_delivery": "🚚 COD payment only.", "form_name": "Full Name*", "form_tel": "Phone*", "form_city": "City*", "form_zip": "ZIP*", "form_addr": "Address*"
     },
     "DE 🇩🇪": {
         "nav_shop": "🏬 SHOP", "nav_suppliers": "🚜 LIEFERANTEN", "nav_horeca": "🏨 FÜR HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ÜBER UNS",
+        "title_sub": "METZGEREI KOJUNDŽIĆ | SISAK 2026.",
         "suppliers_title": "Unsere Partner: Lokale Landwirtschaft",
         "suppliers_text": """Die Fleischqualität der Metzgerei Kojundžić basiert auf der engen Zusammenarbeit mit kleinen Familienbetrieben aus unserer Region.
 \n**Bezugsregionen im Jahr 2026:**
-* **Banovina & Posavina:** Unsere Hauptquellen für erstklassiges Schweine- und Rindfleisch. Traditionelle Aufzucht sorgt für perfekte Fleischstruktur.
+* **Banovina & Posavina:** Unsere Hauptquellen für erstklassiges Fleisch.
 * **Lonjsko Polje:** Kooperation mit Züchtern, deren Vieh im Naturpark frei grast.
-* **Umgebung von Sisak:** Tägliche Zusammenarbeit garantiert kürzeste Transportwege und maximale Frische.""",
-        "horeca_title": "HoReCa-Partnerschaft: Gastronomie-Standard",
-        "horeca_text": "Buchenholzrauch-Produkte, temperaturgeführte Logistik und Großhandelsunterstützung mit individuellen Zuschnitten für unsere Partner 2026.",
-        "haccp_title": "Lebensmittelsicherheit & HACCP",
-        "haccp_text": "Strenge HACCP-Protokolle und lückenlose Rückverfolgbarkeit in unserer modernen Anlage in Sisak.",
-        "info_title": "Unsere Geschichte: Familie & Qualität",
-        "info_text": "Traditionelle Fleischzubereitung aus Sisak mit Naturgewürzen und ohne künstliche Zusatzstoffe.\n📍 **Standort:** Stadtmarkt Sisak.",
+* **Umgebung von Sisak:** Kürzeste Transportwege garantieren maximale Frische.""",
+        "horeca_title": "HoReCa-Partnerschaft",
+        "horeca_text": "Buchenholzrauch-Produkte und Kühltransporte für die Gastronomie im Jahr 2026.",
+        "haccp_title": "HACCP & Sicherheit",
+        "haccp_text": "Strenge HACCP-Protokolle und lückenlose Rückverfolgbarkeit in Sisak.",
+        "info_title": "Unsere Geschichte",
+        "info_text": "Traditionelle Fleischzubereitung aus Sisak mit Naturgewürzen.\n📍 **Standort:** Stadtmarkt Sisak.",
         "p1": "Geräucherter Hamburger", "p2": "Geräucherte Stelze", "p3": "Geräucherte Brustspitzen", "p4": "Slawonische Wurst", "p5": "Hausmacher Salami", "p6": "Räucherknochen",
         "p7": "Geräucherte Schweinefüße Mix", "p8": "Pancetta (Premium)", "p9": "Geräucherter Nacken (o.K.)", "p10": "Geräuchertes Karree (o.K.)", "p11": "Geräuchertes Lendenstück", "p12": "Hausmacher Grieben",
         "p13": "Schweineschmalz (Eimer)", "p14": "Blutwürste", "p15": "Grillwürste", "p16": "Trockenrippen", "p17": "Geräucherter Schweinekopf", "p18": "Speck (weiß)",
-        "cart_title": "🛒 Warenkorb", "cart_empty": "ist leer", "btn_order": "🚀 SENDEN", "success": "ERFOLGREICH ÜBERMITTELT! VIELEN DANK.", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "total": "Gesamtsumme", "shipping_info": "LIEFERDATEN",
+        "cart_title": "🛒 Warenkorb", "cart_empty": "ist leer", "btn_order": "🚀 SENDEN", "success": "ERFOLGREICH ÜBERMITTELT!", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "total": "Gesamtsumme", "shipping_info": "LIEFERDATEN",
         "note_vaga": "⚖️ Endbetrag nach Wiegen.", "note_delivery": "🚚 Nachnahme bei Lieferung.", "form_name": "Name*", "form_tel": "Telefon*", "form_city": "Stadt*", "form_zip": "PLZ*", "form_addr": "Straße*"
     }
 }
