@@ -46,16 +46,8 @@ PRODUCTS = [
     {"id": "p8", "price": 16.90, "unit": "kg", "name": "Panceta"},
     {"id": "p9", "price": 12.50, "unit": "kg", "name": "Dimljeni vrat (BK)"},
     {"id": "p10", "price": 13.50, "unit": "kg", "name": "Dimljeni kare (BK)"},
-    {"id": "p11", "price": 15.00, "unit": "kg", "name": "Dimljena pečenica"},
     {"id": "p12", "price": 18.00, "unit": "kg", "name": "Domaći čvarci"},
-    {"id": "p13", "price": 10.00, "unit": "pc", "name": "Svinjska mast (kanta)"},
-    {"id": "p14", "price": 9.00, "unit": "kg", "name": "Krvavice"},
-    {"id": "p15", "price": 10.50, "unit": "kg", "name": "Pečenice za roštilj"},
-    {"id": "p16", "price": 8.50, "unit": "kg", "name": "Suha rebra"},
-    {"id": "p17", "price": 5.00, "unit": "pc", "name": "Dimljena glava"},
-    {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
-]
-
+    {"id": "p13", "price": 10.00, "unit": "pc", "name": "Svinjska mast"},
 # --- 4. INICIJALIZACIJA SESSION STATEA ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
