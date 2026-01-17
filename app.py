@@ -14,55 +14,26 @@ T = {
     "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
     "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna. Molimo odaberite proizvode iz ponude.",
-    
-    # REVIDIRANA NAPOMENA O VAGANJU
     "note_vaga": "⚖️ **VAŽNO:** Cijene proizvoda su točne, dok je ukupni iznos u košarici informativan. Točan iznos znat ćete pri preuzimanju paketa, a mi ćemo se truditi da težina i cijena budu što bliži Vašoj narudžbi.",
-    
-    # JEDNOSTAVNA DOSTAVA
     "note_delivery": "🚚 **DOSTAVA:** Proizvode šaljemo dostavom, a plaćate ih pouzećem.",
-    
-    # PROŠIRENE RUBRIKE
     "horeca_title": "🏨 HoReCa Partnerstvo: Vrhunska sirovina za Vaš ugostiteljski objekt",
     "horeca_text": """
     Kao pouzdan partner brojnim restoranima i hotelima, Mesnica Kojundžić nudi namjenski program za HoReCa sektor u 2026. godini.
-    Razumijemo specifične potrebe modernog ugostiteljstva te osiguravamo:
-    * **Konstantnu kvalitetu:** Meso s kontroliranim udjelom masnoće i preciznim rezovima prema Vašim specifikacijama.
+    * **Konstantnu kvalitetu:** Meso s kontroliranim udjelom masnoće i preciznim rezovima.
     * **Fleksibilnu dostavu:** Prilagođavamo termine dostave Vašem radnom vremenu u hladnom lancu.
-    * **Veleprodajne cijene:** Posebni cjenici za stalne partnere i veće količine.
-    * **Savjetovanje:** Pomoć pri odabiru rezova za specifična jela (dry age, pečenja, roštilj program).
-    
-    Za ponudu i dogovor kontaktirajte nas izravno na: [tomislavtomi90@gmail.com](mailto:tomislavtomi90@gmail.com)
+    * **Veleprodajne cijene:** Posebni cjenici za stalne partnere.
     """,
-    
     "suppliers_title": "🚜 Podrijetlo: Iz srca Banovine, Posavine i Lonjskog polja",
     "suppliers_text": """
-    Temelj naše kvalitete su naši dobavljači – mali obiteljski OPG-ovi koji dijele našu viziju o održivom uzgoju.
-    * **Lokalni uzgoj:** Svo meso dolazi isključivo s domaćih pašnjaka i farmi s područja **Banovine i Posavine**. 
-    * **Park prirode Lonjsko polje:** Posebno smo ponosni na suradnju s proizvođačima čije blago obitava na rubnim dijelovima **Parka prirode Lonjsko polje**, gdje tradicionalna ispaša osigurava vrhunsku kvalitetu mesa.
-    * **Kratak lanac opskrbe:** Izravan put od pašnjaka do naše prerade u Sisku jamči svježinu i nutritivnu vrijednost koju ne možete naći u masovnim trgovačkim lancima.
-    * **Prirodna prehrana:** Životinje se hrane isključivo domaćom hranom bez GMO dodataka.
+    Svo meso dolazi isključivo s domaćih pašnjaka i farmi s područja **Banovine i Posavine**. 
+    Posebno smo ponosni na suradnju s proizvođačima iz **Parka prirode Lonjsko polje**, gdje tradicionalna ispaša osigurava vrhunsku kvalitetu mesa.
     """,
-    
-    "haccp_title": "🛡️ Sigurnost hrane: Najviši standardi higijene (HACCP)",
-    "haccp_text": """
-    U Mesnici Kojundžić sigurnost potrošača je prioritet broj jedan. Naš proces proizvodnje strogo prati **HACCP** sustav.
-    * **Digitalna sljedivost:** Svaki komad mesa ima zabilježen put od farme do prodajnog pulta.
-    * **Stalna kontrola:** Redovito provodimo mikrobiološke analize u suradnji s ovlaštenim laboratorijima.
-    * **Veterinarski nadzor:** Svi procesi klanja i prerade vrše se pod stalnim nadzorom državne veterinarske službe.
-    * **Higijenski režim:** Naši djelatnici prolaze stalne edukacije o higijeni, a prostor se dezinficira svakodnevno najmodernijim ekološkim sredstvima.
-    """,
-    
-    "info_title": "ℹ️ O nama: Tradicija sisačkog mesarstva",
-    "info_text": """
-    Obitelj Kojundžić u Sisku već generacijama čuva vještinu tradicionalne pripreme mesa. Naša misija je jednostavna: donijeti izvorne okuse domaćeg stola u Vaš dom.
-    Danas smo moderna prerada koja spaja djedove recepte za dimljenje mesa na prirodnom drvetu s najsuvremenijom tehnologijom pakiranja i digitalnom kontrolom kvalitete. 
-    Ponosni smo što se naši proizvodi i dalje pripremaju bez nepotrebnih aditiva i kemijskih dodataka.
-    
-    📍 **LOKACIJA:** Nalazimo se u samom srcu Siska, na Gradskoj tržnici Kontroba. Posjetite nas i uvjerite se u kvalitetu.
-    """,
-
+    "haccp_title": "🛡️ Sigurnost hrane i HACCP",
+    "haccp_text": "Primjenjujemo najstrože higijenske standarde uz potpunu digitalnu sljedivost od farme do Vašeg stola pod stalnim veterinarskim nadzorom.",
+    "info_title": "ℹ️ O nama",
+    "info_text": "Obitelj Kojundžić u Sisku čuva vještinu tradicionalne pripreme mesa. 📍 **LOKACIJA:** Gradska tržnica Kontroba, Sisak.",
     "form_name": "Ime i Prezime primatelja*", "form_tel": "Kontakt telefon*", "form_city": "Grad/Mjesto*", "form_addr": "Ulica i kućni broj*",
-    "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", "unit_kg": "kg", "unit_pc": "kom", "total": "Informativni iznos računa", "shipping_info": "📍 PODACI ZA DOSTAVU",
+    "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", "unit_kg": "kg", "unit_pc": "kom", "total": "Ukupni informativni iznos", "shipping_info": "📍 PODACI ZA DOSTAVU",
     "p1": "Dimljeni hamburger", "p2": "Dimljeni buncek", "p3": "Dimljeni prsni vršci", "p4": "Slavonska kobasica", "p5": "Domaća salama", "p6": "Dimljene kosti",
     "p7": "Dimljene nogice mix", "p8": "Panceta", "p9": "Dimljeni vrat (BK)", "p10": "Dimljeni kare (BK)", "p11": "Dimljena pečenica", "p12": "Domaći čvarci",
     "p13": "Svinjska mast (kanta)", "p14": "Krvavice", "p15": "Pečenice za roštilj", "p16": "Suha rebra", "p17": "Dimljena glava", "p18": "Slanina sapunara"
@@ -81,7 +52,6 @@ PRODUCTS = [
     {"id": "p17", "price": 5.00, "unit": "pc"}, {"id": "p18", "price": 9.00, "unit": "kg"}
 ]
 
-# --- 4. LOGIKA APLIKACIJE ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
@@ -108,10 +78,8 @@ with col_left:
                     st.session_state.cart[p["id"]] = 1.0
                     st.rerun()
                 elif new_val != curr_val:
-                    if new_val > 0:
-                        st.session_state.cart[p["id"]] = new_val
-                    else:
-                        st.session_state.cart.pop(p["id"], None)
+                    if new_val > 0: st.session_state.cart[p["id"]] = new_val
+                    else: st.session_state.cart.pop(p["id"], None)
                     st.rerun()
 
     with tabs[1]: st.header(T["horeca_title"]); st.write(T["horeca_text"])
@@ -119,6 +87,7 @@ with col_left:
     with tabs[3]: st.header(T["haccp_title"]); st.write(T["haccp_text"])
     with tabs[4]: st.header(T["info_title"]); st.write(T["info_text"])
 
+# --- DESNA STRANA: STALNO VIDLJIVA CIJENA I PODACI ---
 with col_right:
     st.markdown(f"### {T['cart_title']}")
     ukupan_iznos = 0.0
@@ -132,10 +101,14 @@ with col_right:
             st.write(f"✅ **{T[pid]}**: {kolicina} {T['unit_'+p_podaci['unit']]} = **{sub:.2f} €**")
     
     st.divider()
+    
+    # IZNOS IZVAN FORME - STALNO VIDLJIV PRI SKROLANJU/PROMJENAMA
+    st.metric(label=T["total"], value=f"{ukupan_iznos:.2f} €")
     st.markdown(T["note_delivery"])
     
+    st.divider()
+    st.markdown(f"#### {T['shipping_info']}")
     with st.form("forma_dostave"):
-        st.metric(label=T["total"], value=f"{ukupan_iznos:.2f} €")
         ime = st.text_input(T["form_name"])
         tel = st.text_input(T["form_tel"])
         grad = st.text_input(T["form_city"])
@@ -153,8 +126,7 @@ with col_right:
                     msg['From'] = MOJ_EMAIL; msg['To'] = MOJ_EMAIL
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
-                    st.success(T["success"]); st.session_state.cart = {}
-                    time.sleep(2); st.rerun()
+                    st.success(T["success"]); st.session_state.cart = {}; time.sleep(2); st.rerun()
                 except:
                     st.error("Greška s mail serverom.")
             else:
