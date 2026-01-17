@@ -10,7 +10,7 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. MASTER PRIJEVODI (KORIGIRANI I PROŠIRENI - 2026.) ---
+# --- 2. MASTER PRIJEVODI (POTPUNI I PROŠIRENI - 2026.) ---
 LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🏬 TRGOVINA", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
@@ -19,7 +19,7 @@ LANG_MAP = {
         "note_vaga": """⚖️ **Napomena o vaganju:** Cijene proizvoda su fiksne, no točan iznos Vašeg računa znat ćemo tek nakon preciznog vaganja neposredno prije pakiranja. Konačan iznos znati ćete kada Vam paket stigne i kada ga budete plaćali pouzećem. Trudimo se da se pridržavamo naručenih količina i da informativni iznos i konačni iznos imaju što manju razliku.""",
         "note_delivery": """🚚 **Dostava i plaćanje:** Naručene artikle šaljemo putem provjerene dostavne službe na kućnu adresu ili u najbliži paketomat, ovisno o Vašem izboru pri preusmjeravanju. Plaćanje se vrši **isključivo pouzećem** (gotovinom dostavljaču), čime jamčimo sigurnost transakcije.""",
         "suppliers_title": "Naši partneri: Snaga lokalnog uzgoja",
-        "suppliers_text": """Kvaliteta mesa u Mesnici Kojundžić izravan je rezultat suradnje s malim obiteljskim gospodarstmima iz našeg neposrednog okruženja. Vjerujemo u kratke lance opskrbe i podršku lokalnoj zajednici.
+        "suppliers_text": """Kvaliteta mesa u Mesnici Kojundžić izravan je rezultat suradnje s malim obiteljskim gospodarstvima iz našeg neposrednog okruženja. Vjerujemo u kratke lance opskrbe i podršku lokalnoj zajednici.
 \n**Područja s kojih nabavljamo sirovinu u 2026. godini:**
 * **Banovina i Posavina:** Naši glavni izvori vrhunske svinjetine i junetine. Životinje se uzgajaju na tradicionalan način, uz prirodnu ishranu, što rezultira savršenom teksturom mesa.
 * **Lonjsko polje:** Posebno smo ponosni na suradnju s uzgajivačima čija stoka boravi na slobodnoj ispaši u netaknutoj prirodi parka prirode.
@@ -104,7 +104,7 @@ LANG_MAP = {
     }
 }
 
-# --- 3. PROIZVODI ---
+# --- 3. PROIZVODI I CIJENE ---
 PROIZVODI = [
     {"id": "p1", "cijena": 9.50, "jed": "kg"}, {"id": "p2", "cijena": 5.50, "jed": "kg"},
     {"id": "p3", "cijena": 5.50, "jed": "kg"}, {"id": "p4", "cijena": 13.00, "jed": "kg"},
@@ -146,61 +146,67 @@ tabs = st.tabs([T["nav_shop"], T["nav_suppliers"], T["nav_horeca"], T["nav_haccp
 
 with tabs[0]: # SHOP
     st.title(T["title_sub"])
-    st.info(T["note_vaga"])
-    st.warning(T["note_delivery"])
     
     st.divider()
-    col1, col2 = st.columns(2)
-    for i, p in enumerate(PROIZVODI):
-        target_col = col1 if i % 2 == 0 else col2
-        with target_col:
-            if p["jed"] == "kg":
-                # LOGIKA: 0 -> 1.0 -> +0.5
-                val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0.0, step=0.5, format="%.1f", key=p["id"])
-                if 0.0 < val < 1.0:
-                    val = 1.0
-                    st.session_state[p["id"]] = 1.0
-                    st.rerun()
-            else:
-                val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0, step=1, key=p["id"])
-            
-            if val > 0:
-                st.session_state.kosarica[p["id"]] = {"qty": val, "price": p["cijena"], "unit": p["jed"]}
-            elif p["id"] in st.session_state.kosarica:
-                del st.session_state.kosarica[p["id"]]
-
-    if st.session_state.kosarica:
-        st.divider()
-        st.header(T["cart_title"])
-        ukupno = 0
-        prikaz_narudzbe = ""
-        for pid, d in st.session_state.kosarica.items():
-            sub = d['qty'] * d['price']
-            ukupno += sub
-            linija = f"{T[pid]}: {d['qty']} {T['unit_'+d['unit']]} x {d['price']} = {sub:.2f} {T['curr']}"
-            st.write(linija)
-            prikaz_narudzbe += linija + "\n"
-        
-        st.subheader(f"{T['total']}: {ukupno:.2f} {T['curr']}")
-        
-        with st.form("order_form"):
-            st.write(T["shipping_info"])
-            f_ime = st.text_input(T["form_name"])
-            f_tel = st.text_input(T["form_tel"])
-            f_grad = st.text_input(T["form_city"])
-            f_zip = st.text_input(T["form_zip"])
-            f_adr = st.text_input(T["form_addr"])
-            
-            if st.form_submit_button(T["btn_order"]):
-                if f_ime and f_tel and f_adr:
-                    info = f"{f_ime}, Tel: {f_tel}, Grad: {f_grad}, ZIP: {f_zip}, Adresa: {f_adr}"
-                    if posalji_email(prikaz_narudzbe, info):
-                        st.success(T["success"])
-                        st.session_state.kosarica = {}
-                        time.sleep(3)
+    col_proizvodi, col_kosarica = st.columns([1.5, 1])
+    
+    with col_proizvodi:
+        p_col1, p_col2 = st.columns(2)
+        for i, p in enumerate(PROIZVODI):
+            target_col = p_col1 if i % 2 == 0 else p_col2
+            with target_col:
+                if p["jed"] == "kg":
+                    val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0.0, step=0.5, format="%.1f", key=p["id"])
+                    if 0.0 < val < 1.0:
+                        val = 1.0
+                        st.session_state[p["id"]] = 1.0
                         st.rerun()
                 else:
-                    st.error("Molimo ispunite obavezna polja!")
+                    val = st.number_input(f"{T[p['id']]} ({p['cijena']:.2f} {T['curr']})", min_value=0, step=1, key=p["id"])
+                
+                if val > 0:
+                    st.session_state.kosarica[p["id"]] = {"qty": val, "price": p["cijena"], "unit": p["jed"]}
+                elif p["id"] in st.session_state.kosarica:
+                    del st.session_state.kosarica[p["id"]]
+
+    with col_kosarica:
+        st.header(T["cart_title"])
+        if st.session_state.kosarica:
+            ukupno = 0
+            prikaz_narudzbe = ""
+            for pid, d in st.session_state.kosarica.items():
+                sub = d['qty'] * d['price']
+                ukupno += sub
+                linija = f"{T[pid]}: {d['qty']} {T['unit_'+d['unit']]} x {d['price']} = {sub:.2f} {T['curr']}"
+                st.write(linija)
+                prikaz_narudzbe += linija + "\n"
+            
+            st.subheader(f"{T['total']}: {ukupno:.2f} {T['curr']}")
+            
+            # NAPOMENE PREBAČENE OVDJE (Ispod košarice, iznad forme)
+            st.info(T["note_vaga"])
+            st.warning(T["note_delivery"])
+            
+            with st.form("order_form"):
+                st.write(T["shipping_info"])
+                f_ime = st.text_input(T["form_name"])
+                f_tel = st.text_input(T["form_tel"])
+                f_grad = st.text_input(T["form_city"])
+                f_zip = st.text_input(T["form_zip"])
+                f_adr = st.text_input(T["form_addr"])
+                
+                if st.form_submit_button(T["btn_order"]):
+                    if f_ime and f_tel and f_adr:
+                        info = f"{f_ime}, Tel: {f_tel}, Grad: {f_grad}, ZIP: {f_zip}, Adresa: {f_adr}"
+                        if posalji_email(prikaz_narudzbe, info):
+                            st.success(T["success"])
+                            st.session_state.kosarica = {}
+                            time.sleep(3)
+                            st.rerun()
+                    else:
+                        st.error("Molimo ispunite obavezna polja!")
+        else:
+            st.write(T["cart_empty"])
 
 with tabs[1]:
     st.header(T["suppliers_title"])
