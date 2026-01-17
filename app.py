@@ -3,7 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 import time
 
-# --- 1. USIDRENA KONFIGURACIJA ---
+# --- 1. FIKSNA USIDRENA KONFIGURACIJA (SISAK 2026) ---
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
 MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
 SMTP_SERVER = "smtp.gmail.com"
@@ -16,12 +16,13 @@ EU_DRZAVE = [
     "Slovačka", "Slovenija", "Španjolska", "Švedska", "Druga država (upiši sam)"
 ]
 
+# --- 2. USIDRENI TEKSTOVI ---
 T = {
     "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
     "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna.",
-    "note_vaga": "⚖️ **VAŽNO:** Cijene su točne, dok je ukupni iznos informativan. Točan iznos znat ćete pri preuzimanju.",
-    "note_delivery": "🚚 **DOSTAVA:** Proizvode šaljemo dostavom, plaćate ih pouzećem.",
+    "note_vaga": "⚖️ **VAŽNO:** Cijene proizvoda su fiksne, dok je ukupni iznos u košarici informativne naravi. Budući da su naši proizvodi rezani ručno, stvarna težina može minimalno varirati. Mi ćemo se truditi da težina paketa i konačan račun budu što bliži Vašoj narudžbi, a točan iznos znat ćete prilikom preuzimanja.",
+    "note_cod": "💳 **NAČIN PLAĆANJA:** Plaćanje se vrši gotovinom prilikom preuzimanja pošiljke (pouzećem).",
     "form_fname": "Ime*", "form_lname": "Prezime*", "form_tel": "Kontakt telefon*", "form_country": "Država*", "form_city": "Grad/Mjesto*", "form_addr": "Ulica i kućni broj*",
     "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA!", 
     "err_fields": "🛑 Narudžba se ne može poslati dok ne ispunite sva obavezna polja!",
@@ -50,7 +51,6 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
-# --- 2. INICIJALIZACIJA ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
@@ -70,33 +70,22 @@ with col_left:
             with (c1 if i % 2 == 0 else c2):
                 st.subheader(p["name"])
                 st.write(f"**{p['price']:.2f} €** / {T['unit_'+p['unit']]}")
-                
-                # Dohvati trenutnu vrijednost
                 cur_qty = st.session_state.cart.get(p["id"], 0.0)
                 step = 0.5 if p["unit"] == "kg" else 1.0
+                new_qty = st.number_input(f"Količina ({T['unit_'+p['unit']]})", min_value=0.0, step=step, value=float(cur_qty), key=f"f_{p['id']}")
                 
-                # Widget
-                new_qty = st.number_input(f"Količina ({T['unit_'+p['unit']]})", 
-                                         min_value=0.0, step=step, value=float(cur_qty), key=f"f_{p['id']}")
-                
-                # LOGIKA VAGE (0.0 -> 1.0 kg)
                 if p["unit"] == "kg":
                     if cur_qty == 0.0 and new_qty == 0.5: new_qty = 1.0
                     elif cur_qty == 1.0 and new_qty == 0.5: new_qty = 0.0
 
-                # INSTANT AŽURIRANJE KOŠARICE
                 if new_qty != cur_qty:
-                    if new_qty > 0:
-                        st.session_state.cart[p["id"]] = new_qty
-                    else:
-                        st.session_state.cart.pop(p["id"], None)
-                    st.rerun() # Forsirano osvježavanje za prikaz u košarici
+                    if new_qty > 0: st.session_state.cart[p["id"]] = new_qty
+                    else: st.session_state.cart.pop(p["id"], None)
+                    st.rerun()
 
 with col_right:
     st.markdown(f"### {T['cart_title']}")
     ukupan_iznos = 0.0
-    
-    # PRIKAZ KOŠARICE (Radi odmah čim se st.rerun() izvrši)
     if not st.session_state.cart:
         st.info(T["cart_empty"])
     else:
@@ -110,18 +99,21 @@ with col_right:
     st.divider()
     st.metric(label=T["total"], value=f"{ukupan_iznos:.2f} €")
     
+    # OKVIR ZA PLAĆANJE POUZEĆEM
+    st.warning(T["note_cod"])
+    
+    st.divider()
+    
     with st.form("forma_dostave"):
         st.markdown("#### 📍 PODACI ZA DOSTAVU")
         cn1, cn2 = st.columns(2)
         with cn1: ime = st.text_input(T["form_fname"])
         with cn2: prezime = st.text_input(T["form_lname"])
-        
         tel = st.text_input(T["form_tel"])
         drzava_izbor = st.selectbox(T["form_country"], options=EU_DRZAVE)
         drzava_final = drzava_izbor
         if drzava_izbor == "Druga država (upiši sam)":
             drzava_final = st.text_input("Upišite naziv države*")
-        
         grad = st.text_input(T["form_city"])
         adresa = st.text_input(T["form_addr"])
         posalji = st.form_submit_button(T["btn_order"])
@@ -143,7 +135,6 @@ with col_right:
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     
-                    # SPECIJALNI OKVIR (4 sekunde)
                     confirm_html = f"""
                     <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 250px; background-color: #FF4B4B; color: white; border: 10px solid #FFFFFF; border-radius: 20px; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 28px; font-weight: bold; z-index: 9999; box-shadow: 0px 0px 50px rgba(0,0,0,0.5);">
                         VAŠA NARUDŽBA JE PREDANA, HVALA!
