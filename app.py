@@ -50,13 +50,14 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
+# INICIJALIZACIJA
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
 
-# Kontejner za skočni prozor na sredini
-pop_up_placeholder = st.empty()
+# Kontejner za skočni prozor (postavljen na vrh radi vidljivosti)
+pop_up_zona = st.empty()
 
 col_left, col_right = st.columns([0.65, 0.35])
 
@@ -73,6 +74,7 @@ with col_left:
                 st.write(f"**{p['price']:.2f} €** / {T['unit_'+p['unit']]}")
                 curr_val = st.session_state.cart.get(p["id"], 0.0)
                 step = 0.5 if p["unit"] == "kg" else 1.0
+                
                 new_val = st.number_input(f"Količina ({T['unit_'+p['unit']]})", min_value=0.0, step=step, value=float(curr_val), key=f"f_{p['id']}")
                 
                 if p["unit"] == "kg":
@@ -116,17 +118,16 @@ with col_right:
         st.markdown(f"#### {T['shipping_info']}")
         ime = st.text_input(T["form_name"])
         tel = st.text_input(T["form_tel"])
-        drzava = st.text_input(T["form_country"], value="Hrvatska") # Polje država
+        drzava = st.text_input(T["form_country"], value="Hrvatska")
         grad = st.text_input(T["form_city"])
         adresa = st.text_input(T["form_addr"])
         posalji = st.form_submit_button(T["btn_order"])
         
         if posalji:
             if ime and tel and adresa and st.session_state.cart:
-                # Sastavljanje stavki narudžbe za e-mail
                 stavke = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
                 
-                # SLANJE PODATAKA (UKLJUČUJUĆI DRŽAVU)
+                # --- DRŽAVA UKLJUČENA U NARUDŽBU ---
                 poruka = f"Kupac: {ime}\nTel: {tel}\nDržava: {drzava}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nInformativni iznos: {ukupan_iznos:.2f} €"
                 
                 try:
@@ -139,20 +140,23 @@ with col_right:
                     msg['To'] = MOJ_EMAIL
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
-
-                    # OBAVIJESTI
-                    pop_up_placeholder.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!") # Sredina (5 sekundi)
-                    st.success(T["success"]) # Bočno (10 sekundi)
                     
+                    # 1. Prikaz skočnog prozora (5 sekundi)
+                    pop_up_zona.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!")
+                    
+                    # 2. Prikaz obavijesti u formi (traje dok god traje sleep)
+                    st.success(T["success"])
+                    
+                    # 3. Pražnjenje košarice
                     st.session_state.cart = {}
+                    
+                    # 4. Tajmer logika
                     time.sleep(5)
-                    pop_up_placeholder.empty() # Uklanja skočni prozor nakon 5s
-                    time.sleep(5) # Čeka još 5s (ukupno 10s)
+                    pop_up_zona.empty() # Briše skočni prozor nakon 5 sekundi
+                    time.sleep(5) # Čeka dodatnih 5 sekundi (ukupno 10 za donju obavijest)
+                    
                     st.rerun()
-
                 except smtplib.SMTPAuthenticationError:
                     st.error("Google je odbio lozinku. Generirajte novu 'App Password'.")
                 except Exception as e:
                     st.error(f"Detalji greške: {e}")
-            else:
-                st.warning("Ispunite obavezna polja i dodajte proizvode u košaricu.")
