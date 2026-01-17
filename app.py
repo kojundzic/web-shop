@@ -3,13 +3,13 @@ import smtplib
 from email.mime.text import MIMEText
 import time
 
-# --- 1. FIKSNA KONFIGURACIJA (SISAK 2026) ---
+# --- 1. FIKSNA USIDRENA KONFIGURACIJA (SISAK 2026) ---
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
 MOJA_LOZINKA = "czdx ndpg owzy wgqu" 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. USIDRENI PROŠIRENI TEKSTOVI ---
+# --- 2. USIDRENI TEKSTOVI I KONFIGURACIJA SUČELJA ---
 T = {
     "nav_shop": "🏬 TRGOVINA", 
     "nav_horeca": "🏨 ZA UGOSTITELJE", 
@@ -19,16 +19,8 @@ T = {
     "title_sub": "OBITELJSKA MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
     "cart_title": "🛒 Vaša košarica", 
     "cart_empty": "Vaša košarica je trenutno prazna.",
-    "note_vaga": "⚖️ **VAŽNO:** Cijene proizvoda su točne, dok je ukupni iznos u košarici informativan. Točan iznos znat ćete pri preuzimanju paketa.",
+    "note_vaga": "⚖️ **VAŽNO:** Cijene su točne, dok je ukupni iznos informativan. Točan iznos znat ćete pri preuzimanju paketa.",
     "note_delivery": "🚚 **DOSTAVA:** Proizvode šaljemo dostavom, a plaćate ih pouzećem.",
-    "horeca_title": "🏨 HoReCa Partnerstvo: Vrhunska sirovina",
-    "horeca_text": "Nudimo namjenski program za restorane i hotele uz veleprodajne cijene i brzu dostavu. Kontakt: [tomislavtomi90@gmail.com](mailto:tomislavtomi90@gmail.com)",
-    "suppliers_title": "🚜 Podrijetlo: Banovina, Posavina i Lonjsko polje",
-    "suppliers_text": "Svo meso dolazi s domaćih pašnjaka Banovine i Posavine, te rubnih dijelova **Parka prirode Lonjsko polje**.",
-    "haccp_title": "🛡️ HACCP",
-    "haccp_text": "Primjenjujemo najstrože higijenske standarde uz potpunu digitalnu sljedivost pod stalnim veterinarskim nadzorom.",
-    "info_title": "ℹ️ O nama",
-    "info_text": "Obitelj Kojundžić u Sisku čuva vještinu tradicionalne pripreme mesa. 📍 Gradska tržnica Kontroba, Sisak.",
     "form_name": "Ime i Prezime primatelja*", 
     "form_tel": "Kontakt telefon*", 
     "form_country": "Država*", 
@@ -42,7 +34,7 @@ T = {
     "shipping_info": "📍 PODACI ZA DOSTAVU"
 }
 
-# --- 3. PROIZVODI ---
+# --- 3. FIKSNI POPIS PROIZVODA ---
 PRODUCTS = [
     {"id": "p1", "price": 9.50, "unit": "kg", "name": "Dimljeni hamburger"},
     {"id": "p2", "price": 7.80, "unit": "pc", "name": "Dimljeni buncek"},
@@ -64,14 +56,14 @@ PRODUCTS = [
     {"id": "p18", "price": 9.00, "unit": "kg", "name": "Slanina sapunara"}
 ]
 
-# --- 4. INICIJALIZACIJA ---
+# --- 4. SESSION STATE INICIJALIZACIJA ---
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
 
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide")
 
-# Kontejner za skočni prozor (na samom vrhu ekrana)
-pop_up_area = st.empty()
+# Rezervirano mjesto za skočni prozor na vrhu ekrana
+pop_up_placeholder = st.empty()
 
 col_left, col_right = st.columns([0.65, 0.35])
 
@@ -87,12 +79,14 @@ with col_left:
                 st.subheader(p["name"])
                 st.write(f"**{p['price']:.2f} €** / {T['unit_'+p['unit']]}")
                 
+                # Trenutna vrijednost iz session state-a
                 curr_val = float(st.session_state.cart.get(p["id"], 0.0))
                 step = 0.5 if p["unit"] == "kg" else 1.0
                 
+                # Unos količine
                 new_val = st.number_input(f"Količina ({T['unit_'+p['unit']]})", min_value=0.0, step=step, value=curr_val, key=f"f_{p['id']}")
                 
-                # LOGIKA VAGE ZA KG (0.0 -> 1.0 i 1.0 -> 0.0)
+                # LOGIKA VAGE ZA KILOGRAME (0.0 -> 1.0 i 1.0 -> 0.0)
                 if p["unit"] == "kg":
                     if curr_val == 0.0 and new_val == 0.5:
                         new_val = 1.0
@@ -103,15 +97,16 @@ with col_left:
                         st.session_state.cart.pop(p["id"], None)
                         st.rerun()
                 
+                # Ažuriranje košarice
                 if new_val != curr_val:
                     if new_val > 0: st.session_state.cart[p["id"]] = new_val
                     else: st.session_state.cart.pop(p["id"], None)
                     st.rerun()
 
-    with tabs[1]: st.header(T["horeca_title"]); st.write(T["horeca_text"])
-    with tabs[2]: st.header(T["suppliers_title"]); st.write(T["suppliers_text"])
-    with tabs[3]: st.header(T["haccp_title"]); st.write(T["haccp_text"])
-    with tabs[4]: st.header(T["info_title"]); st.write(T["info_text"])
+    with tabs[1]: st.markdown("### 🏨 HoReCa"); st.write("Program za ugostitelje. Kontakt: tomislavtomi90@gmail.com")
+    with tabs[2]: st.markdown("### 🚜 Podrijetlo"); st.write("Meso s domaćih pašnjaka Banovine i Posavine.")
+    with tabs[3]: st.markdown("### 🛡️ HACCP"); st.write("Potpuna kontrola i veterinarski nadzor.")
+    with tabs[4]: st.markdown("### ℹ️ O nama"); st.write("📍 Gradska tržnica Kontroba, Sisak.")
 
 with col_right:
     st.markdown(f"### {T['cart_title']}")
@@ -134,7 +129,7 @@ with col_right:
         st.markdown(f"#### {T['shipping_info']}")
         ime = st.text_input(T["form_name"])
         tel = st.text_input(T["form_tel"])
-        drzava = st.text_input(T["form_country"], value="Hrvatska")
+        drzava = st.text_input(T["form_country"], value="Hrvatska") # USIDRENA RUBRIKA DRŽAVA
         grad = st.text_input(T["form_city"])
         adresa = st.text_input(T["form_addr"])
         posalji = st.form_submit_button(T["btn_order"])
@@ -143,8 +138,8 @@ with col_right:
             if ime and tel and drzava and adresa and st.session_state.cart:
                 stavke = "".join([f"- {next(it['name'] for it in PRODUCTS if it['id']==pid)}: {q} {T['unit_'+next(it['unit'] for it in PRODUCTS if it['id']==pid)]}\n" for pid, q in st.session_state.cart.items()])
                 
-                # E-MAIL PORUKA SA DRŽAVOM
-                poruka = f"Kupac: {ime}\nTel: {tel}\nDržava: {drzava}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nInformativni iznos: {ukupan_iznos:.2f} €"
+                # USIDRENA PORUKA ZA E-MAIL (UKLJUČUJE DRŽAVU)
+                poruka = f"Kupac: {ime}\nTel: {tel}\nDržava: {drzava}\nGrad: {grad}\nAdresa: {adresa}\n\nNarudžba:\n{stavke}\nUkupno: {ukupan_iznos:.2f} €"
                 
                 try:
                     server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
@@ -157,22 +152,18 @@ with col_right:
                     server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
                     server.quit()
                     
-                    # 1. SKOČNI PROZOR (Sredina - 5 sekundi)
-                    pop_up_area.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!")
+                    # LOGIKA TAJMERA I OBAVIJESTI
+                    pop_up_placeholder.success("### VAŠA NARUDŽBA JE ZAPRIMLJENA, HVALA!") # Skočni prozor (5s)
+                    st.success(T["success"]) # Bočna obavijest (10s)
                     
-                    # 2. OBAVIJEST U FORMI (10 sekundi)
-                    st.success(T["success"])
+                    st.session_state.cart = {} # Trajno pražnjenje košarice nakon slanja
                     
-                    # Resetiranje košarice
-                    st.session_state.cart = {}
-                    
-                    # Tajmeri
                     time.sleep(5)
-                    pop_up_area.empty() # Gasi skočni prozor nakon 5s
-                    time.sleep(5) # Ukupno 10s čekanja za donju obavijest
+                    pop_up_placeholder.empty() # Skriva skočni prozor
+                    time.sleep(5) # Ukupno čekanje 10s
                     st.rerun()
-                    
+
                 except Exception as e:
-                    st.error(f"Greška pri slanju: {e}")
+                    st.error(f"Detalji greške: {e}")
             else:
-                st.warning("Molimo ispunite obavezna polja i dodajte proizvode u košaricu.")
+                st.warning("Provjerite unos: Ime, Tel, Adresa i košarica ne smiju biti prazni.")
