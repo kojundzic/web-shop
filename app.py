@@ -10,7 +10,7 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-# --- 2. MASTER PRIJEVODI (OPŠIRNI I TOČNI - 2026.) ---
+# --- 2. MASTER PRIJEVODI (PRECIZNO KORIGIRANI - 2026.) ---
 LANG_MAP = {
     "HR 🇭🇷": {
         "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
@@ -77,7 +77,7 @@ LANG_MAP = {
         "info_title": "Unsere Geschichte: Familie, Sisak und Qualität",
         "info_text": """Im Herzen von Sisak bewahrt die Familie Kojundžić seit Generationen die Kunst der traditionellen Fleischzubereitung. Wir bereiten Fleisch langsam zu, nur mit natürlichen Gewürzen, ohne Zusatzstoffe.\n📍 **Hauptstandort:** Stadtmarkt Sisak.\n🕒 **Öffnungszeiten:** Mo-Sa: 07:00 - 13:00""",
         "form_name": "Name*", "form_tel": "Telefonnummer*", "form_city": "Stadt*", "form_zip": "PLZ*", "form_addr": "Straße & Hausnummer*",
-        "btn_order": "🚀 SENDEN", "success": "BESTELLUNG ERFOLGREICH ÜBERMITTELT! DANKE.", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "total": "Gesamtsumme (ca.)", "shipping_info": "LIEFERDATEN"
+        "btn_order": "🚀 BESTELLUNG SENDEN", "success": "BESTELLUNG ERFOLGREICH ÜBERMITTELT! DANKE.", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "total": "Gesamtsumme (ca.)", "shipping_info": "LIEFERDATEN"
     }
 }
 
@@ -147,7 +147,7 @@ if menu == T["nav_shop"]:
         
         st.divider()
 
-        # --- 2. STALNE NAPOMENE (UJEDNAČENE BOJE) ---
+        # --- 2. STALNE NAPOMENE ---
         st.info(T["note_vaga"])
         st.info(T["note_delivery"])
         st.divider()
