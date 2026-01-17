@@ -16,12 +16,12 @@ LANG_MAP = {
         "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
         "title_sub": "MESNICA I PRERADA MESA KOJUNDŽIĆ | SISAK 2026.",
         "cart_title": "🛒 Vaša košarica", "cart_empty": "je prazna",
-        "note_vaga": """⚖️ **Napomena o vaganju:** U mesarstvu je preciznost ključna, ali meso je živ proces. Cijene su fiksne, no točan iznos Vašeg računa znat ćemo tek nakon preciznog vaganja neposredno prije pakiranja. Konačan iznos vidjet ćete na fizičkom računu prilikom preuzimanja paketa. Trudimo se da odstupanja budu minimalna.""",
-        "note_delivery": """🚚 **Dostava i plaćanje:** Naša logistika osigurava svježinu do Vaših vrata. Naručene artikle šaljemo putem provjerene dostavne službe na kućnu adresu ili u najbliži paketomat, ovisno o Vašem izboru pri preusmjeravanju. Plaćanje se vrši **isključivo pouzećem** (gotovinom dostavljaču), čime jamčimo sigurnost transakcije.""",
+        "note_vaga": """⚖️ **Napomena o vaganju:** Cijene proizvoda su fiksne, no točan iznos Vašeg računa znat ćemo tek nakon preciznog vaganja neposredno prije pakiranja. Konačan iznos znati ćete kada Vam paket stigne i kada ga budete plaćali pouzećem. Trudimo se da se pridržavamo naručenih količina i da informativni iznos i konačni iznos imaju što manju razliku.""",
+        "note_delivery": """🚚 **Dostava i plaćanje:** Naručene artikle šaljemo putem provjerene dostavne službe na kućnu adresu ili u najbliži paketomat, ovisno o Vašem izboru pri preusmjeravanju. Plaćanje se vrši **isključivo pouzećem** (gotovinom dostavljaču), čime jamčimo sigurnost transakcije.""",
         "horeca_title": "HoReCa Partnerstvo: Temelj vrhunskog ugostiteljstva",
         "horeca_text": """Kao obiteljski vođen posao, duboko poštujemo trud kolega u ugostiteljskom sektoru. Razumijemo da svaki vrhunski tanjur u restoranu ili hotelu počinje s beskompromisnom kvalitetom sirovine. 
 \n**Naša ponuda za partnere u 2026. godini uključuje:**
-* **Tradicija dima:** Posjedujemo vlastite komore za dimljenje na hladnom dimu bukve i graba, bez tekućih pripravaka.
+* **Tradicija dima:** Posjedujemo vlastite komore za tradicionalno dimljenje na hladnom dimu bukve i graba, bez tekućih pripravaka.
 * **Logistička izvrsnost:** Raspolažemo vlastitom flotom vozila s kontroliranim temperaturnim režimom (hladnjače).
 * **Veleprodajni standard:** Redovnim partnerima nudimo prioritetnu obradu, personalizirane rezove mesa i stabilnost cijena tijekom cijele godine.""",
         "haccp_title": "Sigurnost hrane i HACCP: Beskompromisni standardi",
@@ -30,7 +30,7 @@ LANG_MAP = {
 * **Moderni pogon:** Naš objekt u Sisku pod stalnim je veterinarskim nadzorom. Primjenjujemo stroge HACCP protokole koji uključuju redovite laboratorijske analize i najviše sanitarne standarde.""",
         "info_title": "Naša priča: Obitelj, Sisak i istinska kvaliteta",
         "info_text": """Smješteni u srcu Siska, obitelj Kojundžić već naraštajima čuva vještinu tradicionalne pripreme mesa. Naša filozofija je jednostavna: Poštuj prirodu i ona će ti uzvratiti najboljim okusima. Meso pripremamo polako, uz korištenje isključivo domaćih začina, bez aditiva.
-\n📍 **Glavno prodajno mjesto:** Tržnica Caprag, Sisak. \n🕒 **Radno vrijeme:** Pon-Sub: 07:00 - 13:00""",
+\n📍 **Glavno prodajno mjesto:** Tržnica Sisak. \n🕒 **Radno vrijeme:** Pon-Sub: 07:00 - 13:00""",
         "form_name": "Ime i Prezime*", "form_tel": "Broj telefona za dostavu*", "form_city": "Grad*", "form_zip": "Poštanski broj*", "form_addr": "Ulica i kućni broj*",
         "btn_order": "🚀 POŠALJI NARUDŽBU", "success": "NARUDŽBA JE USPJEŠNO PREDANA! HVALA VAM NA POVJERENJU.", "unit_kg": "kg", "unit_pc": "kom", "curr": "€", "total": "Informativni iznos", "shipping_info": "PODACI ZA DOSTAVU",
         "p1": "Dimljeni hamburger", "p2": "Dimljeni buncek", "p3": "Dimljeni prsni vršci", "p4": "Slavonska kobasica", "p5": "Domaća salama", "p6": "Dimljene kosti",
@@ -43,7 +43,8 @@ LANG_MAP = {
         "cart_title": "🛒 Your Cart", "cart_empty": "is empty",
         "note_vaga": "⚖️ **Weight Note:** Prices are fixed, but the exact total will be confirmed after precise weighing before shipment.",
         "note_delivery": "🚚 **Shipping:** Delivery to address or parcel locker. Payment: **Cash on Delivery (COD)**.",
-        "btn_order": "🚀 SEND ORDER", "success": "ORDER SUCCESSFULLY SUBMITTED!", "unit_kg": "kg", "unit_pc": "pcs", "curr": "€", "total": "Estimated Total", "shipping_info": "SHIPPING DETAILS"
+        "btn_order": "🚀 SEND ORDER", "success": "ORDER SUCCESSFULLY SUBMITTED!", "unit_kg": "kg", "unit_pc": "pcs", "curr": "€", "total": "Estimated Total", "shipping_info": "SHIPPING DETAILS",
+        "info_text_ext": "Located in Sisak, we preserve traditional meat preparation. \n📍 **Main Shop:** Sisak City Market (Tržnica Sisak)."
     },
     "DE 🇩🇪": {
         "nav_shop": "🏬 SHOP", "nav_horeca": "🏨 FÜR HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ÜBER UNS",
@@ -51,7 +52,8 @@ LANG_MAP = {
         "cart_title": "🛒 Warenkorb", "cart_empty": "ist leer",
         "note_vaga": "⚖️ **Hinweis:** Der genaue Betrag wird nach dem Wiegen ermittelt.",
         "note_delivery": "🚚 **Lieferung:** Bezahlung ausschließlich per **Nachnahme**.",
-        "btn_order": "🚀 SENDEN", "success": "ERFOLGREICH ÜBERMITTELT!", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "total": "Gesamtsumme", "shipping_info": "LIEFERDATEN"
+        "btn_order": "🚀 SENDEN", "success": "ERFOLGREICH ÜBERMITTELT!", "unit_kg": "kg", "unit_pc": "Stk", "curr": "€", "total": "Gesamtsumme", "shipping_info": "LIEFERDATEN",
+        "info_text_ext": "Traditionelle Fleischzubereitung aus Sisak. \n📍 **Hauptstandort:** Stadtmarkt Sisak (Tržnica Sisak)."
     }
 }
 
@@ -121,9 +123,9 @@ if menu == T["nav_shop"]:
         
         st.divider()
 
-        # --- 2. STALNE NAPOMENE (ISPOD KOŠARICE) ---
+        # --- 2. STALNE NAPOMENE (UJEDNAČENE BOJE) ---
         st.info(T["note_vaga"])
-        st.warning(T["note_delivery"])
+        st.info(T["note_delivery"])
         st.divider()
 
         # --- 3. PODACI ZA DOSTAVU (FIKSNI OBRAZAC) ---
@@ -145,7 +147,7 @@ if menu == T["nav_shop"]:
                         msg_placeholder = st.empty()
                         msg_placeholder.success(T["success"])
                         st.session_state.cart = {}
-                        time.sleep(10) # Vidljivo 10 sekundi
+                        time.sleep(10)
                         msg_placeholder.empty()
                         st.rerun()
                 else:
@@ -154,8 +156,8 @@ if menu == T["nav_shop"]:
 elif menu == T["nav_info"]:
     st.title(T["info_title"])
     st.markdown(T["info_text"])
-    st.subheader("📍 Lokacija: Tržnica Caprag, Sisak")
-    map_data = pd.DataFrame({'lat': [45.4622], 'lon': [16.3755]})
+    st.subheader("📍 Lokacija: Tržnica Sisak")
+    map_data = pd.DataFrame({'lat': [45.4853], 'lon': [16.3735]}) # Koordinate Tržnice Sisak (centar)
     st.map(map_data)
 else:
     key_p = "horeca" if menu == T["nav_horeca"] else "haccp"
