@@ -1,182 +1,195 @@
 import streamlit as st
 import smtplib
+import time
 from email.mime.text import MIMEText
 from dataclasses import dataclass
 from datetime import datetime
 
-# --- KONFIGURACIJA ---
-CONFIG = {
-    "EMAIL": "tomislavtomi90@gmail.com",
-    "PASS": "czdx ndpg owzy wgqu",
-    "SHOP_NAME": "KOJUNDŽIĆ",
-    "LOCATION": "Sisak 2026",
-    "THEME_COLOR": "#800000"  # Tamno crvena (boja mesa/tradicije)
+# --- INTERNA KONFIGURACIJA ---
+@dataclass(frozen=True)
+class AppConfig:
+    EMAIL: str = "tomislavtomi90@gmail.com"
+    PASS: str = "czdx ndpg owzy wgqu"  # Koristi Google App Password
+    SERVER: str = "smtp.gmail.com"
+    PORT: int = 587
+    THEME_COLOR: str = "#800000"  # Deep Crimson
+    SECONDARY_COLOR: str = "#1E1E1E" # Charcoal Dark
+
+CONFIG = AppConfig()
+
+PRODUCTS = {
+    "Dimljeni hamburger": {"icon": "🥓", "desc": "Sušen na bukovom drvetu."},
+    "Dimljeni buncek": {"icon": "🍖", "desc": "Tradicionalna receptura."},
+    "Slavonska kobasica": {"icon": "🌭", "desc": "Domaća paprika i meso."},
+    "Domaći čvarci": {"icon": "🍿", "desc": "Topljeni na starinski način."},
+    "Panceta": {"icon": "🥓", "desc": "Dugo zrenje, vrhunska aroma."},
+    "Svinjska mast": {"icon": "🥣", "desc": "Čista, bez aditiva."},
+    "Dimljena glava": {"icon": "🐷", "desc": "Tradicionalna delikatesa."}
 }
 
-# --- CUSTOM CSS (Za "Moćan" Izgled) ---
-def apply_custom_style():
+# --- STYLING (Premium Visuals) ---
+def apply_styles():
     st.markdown(f"""
     <style>
-        /* Pozadina i fontovi */
-        .stApp {{
-            background-color: #f8f9fa;
-        }}
-        h1, h2, h3 {{
-            color: {CONFIG['THEME_COLOR']};
-            font-family: 'Playfair Display', serif;
-            font-weight: 800;
+        .stApp {{ background-color: #fdfdfd; }}
+        [data-testid="stHeader"] {{ background: rgba(0,0,0,0); }}
+        
+        .hero-section {{
+            background: linear-gradient(135deg, {CONFIG.THEME_COLOR} 0%, {CONFIG.SECONDARY_COLOR} 100%);
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }}
         
-        /* Premium Kartice Proizvoda */
         .product-card {{
-            background-color: white;
-            padding: 20px;
+            background: white;
+            padding: 1.5rem;
             border-radius: 15px;
-            border-left: 5px solid {CONFIG['THEME_COLOR']};
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            transition: transform 0.3s;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            text-align: center;
+            height: 220px;
         }}
+        
         .product-card:hover {{
+            border-color: {CONFIG.THEME_COLOR};
             transform: translateY(-5px);
         }}
-        
-        /* Gumbi */
-        .stButton>button {{
-            background-color: {CONFIG['THEME_COLOR']};
-            color: white;
-            border-radius: 8px;
-            border: none;
-            padding: 0.5rem 2rem;
-            font-weight: bold;
-            width: 100%;
-        }}
-        .stButton>button:hover {{
-            background-color: #a00000;
-            border: none;
-            color: white;
-        }}
-        
-        /* Sidebar Styling */
-        [data-testid="stSidebar"] {{
-            background-color: #1a1a1a;
-            color: white;
-        }}
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2 {{
-            color: white;
-        }}
-    </style>
-    """, unsafe_allow_status=True)
 
-# --- POSLOVNA LOGIKA ---
-@dataclass
-class Order:
-    user: dict
-    items: dict
-    
-    def send_email(self):
+        .stButton>button {{
+            background-color: {CONFIG.THEME_COLOR};
+            color: white;
+            border-radius: 10px;
+            border: none;
+            width: 100%;
+            height: 45px;
+            font-weight: bold;
+            transition: 0.3s;
+        }}
+        
+        .stButton>button:hover {{
+            background-color: {CONFIG.SECONDARY_COLOR};
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }}
+        
+        [data-testid="stSidebar"] {{
+            background-color: {CONFIG.SECONDARY_COLOR};
+            color: white;
+        }}
+        .stMarkdown p {{ font-size: 1.05rem; }}
+    </style>
+    """, unsafe_allow_html=True)
+
+# --- CORE LOGIC ---
+class OrderService:
+    @staticmethod
+    def send_notification(user, cart):
         try:
-            summary = "\n".join([f"🥩 {k}: {v}kg" for k, v in self.items.items()])
-            body = f"NOVA PREMIUM NARUDŽBA\n\nKupac: {self.user['name']}\nTel: {self.user['tel']}\nAdresa: {self.user['addr']}\n\nStavke:\n{summary}"
-            msg = MIMEText(body)
-            msg['Subject'] = f"🔥 Narudžba: {self.user['name']}"
-            msg['From'] = msg['To'] = CONFIG["EMAIL"]
+            items_str = "\n".join([f"🥩 {k}: {v}kg" for k, v in cart.items()])
+            body = (f"NARUDŽBA - MESNICA KOJUNDŽIĆ 2026\n\n"
+                    f"KUPAC: {user['name']}\n"
+                    f"TEL: {user['tel']}\n"
+                    f"ADRESA: {user['addr']}\n\n"
+                    f"STAVKE:\n{items_str}\n\n"
+                    f"Vrijeme: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
             
-            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            msg = MIMEText(body)
+            msg['Subject'] = f"🔥 Nova narudžba: {user['name']}"
+            msg['From'] = CONFIG.EMAIL
+            msg['To'] = CONFIG.EMAIL
+
+            with smtplib.SMTP(CONFIG.SERVER, CONFIG.PORT, timeout=12) as server:
                 server.starttls()
-                server.login(CONFIG["EMAIL"], CONFIG["PASS"])
+                server.login(CONFIG.EMAIL, CONFIG.PASS)
                 server.send_message(msg)
             return True
-        except: return False
+        except Exception as e:
+            print(f"SMTP Error: {e}")
+            return False
 
-# --- UI KOMPONENTE ---
-def render_header():
-    col1, col2 = st.columns([1, 4])
-    with col1:
-        st.write("") # Ovdje bi išao logo
-    with col2:
-        st.title(f"👑 {CONFIG['SHOP_NAME']} | Premium Butchery")
-        st.write(f"📍 {CONFIG['LOCATION']} | *Tradicija koja se osjeti u svakom zalogaju.*")
-    st.divider()
-
-def product_grid():
-    products = {
-        "Dimljeni hamburger": {"icon": "🥓", "desc": "Sušen na bukovom drvetu, savršen omjer mesa i masnoće."},
-        "Dimljeni buncek": {"icon": "🍖", "desc": "Tradicionalna receptura, spreman za kuhanje."},
-        "Slavonska kobasica": {"icon": "🌭", "desc": "Domaća paprika i birano meso iz domaćeg uzgoja."},
-        "Domaći čvarci": {"icon": "🍿", "desc": "Hrskavi, topljeni na starinski način."},
-        "Panceta": {"icon": "🥓", "desc": "Dugo zrenje, vrhunska aroma."},
-        "Svinjska mast": {"icon": "🥣", "desc": "Čista, bijela, bez aditiva - kao kod bake."},
-        "Dimljena glava": {"icon": "🐷", "desc": "Delikatesa za prave ljubitelje tradicije."}
-    }
-
-    st.subheader("🛒 Naša Ponuda")
-    cols = st.columns(3)
-    
-    for i, (name, info) in enumerate(products.items()):
-        with cols[i % 3]:
-            st.markdown(f"""
-            <div class="product-card">
-                <h3>{info['icon']} {name}</h3>
-                <p style='color: #666; font-size: 0.9em;'>{info['desc']}</p>
-            </div>
-            """, unsafe_allow_status=True)
-            
-            qty = st.number_input("Količina (kg)", 0.0, 20.0, step=0.5, key=f"q_{name}")
-            if st.button(f"Dodaj u košaricu", key=f"b_{name}"):
-                if qty > 0:
-                    st.session_state.cart[name] = qty
-                    st.toast(f"✅ {name} dodan u košaricu!")
-
-# --- GLAVNA APLIKACIJA ---
+# --- UI RENDERER ---
 def main():
     st.set_page_config(page_title="Kojundžić Premium", page_icon="🥩", layout="wide")
-    apply_custom_style()
-    
+    apply_styles()
+
     if "cart" not in st.session_state:
         st.session_state.cart = {}
 
-    render_header()
-    
-    # Hero sekcija
+    # Hero
     st.markdown(f"""
-    <div style="background-color: {CONFIG['THEME_COLOR']}; padding: 40px; border-radius: 20px; color: white; text-align: center; margin-bottom: 40px;">
-        <h1 style="color: white; margin: 0;">DOMAĆE. DIMLJENO. VRHUNSKO.</h1>
-        <p style="font-size: 1.2em; opacity: 0.9;">Naručite direktno iz naše dimne komore do vašeg stola.</p>
+    <div class="hero-section">
+        <h1 style="color: white; font-size: 3.5rem; margin-bottom: 0;">KOJUNDŽIĆ</h1>
+        <p style="font-size: 1.5rem; opacity: 0.9;">Premium Butchery • Sisak 2026</p>
+        <hr style="width: 100px; margin: 20px auto; border-color: rgba(255,255,255,0.3);">
+        <p>Vrhunsko domaće meso, dimljeno po tradiciji naših starih.</p>
     </div>
-    """, unsafe_allow_status=True)
+    """, unsafe_allow_html=True)
 
-    product_grid()
-
-    # Sidebar Checkout
-    with st.sidebar:
-        st.markdown("## 🛒 Vaša Seleksi")
-        if not st.session_state.cart:
-            st.info("Košarica je prazna. Odaberite najbolje od mesa.")
-        else:
-            for p, q in list(st.session_state.cart.items()):
-                st.write(f"📍 **{p}**: {q} kg")
+    # Katalog
+    st.markdown("## 🛒 Naša ponuda")
+    cols = st.columns(4)
+    
+    for i, (name, details) in enumerate(PRODUCTS.items()):
+        with cols[i % 4]:
+            st.markdown(f"""
+            <div class="product-card">
+                <span style="font-size: 3rem;">{details['icon']}</span>
+                <h3 style="margin-top: 10px;">{name}</h3>
+                <p style="color: #666; font-size: 0.9rem;">{details['desc']}</p>
+            </div>
+            """, unsafe_allow_html=True)
             
-            if st.button("🗑️ Isprazni sve"):
+            qty = st.number_input("Odaberi kg", 0.0, 100.0, step=0.5, key=f"qty_{name}")
+            if st.button(f"Dodaj u narudžbu", key=f"btn_{name}"):
+                if qty > 0:
+                    st.session_state.cart[name] = qty
+                    st.toast(f"✅ Dodano: {name} ({qty} kg)")
+                else:
+                    st.error("Unesite količinu!")
+
+    # Sidebar (Košarica)
+    with st.sidebar:
+        st.markdown("# 🧺 Vaša košarica")
+        if not st.session_state.cart:
+            st.info("Vaša košarica je trenutno prazna.")
+        else:
+            total_items = 0
+            for item, weight in list(st.session_state.cart.items()):
+                st.markdown(f"**{item}**")
+                st.write(f"⚖️ {weight} kg")
+                total_items += 1
+            
+            if st.button("🗑️ Isprazni sve", use_container_width=True):
                 st.session_state.cart = {}
                 st.rerun()
-            
+
             st.divider()
-            with st.form("checkout"):
-                st.markdown("### 📋 Detalji Isporuke")
-                u = {
-                    "name": st.text_input("Ime i Prezime"),
-                    "tel": st.text_input("Mobitel"),
-                    "addr": st.text_area("Adresa dostave")
-                }
-                if st.form_submit_button("ZAVRŠI NARUDŽBU"):
-                    if all(u.values()) and st.session_state.cart:
-                        if Order(u, st.session_state.cart).send_email():
-                            st.success("Narudžba primljena. Javit ćemo Vam se ubrzo! 🚀")
-                            st.session_state.cart = {}
-                            st.balloons()
-                        else: st.error("Greška na serveru.")
-                    else: st.warning("Molimo ispunite sva polja.")
+            st.markdown("### 🚚 Podaci za dostavu")
+            with st.form("checkout_form"):
+                u_name = st.text_input("Ime i prezime*")
+                u_tel = st.text_input("Kontakt mobitel*")
+                u_addr = st.text_area("Adresa za dostavu*")
+                
+                submitted = st.form_submit_button("ZAKLJUČI NARUDŽBU", use_container_width=True)
+                
+                if submitted:
+                    if all([u_name, u_tel, u_addr]) and st.session_state.cart:
+                        with st.spinner("Šaljemo vašu narudžbu..."):
+                            user_data = {"name": u_name, "tel": u_tel, "addr": u_addr}
+                            if OrderService.send_notification(user_data, st.session_state.cart):
+                                st.balloons()
+                                st.success("Narudžba uspješno poslana! Javit ćemo Vam se ubrzo.")
+                                st.session_state.cart = {}
+                                time.sleep(2)
+                                st.rerun()
+                            else:
+                                st.error("Došlo je do greške pri slanju maila. Provjerite internet vezu.")
+                    else:
+                        st.warning("Popunite sva polja i osigurajte da košarica nije prazna.")
 
 if __name__ == "__main__":
     main()
