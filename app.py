@@ -3,7 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 # =================================================================
-# 🛡️ TRAJNO USIDRENA KONFIGURACIJA - KOJUNDŽIĆ SISAK 2026. FINAL
+# 🛡️ FINALNA USIDRENA VERZIJA - KOJUNDŽIĆ SISAK 2026. (v10.0)
 # =================================================================
 
 MOJ_EMAIL = "tomislavtomi90@gmail.com"
@@ -11,54 +11,57 @@ MOJA_LOZINKA = "czdx ndpg owzy wgqu"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-EU_DRZAVE = [
-    "Hrvatska", "Austrija", "Belgija", "Bugarska", "Cipar", "Češka", "Danska", 
-    "Estonija", "Finska", "Francuska", "Njemačka", "Slovenija", "Italija"
-]
+EU_DRZAVE = ["Hrvatska", "Austrija", "Njemačka", "Slovenija", "Italija", "Mađarska", "Ostalo"]
 
-# --- KOMPLETAN RJEČNIK SA SVIM ISPRAVCIMA ---
+# --- KOMPLETAN VIŠEJEZIČNI RJEČNIK ---
 LANG = {
     "HR 🇭🇷": {
         "title": "KOJUNDŽIĆ mesnica i prerada mesa | SISAK 2026.",
         "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
-        "cart_title": "🛒 Vaša košarica", "cart_empty": "Košarica je prazna.",
-        "unit_kg": "kg", "note_vaga": "⚖️ Cijene su točne, odstupanja su minimalna zbog ručne obrade.",
+        "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna.",
+        "unit_kg": "kg", "note_vaga": "⚖️ VAŽNO: Cijene su fiksne, težina može minimalno odstupati.",
         "form_title": "📍 PODACI ZA DOSTAVU",
-        "fname": "Ime*", "lname": "Prezime*", "tel": "Kontakt telefon*", "country": "Država*", "city": "Grad*", "addr": "Ulica i broj*",
-        "btn_order": "🚀 POŠALJI NARUDŽBU", "success_msg": "Narudžba zaprimljena! Hvala na povjerenju.",
-        "haccp_txt": "### Beskompromisna sigurnost hrane\nImplementirani HACCP sustav temelj je našeg poslovanja. Provodimo rigorozne kontrole u svakoj fazi – od ulaza sirovine do finalnog pakiranja.",
-        "products": [
-            "Dimljeni hamburger", "Dimljeni buncek", "Dimljeni prsni vršci", "Slavonska kobasica", 
-            "Domaća salama", "Dimljene kosti", "Dimljene nogice mix", "Panceta", "Dimljeni vrat (BK)", 
-            "Dimljeni kare (BK)", "Dimljena pečenica", "Domaći čvarci", "Svinjska mast (kanta)", 
-            "Krvavice", "Pečenice za roštilj", "Suha rebra", "Dimljena glava", "Slanina sapunara"
-        ]
+        "fname": "Ime*", "lname": "Prezime*", "tel": "Kontakt telefon*", "country": "Država*", "city": "Grad*", "addr": "Ulica i kućni broj*",
+        "btn_order": "🚀 POŠALJI NARUDŽBU", "success_msg": "Vaša narudžba je zaprimljena, hvala!",
+        "horeca_txt": "### Partnerstvo za HORECA\nNudimo precizno rezanje i stabilnu opskrbu za hotele i restorane.",
+        "haccp_txt": "### HACCP Standardi\nSvi naši procesi su certificirani i mikrobiološki kontrolirani.",
+        "products": ["Dimljeni hamburger", "Dimljeni buncek", "Slavonska kobasica", "Domaća salama", "Panceta", "Domaći čvarci", "Svinjska mast", "Krvavice", "Suha rebra"]
     },
     "EN 🇬🇧": {
-        "title": "KOJUNDŽIĆ Butchery | SISAK 2026.",
+        "title": "KOJUNDŽIĆ Butchery & Processing | SISAK 2026.",
         "nav_shop": "🏬 SHOP", "nav_horeca": "🏨 HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ABOUT US",
-        "cart_title": "🛒 Your Cart", "cart_empty": "Cart is empty.",
-        "unit_kg": "kg", "note_vaga": "⚖️ Prices are exact, weight may vary slightly due to manual processing.",
+        "cart_title": "🛒 Your Cart", "cart_empty": "Your cart is empty.",
+        "unit_kg": "kg", "note_vaga": "⚖️ IMPORTANT: Weight may vary slightly due to manual processing.",
         "form_title": "📍 DELIVERY INFO",
         "fname": "First Name*", "lname": "Last Name*", "tel": "Phone*", "country": "Country*", "city": "City*", "addr": "Address*",
-        "btn_order": "🚀 PLACE ORDER", "success_msg": "Order received! Thank you.",
-        "haccp_txt": "### Uncompromising Food Safety\nThe implemented HACCP system is the foundation of our business. We conduct rigorous controls at every stage.",
-        "products": [
-            "Smoked Hamburger", "Smoked Pork Hock", "Smoked Brisket Tips", "Slavonian Sausage", 
-            "Homemade Salami", "Smoked Bones", "Smoked Trotters Mix", "Pancetta", "Smoked Neck", 
-            "Smoked Loin", "Smoked Tenderloin", "Pork Rinds", "Lard", "Blood Sausages", 
-            "Grilling Sausages", "Dry Ribs", "Smoked Pig Head", "Bacon"
-        ]
+        "btn_order": "🚀 PLACE ORDER", "success_msg": "Order received, thank you!",
+        "horeca_txt": "### HORECA Partnership\nWe provide precision cutting and stable supply for hotels and restaurants.",
+        "haccp_txt": "### HACCP Standards\nAll processes are certified and microbiologically controlled.",
+        "products": ["Smoked Hamburger", "Smoked Pork Hock", "Slavonian Sausage", "Homemade Salami", "Pancetta", "Pork Rinds", "Lard", "Blood Sausage", "Dry Ribs"]
+    },
+    "DE 🇩🇪": {
+        "title": "KOJUNDŽIĆ Metzgerei | SISAK 2026.",
+        "nav_shop": "🏬 SHOP", "nav_horeca": "🏨 HORECA", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ÜBER UNS",
+        "cart_title": "🛒 Warenkorb", "cart_empty": "Der Warenkorb ist leer.",
+        "unit_kg": "kg", "note_vaga": "⚖️ WICHTIG: Das Gewicht kann aufgrund manueller Bearbeitung variieren.",
+        "form_title": "📍 LIEFERDATEN",
+        "fname": "Vorname*", "lname": "Nachname*", "tel": "Telefon*", "country": "Land*", "city": "Stadt*", "addr": "Straße*",
+        "btn_order": "🚀 BESTELLEN", "success_msg": "Bestellung erhalten, danke!",
+        "horeca_txt": "### HORECA Partnerschaft\nPräzisionsschnitt und stabile Versorgung für Gastronomie.",
+        "haccp_txt": "### HACCP-Standards\nZertifizierte Prozesse und mikrobiologische Kontrolle.",
+        "products": ["Geräucherter Hamburger", "Geräucherter Schinken", "Slavonische Wurst", "Hausgemachte Salami", "Pancetta", "Grieben", "Schweineschmalz", "Blutwurst", "Trockenrippen"]
     }
 }
 
+# --- POSTAVKE STRANICE ---
 st.set_page_config(page_title="Kojundžić Sisak 2026", layout="wide", page_icon="🥩")
 
 if "cart" not in st.session_state:
     st.session_state.cart = {}
 
 # --- NAVIGACIJA ---
-sel_lang = st.sidebar.selectbox("🌍 JEZIK / LANGUAGE", ["HR 🇭🇷", "EN 🇬🇧"])
+st.sidebar.title("MENU")
+sel_lang = st.sidebar.selectbox("🌍 JEZIK / LANGUAGE", list(LANG.keys()))
 L = LANG[sel_lang]
 page = st.sidebar.radio("Navigacija", [L["nav_shop"], L["nav_horeca"], L["nav_haccp"], L["nav_info"]])
 
@@ -66,46 +69,47 @@ page = st.sidebar.radio("Navigacija", [L["nav_shop"], L["nav_horeca"], L["nav_ha
 if page == L["nav_shop"]:
     st.title(L["title"])
     st.info(L["note_vaga"])
-    
     cols = st.columns(3)
     for i, prod in enumerate(L["products"]):
         with cols[i % 3]:
             st.write(f"**{prod}**")
             qty = st.number_input(f"{L['unit_kg']}", min_value=0.0, step=0.1, key=f"q_{prod}")
-            if st.button(f"Dodaj", key=f"b_{prod}"):
+            if st.button(f"Dodaj / Add", key=f"b_{prod}"):
                 if qty > 0:
                     st.session_state.cart[prod] = qty
                     st.toast(f"✅ {prod}")
 
-# --- HACCP ---
+# --- OSTALE SEKCIJE ---
+elif page == L["nav_horeca"]:
+    st.title(L["nav_horeca"])
+    st.markdown(L["horeca_txt"])
 elif page == L["nav_haccp"]:
     st.title(L["nav_haccp"])
     st.markdown(L["haccp_txt"])
-
-# --- O NAMA / HORECA ---
 else:
-    st.title(page)
-    st.write("Tradicija i kvaliteta obitelji Kojundžić - Sisak 2026.")
+    st.title(L["nav_info"])
+    st.write("Kojundžić Sisak 2026 - Generacije tradicije i kvalitete.")
 
-# --- SIDEBAR KOŠARICA I SLANJE ---
+# --- SIDEBAR KOŠARICA I EMAIL ---
 st.sidebar.divider()
 st.sidebar.header(L["cart_title"])
 
 if not st.session_state.cart:
     st.sidebar.write(L["cart_empty"])
 else:
-    stavke_mail = ""
+    stavke_za_email = ""
     for p, q in list(st.session_state.cart.items()):
         if q > 0:
-            st.sidebar.write(f"🔹 {p}: {q} kg")
-            stavke_mail += f"- {p}: {q} kg\n"
+            st.sidebar.write(f"🥩 {p}: {q} {L['unit_kg']}")
+            stavke_za_email += f"- {p}: {q} kg\n"
     
-    if st.sidebar.button("🗑️ Isprazni"):
+    if st.sidebar.button("🗑️ Isprazni košaricu"):
         st.session_state.cart = {}
         st.rerun()
 
     st.sidebar.divider()
     with st.sidebar.form("order_form"):
+        st.write(L["form_title"])
         fn = st.text_input(L["fname"])
         ln = st.text_input(L["lname"])
         ph = st.text_input(L["tel"])
@@ -115,9 +119,9 @@ else:
         
         if st.form_submit_button(L["btn_order"]):
             if all([fn, ln, ph, adr]):
-                tijelo = f"NARUDŽBA 2026\n\nKupac: {fn} {ln}\nTel: {ph}\nAdresa: {adr}, {city}, {ct}\n\nStavke:\n{stavke_mail}"
-                msg = MIMEText(tijelo)
-                msg['Subject'] = f"Nova narudžba: {fn} {ln}"
+                sadrzaj = f"NOVA NARUDŽBA 2026\n\nKupac: {fn} {ln}\nTel: {ph}\nAdresa: {adr}, {city}, {ct}\n\nStavke:\n{stavke_za_email}"
+                msg = MIMEText(sadrzaj)
+                msg['Subject'] = f"Narudžba: {fn} {ln}"
                 msg['From'] = MOJ_EMAIL
                 msg['To'] = MOJ_EMAIL
                 
@@ -132,3 +136,5 @@ else:
                     st.balloons()
                 except Exception as e:
                     st.sidebar.error(f"Greška: {e}")
+            else:
+                st.sidebar.warning("Popunite sva polja!")
