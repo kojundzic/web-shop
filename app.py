@@ -3,115 +3,127 @@ import smtplib
 from email.mime.text import MIMEText
 
 # =================================================================
-# 🛡️ KOJUNDŽIĆ SISAK 2026. - FINALNA VERZIJA S VAGOM I OPISIMA
+# 🛡️ STABILNA VERZIJA - KOJUNDŽIĆ SISAK (BACKUP)
 # =================================================================
 
+# Povlačenje podataka iz Streamlit Secrets postavki
 MOJ_EMAIL = st.secrets["moj_email"]
 MOJA_LOZINKA = st.secrets["moja_lozinka"]
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-st.set_page_config(page_title="KOJUNDŽIĆ Mesnica", page_icon="🥩", layout="wide")
+st.set_page_config(page_title="Kojundžić Mesnica", page_icon="🥩", layout="wide")
 
-# --- VIŠEJEZIČNI RJEČNIK ---
-LANG = {
-    "HR 🇭🇷": {
-        "title": "KOJUNDŽIĆ mesnica i prerada mesa | SISAK 2026.",
-        "nav_shop": "🏬 TRGOVINA", "nav_horeca": "🏨 ZA UGOSTITELJE", "nav_suppliers": "🚜 DOBAVLJAČI", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ O NAMA",
-        "cart_title": "🛒 Vaša košarica", "cart_empty": "Vaša košarica je trenutno prazna.",
-        "note_vaga": "⚖️ **VAŽNO:** Cijene su točne, ali zbog ručne obrade težina može minimalno odstupati. Račun s točnim iznosom dobivate u paketu.",
-        "note_cod": "🚚 Plaćanje pouzećem (gotovina)",
-        "form_title": "📍 PODACI ZA DOSTAVU",
-        "btn_order": "🚀 POŠALJI NARUDŽBU",
-        "about_txt": "### Obiteljska tradicija i vizija\nObitelj Kojundžić generacijama predstavlja sinonim za vrhunsku mesnu struku u Sisačko-moslavačkoj županiji...",
-        "haccp_txt": "### Beskompromisna sigurnost hrane\nU pogonima Kojundžić sigurnost potrošača je imperativ. Implementirani HACCP sustav temelj je našeg poslovanja."
-    }
-}
-
-# --- POPIS PROIZVODA ---
+# --- POPIS PROIZVODA I CIJENA (EUR) ---
+# Ovdje možeš mijenjati cijene po potrebi
 PROIZVODI = {
-    "Dimljeni hamburger (1kg)": 15.00,
-    "Panceta (1kg)": 12.00,
-    "Čvarci (1kg)": 5.00,
-    "Suha rebra (1kg)": 9.00,
-    "Domaća mast (1kg)": 10.00,
-    "Slavonska kobasica (1kg)": 8.50,
-    "Dimljeni buncek (1kg)": 9.00
+    "Domaća slanina (cca 1kg)": 15.00,
+    "Kulenova seka (cca 0.5kg)": 12.00,
+    "Domaći čvarci (250g)": 5.00,
+    "Suha rebra (cca 1kg)": 9.00,
+    "Domaća mast (kanta 2.5kg)": 10.00,
+    "Slavonska kobasica (par)": 8.50,
+    "Panceta narezana (100g)": 3.50
 }
 
-# --- IZBORNIK ---
-sel_lang = st.sidebar.selectbox("🌍 JEZIK / LANGUAGE", ["HR 🇭🇷"])
-L = LANG[sel_lang]
+# --- NASLOV I INFO ---
+st.title("🥩 KOJUNDŽIĆ - Mesnica i prerada mesa")
+st.subheader("Tradicija iz Siska | Prodaja suhomesnatih delicija")
 
-tab1, tab2, tab3, tab4 = st.tabs([L["nav_shop"], L["nav_horeca"], L["nav_haccp"], L["nav_info"]])
+st.info("""
+⚖️ **OBAVIJEST O TEŽINI I PLAĆANJU:** 
+Svi proizvodi se važu u mesnici. Cijene na webu su informativne. 
+Točan iznos bit će naveden na fiskalnom računu koji dobivate u paketu. 
+Plaćanje je **POUZEĆEM** (gotovinom poštaru).
+""")
 
-with tab1:
-    st.title(L["title"])
-    st.info(L["note_vaga"])
+# --- KOŠARICA ---
+if 'cart' not in st.session_state:
+    st.session_state.cart = {}
+
+# --- PRIKAZ PROIZVODA ---
+cols = st.columns(3)
+for idx, (proizvod, cijena) in enumerate(PROIZVODI.items()):
+    with cols[idx % 3]:
+        st.write(f"### {proizvod}")
+        st.write(f"Cijena: **{cijena:.2f} €**")
+        if st.button(f"Dodaj u košaricu", key=proizvod):
+            st.session_state.cart[proizvod] = st.session_state.cart.get(proizvod, 0) + 1
+            st.success(f"Dodano u košaricu!")
+
+# --- PREGLED NARUDŽBE ---
+st.divider()
+st.header("🛒 Vaša košarica")
+
+if not st.session_state.cart:
+    st.write("Vaša košarica je trenutno prazna.")
+else:
+    ukupno_inf = 0
+    narudžba_detalji = ""
+    for stavka, kolicina in st.session_state.cart.items():
+        iznos = kolicina * PROIZVODI[stavka]
+        ukupno_inf += iznos
+        st.write(f"✅ {stavka} x {kolicina} = **{iznos:.2f} €**")
+        narudžba_detalji += f"- {stavka} x {kolicina}\n"
     
-    if 'cart' not in st.session_state:
+    st.write(f"### Ukupni informativni iznos: {ukupno_inf:.2f} €")
+    
+    if st.button("Obriši košaricu"):
         st.session_state.cart = {}
+        st.rerun()
 
-    cols = st.columns(3)
-    for idx, (proizvod, cijena) in enumerate(PROIZVODI.items()):
-        with cols[idx % 3]:
-            st.write(f"### {proizvod}")
-            st.write(f"Cijena: **{cijena:.2f} €**")
-            
-            c1, c2 = st.columns(2)
-            with c1:
-                if st.button(f"➕ Dodaj", key=f"add_{proizvod}"):
-                    trenutna = st.session_state.cart.get(proizvod, 0)
-                    st.session_state.cart[proizvod] = 1.0 if trenutna == 0 else trenutna + 0.5
-                    st.rerun()
-            with c2:
-                if st.button(f"➖ Smanji", key=f"rem_{proizvod}"):
-                    trenutna = st.session_state.cart.get(proizvod, 0)
-                    if trenutna > 1.0: st.session_state.cart[proizvod] = trenutna - 0.5
-                    elif trenutna == 1.0: del st.session_state.cart[proizvod]
-                    st.rerun()
-
-            if proizvod in st.session_state.cart:
-                st.success(f"U košarici: **{st.session_state.cart[proizvod]} kg**")
-
+    # --- FORMA ZA DOSTAVU ---
     st.divider()
-    st.header(L["cart_title"])
-    if not st.session_state.cart:
-        st.write(L["cart_empty"])
-    else:
-        ukupno = 0
-        detalji = ""
-        for s, k in st.session_state.cart.items():
-            iznos = k * PROIZVODI[s]
-            ukupno += iznos
-            st.write(f"✅ {s} x {k} = **{iznos:.2f} €**")
-            detalji += f"- {s} x {k}\n"
+    st.header("📍 Podaci za slanje (Hrvatska Pošta)")
+    with st.form("forma_narudzbe"):
+        ime_prezime = st.text_input("Ime i Prezime*")
+        adresa = st.text_input("Ulica i kućni broj*")
+        grad = st.text_input("Poštanski broj i Grad*")
+        telefon = st.text_input("Kontakt telefon*")
+        napomena = st.text_area("Napomena za mesara (npr. želim deblje rezano, manji komad i sl.)")
         
-        st.write(f"### Ukupno: {ukupno:.2f} €")
+        st.warning("🚚 Paket šaljemo putem Hrvatske pošte. Plaćate gotovinom prilikom preuzimanja.")
         
-        with st.form("order_form"):
-            st.write(L["form_title"])
-            ime = st.text_input("Ime i Prezime*")
-            adresa = st.text_input("Adresa i Grad*")
-            tel = st.text_input("Mobitel*")
-            st.warning(L["note_cod"])
-            if st.form_submit_button(L["btn_order"]):
-                if ime and adresa and tel:
-                    try:
-                        msg = MIMEText(f"KUPAC: {ime}\nADRESA: {adresa}\nTEL: {tel}\n\nROBA:\n{detalji}")
-                        msg['Subject'] = f"Narudžba: {ime}"
-                        msg['From'], msg['To'] = MOJ_EMAIL, MOJ_EMAIL
-                        s = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-                        s.starttls()
-                        s.login(MOJ_EMAIL, MOJA_LOZINKA)
-                        s.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
-                        s.quit()
-                        st.balloons()
-                        st.success("Narudžba poslana!")
-                        st.session_state.cart = {}
-                    except Exception as e: st.error(f"Greška: {e}")
-                else: st.error("Ispunite polja!")
-
-with tab2: st.write("### HORECA"); st.write("Kontaktirajte nas za ponudu za restorane.")
-with tab3: st.write(L["haccp_txt"])
-with tab4: st.write(L["about_txt"])
+        posalji = st.form_submit_button("🚀 POTVRDI NARUDŽBU")
+        
+        if posalji:
+            if not (ime_prezime and adresa and grad and telefon):
+                st.error("🛑 Molimo ispunite sva polja označena zvjezdicom (*).")
+            else:
+                # Priprema sadržaja emaila
+                sadrzaj_maila = f"""
+                NOVA NARUDŽBA - MESNICA KOJUNDŽIĆ
+                ----------------------------------
+                KUPAC: {ime_prezime}
+                ADRESA: {adresa}, {grad}
+                TELEFON: {telefon}
+                
+                NAPOMENA: 
+                {napomena if napomena else 'Nema napomene.'}
+                
+                NARUČENI PROIZVODI:
+                {narudžba_detalji}
+                
+                INFORMATIVNI IZNOS: {ukupno_inf:.2f} EUR
+                ----------------------------------
+                Postupak: Izvažite robu, izdajte račun na kasi i pošaljite paket pouzećem.
+                """
+                
+                try:
+                    # Slanje emaila prodavaču
+                    msg = MIMEText(sadrzaj_maila)
+                    msg['Subject'] = f"Narudžba: {ime_prezime} ({grad})"
+                    msg['From'] = MOJ_EMAIL
+                    msg['To'] = MOJ_EMAIL
+                    
+                    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+                    server.starttls()
+                    server.login(MOJ_EMAIL, MOJA_LOZINKA)
+                    server.sendmail(MOJ_EMAIL, MOJ_EMAIL, msg.as_string())
+                    server.quit()
+                    
+                    st.balloons()
+                    st.success("✅ Hvala Vam na narudžbi! Vaši proizvodi će uskoro biti spakirani i poslani na Vašu adresu.")
+                    st.session_state.cart = {} # Pražnjenje košarice nakon uspjeha
+                except Exception as e:
+                    st.error(f"Došlo je do greške pri slanju narudžbe. Molimo pokušajte ponovno ili nas nazovite. (Greška: {e})")
