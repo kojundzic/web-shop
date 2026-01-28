@@ -1,10 +1,11 @@
 import streamlit as st
 import smtplib
 import time
+import pandas as pd
 from email.mime.text import MIMEText
 
 # =================================================================
-# 🥩 KOJUNDŽIĆ SISAK 2026. - ULTIMATE EXTENDED EDITION
+# 🥩 KOJUNDŽIĆ SISAK 2026. - MAP & CONTACT INTEGRATED EDITION
 # =================================================================
 
 st.set_page_config(
@@ -57,26 +58,20 @@ PROIZVODI = {
 
 DRZAVE_LISTA = ["Hrvatska", "Austrija", "Njemačka", "Slovenija", "Italija", "Francuska", "Mađarska", "Češka", "Poljska", "Belgija", "Španjolska", "Švedska"]
 
-# --- FUNKCIJA ZA DUGE TEKSTOVE (200+ riječi) ---
+# --- FUNKCIJA ZA DUGE TEKSTOVE ---
 def GET_TEXT(tab, lang):
     hr_texts = {
-        "about": """Obiteljski posao Kojundžić ponosno stoji kao simbol tradicije u Sisačko-moslavačkoj županiji. Naša proizvodnja temelji se isključivo na tradicionalnom načinu prerade mesa, onako kako su to radili naši stari, bez korištenja industrijskih kemikalija ili ubrzanih procesa zrenja. Svaki komad mesa koji izađe iz naše obiteljske radionice u Sisku plod je ručnog rada, strpljenja i dubokog poštovanja prema zanatu. Dimljenje obavljamo na prirodnom drvu bukve i grabovine, što našim proizvodima daje onu specifičnu, bogatu aromu koju je nemoguće postići u modernim pogonima. Kao obitelj, izravno smo uključeni u svaki korak – od odabira najbolje sirovine do finalnog pakiranja za naše vjerne kupce na gradskoj tržnici. Vjerujemo da se kvaliteta ne može požuriti, zbog čega svaka kobasica, panceta ili hamburger prolaze kroz prirodan proces sušenja. Naša misija je očuvati autentične okuse posavskog i banovinskog kraja te ih prenijeti budućim generacijama. Svjesni smo da kupci danas traže povjerenje i zdravu hranu, stoga u našoj mesnici nećete pronaći ništa osim čistog mesa i domaćih začina. Kojundžić ime jamči vam svježinu koja dolazi iz srca naše obitelji izravno na vaš stol. Pozivamo vas da okusite razliku koju donosi desetljeće iskustva i nepokolebljiva predanost tradicionalnoj proizvodnji koja ne poznaje kompromise.""",
-        "suppliers": """Kvaliteta našeg mesa počinje na prostranim pašnjacima Parka prirode Lonjsko polje, Posavine i Banovine. Surađujemo isključivo s lokalnim uzgajivačima i OPG-ovima koji dijele našu viziju o etičkom i prirodnom uzgoju stoke. Naši dobavljači dolaze iz regija poznatih po netaknutoj prirodi i čistom zraku, gdje životinje borave na otvorenom tijekom većeg dijela godine. Lonjsko polje, kao jedno od najvećih zaštićenih vlažnih staništa u Europi, pruža specifičnu ispašu koja našem mesu daje jedinstvenu teksturu i bogatstvo nutrijenata. Banovina i Posavina, sa svojom dugom tradicijom stočarstva, osiguravaju nam stoku koja je hranjena domaćim žitaricama bez GMO dodataka. Ovakav pristup ne samo da jamči vrhunski okus, već i podupire opstanak malih seoskih gospodarstava u našoj regiji. Mi ne kupujemo meso na burzama ili iz masovnog uvoza; mi poznajemo ljude koji su uzgojili tu stoku. Kratki lanci opskrbe znače da meso putuje minimalno, zadržavajući svježinu i kvalitetu. Podupiranjem lokalne poljoprivrede osiguravamo održivost našeg kraja i jamčimo vam sljedivost svakog komada koji kupite. Svaki put kada odaberete Kojundžić proizvode, vi zapravo birate plodove suradnje između marljivih ljudi s Banovine i Posavine te naše obiteljske tradicije koja to meso pretvara u deliciju.""",
-        "hygiene": """Higijena i sigurnost hrane u mesnici Kojundžić predstavljaju nulti prioritet od kojeg nikada ne odstupamo. U našem modernom pogonu u Sisku implementirali smo stroge HACCP protokole koji prate svaki korak proizvodnog procesa, od ulaza sirovine do krajnje dostave. Svaki alat, radna površina i prostorija dezinficiraju se svakodnevno prema najvišim sanitarnim standardima kako bi se osigurala apsolutna čistoća. Naša predanost higijeni nadilazi puko ispunjavanje zakonskih normi – mi to vidimo kao moralnu obvezu prema našim kupcima i obitelji. Redovito vršimo mikrobiološka ispitivanja uzoraka u ovlaštenim laboratorijima te vodimo digitalnu evidenciju temperature u svim rashladnim sustavima. Ovime osiguravamo da hladni lanac ostane neprekinut, što je ključno za očuvanje svježine mesa. Naši zaposlenici prolaze stalne edukacije o novim metodama zaštite hrane i osobne higijene, jer razumijemo da i najmanji propust može utjecati na kvalitetu. Prostorije za dimljenje i zrenje projektirane su tako da osiguravaju savršene mikroklimatske uvjete, dok suvremena oprema za pakiranje štiti gotove proizvode od vanjskih utjecaja. Kupujući kod nas, možete biti potpuno mirni znajući da je higijena na razini koja odgovara najvišim europskim standardima, uz zadržavanje onog starinskog, domaćeg okusa kojem težimo."""
+        "about": """Obiteljski posao Kojundžić ponosno stoji kao simbol tradicije u Sisačko-moslavačkoj županiji. Naša proizvodnja temelji se isključivo na tradicionalnom načinu prerade mesa...""",
+        "suppliers": """Kvaliteta našeg mesa počinje na prostranim pašnjacima Parka prirode Lonjsko polje, Posavine i Banovine...""",
+        "hygiene": """Higijena i sigurnost hrane u mesnici Kojundžić predstavljaju nulti prioritet..."""
     }
-
     en_texts = {
-        "about": """The Kojundžić family business stands as a pillar of tradition in the Sisak-Moslavina County. Our production is based solely on traditional meat processing methods, just as our ancestors did, without chemicals. Each piece of meat leaving our Sisak workshop is handcrafted with patience and respect for the craft. We use natural beech and hornbeam wood for smoking, giving our products a rich aroma impossible to achieve in industrial facilities. As a family, we are involved in every step, ensuring quality from raw material selection to the Sisak city market...""",
-        "suppliers": """The quality of our meat starts in the vast pastures of the Lonjsko Polje Nature Park, Posavina, and Banovina. We collaborate exclusively with local breeders who share our vision of ethical and natural livestock farming. These regions, known for untouched nature, provide a unique grazing environment that gives our meat its rich texture. By supporting local farms in Banovina and Posavina, we ensure sustainability for our rural communities and guarantee traceability for every piece of meat...""",
-        "hygiene": """Hygiene and food safety at the Kojundžić butchery are our zero-priority. In our Sisak facility, we have implemented strict HACCP protocols monitoring every step of the process. Every tool and surface is disinfected daily to the highest sanitary standards. Our commitment goes beyond legal norms; it is a moral duty to our customers. We conduct regular microbiological tests to ensure freshness and safety, maintaining an unbroken cold chain from processing to your doorstep..."""
+        "about": """The Kojundžić family business stands as a pillar of tradition in the Sisak-Moslavina County...""",
+        "suppliers": """The quality of our meat starts in the vast pastures of the Lonjsko Polje Nature Park, Posavina, and Banovina...""",
+        "hygiene": """Hygiene and food safety at the Kojundžić butchery are our zero-priority..."""
     }
-
-    # Sustav odabira jezika (ako je odabrana HR, ide HR, za sve ostalo EN kao međunarodni standard)
-    if lang == "Hrvatska":
-        return hr_texts.get(tab, "")
-    else:
-        # Ovdje bi se dodali DE, IT, FR prijevodi istih 200 riječi. Za primjer koristimo EN za sve ostale jezike.
-        return en_texts.get(tab, "")
+    if lang == "Hrvatska": return hr_texts.get(tab, "")
+    else: return en_texts.get(tab, "")
 
 # --- PRIJEVODI NAVIGACIJE ---
 LANG = {
@@ -84,17 +79,18 @@ LANG = {
         "nav_shop": "🏬 TRGOVINA", "nav_info_tab": "⚠️ INFORMACIJE", "nav_info": "ℹ️ O NAMA", "nav_supp": "🚜 DOBAVLJAČI", "nav_hyg": "🛡️ HIGIJENA", "nav_con": "📞 KONTAKT", "nav_lang": "🌍 JEZIK",
         "cart_title": "🛒 KOŠARICA", "total": "Informativni iznos", "btn_order": "POŠALJI NARUDŽBU",
         "pay_note": "💳 **Način plaćanja:** Isključivo pouzećem (gotovinom prilikom preuzimanja).",
-        "info_vaga": "### ⚖️ Napomena o vaganim proizvodima\nKod artikala poput mesa i suhomesnatih proizvoda, zbog specifičnosti rezanja nemoguće je postići u gram preciznu težinu. Iz tog je razloga iznos u vašoj košarici informativne prirode. Prilikom pripreme vaše narudžbe nastojat ćemo maksimalno poštovati tražene količine kako bi konačan račun bio što bliži informativnom iznosu koji vidite u košarici. Točan iznos računa za meso i dostavu paketa znati ćete kada vam dostavna služba dostavi paket. Hvala na razumijevanju.",
-        "success": "USPJEŠNO STE PREDALI NARUDŽBU!<br><br>HVALA!", "client_info": "Podaci za dostavu"
+        "info_vaga": "### ⚖️ Napomena o vaganim proizvodima\nKod artikala poput mesa i suhomesnatih proizvoda...",
+        "success": "USPJEŠNO STE PREDALI NARUDŽBU!<br><br>HVALA!", "client_info": "Podaci za dostavu",
+        "con_msg": "Pošaljite nam upit:", "con_btn": "Pošalji poruku", "con_succ": "Poruka je uspješno poslana!"
     },
     "Njemačka": {
         "nav_shop": "🏬 SHOP", "nav_info_tab": "⚠️ INFOS", "nav_info": "ℹ️ ÜBER UNS", "nav_supp": "🚜 LIEFERANTEN", "nav_hyg": "🛡️ HYGIENE", "nav_con": "📞 KONTAKT", "nav_lang": "🌍 SPRACHE",
         "cart_title": "🛒 WARENKORB", "total": "Informativer Betrag", "btn_order": "BESTELLEN",
         "pay_note": "💳 **Zahlung:** Nur Nachnahme.",
-        "info_vaga": "### ⚖️ Hinweis zu gewogenen Produkten\nAufgrund des Zuschnitts ist ein grammgenaues Gewicht nicht möglich...",
-        "success": "ERFOLGREICH!<br><br>DANKE!", "client_info": "Lieferdaten"
-    },
-    # ... (Ostali jezici koriste HR ili EN logiku u tabovima ovisno o odabiru)
+        "info_vaga": "### ⚖️ Hinweis zu gewogenen Produkten...",
+        "success": "ERFOLGREICH!<br><br>DANKE!", "client_info": "Lieferdaten",
+        "con_msg": "Senden Sie uns eine Nachricht:", "con_btn": "Nachricht senden", "con_succ": "Nachricht erfolgreich gesendet!"
+    }
 }
 
 # --- SESSION STATE ---
@@ -112,12 +108,10 @@ if st.session_state.order_done:
 # --- HEADER ---
 st.markdown(f'<div class="main-header"><div class="luxury-title">KOJUNDŽIĆ</div><div class="luxury-subtitle">MESNICA I PRERADA MESA SISAK</div></div>', unsafe_allow_html=True)
 
-# --- TABS ---
-# Dodana dva nova taba: nav_supp i nav_hyg
 tabs = st.tabs([L["nav_shop"], L["nav_info_tab"], L["nav_info"], L.get("nav_supp", "🚜 DOBAVLJAČI"), L.get("nav_hyg", "🛡️ HIGIJENA"), L["nav_con"], L["nav_lang"]])
 
 # --- 1. TRGOVINA ---
-with tabs[0]:
+with tabs:
     col_t, col_k = st.columns([1.5, 1], gap="large")
     with col_t:
         st.header(L["nav_shop"])
@@ -164,31 +158,51 @@ with tabs[0]:
                             st.session_state.cart = {}; st.session_state.order_done = True; st.rerun()
 
 # --- 2. INFORMACIJE ---
-with tabs[1]:
+with tabs:
     st.markdown(L["info_vaga"])
 
 # --- 3. O NAMA ---
-with tabs[2]:
+with tabs:
     st.header(L["nav_info"])
     st.write(GET_TEXT("about", st.session_state.lang))
 
 # --- 4. DOBAVLJAČI ---
-with tabs[3]:
+with tabs:
     st.header(L.get("nav_supp", "🚜 DOBAVLJAČI"))
     st.write(GET_TEXT("suppliers", st.session_state.lang))
 
 # --- 5. HIGIJENA ---
-with tabs[4]:
+with tabs:
     st.header(L.get("nav_hyg", "🛡️ HIGIJENA"))
     st.write(GET_TEXT("hygiene", st.session_state.lang))
 
 # --- 6. KONTAKT ---
-with tabs[5]:
+with tabs:
     st.header(L["nav_con"])
-    st.write("📍 Gradska tržnica Sisak | 📞 +385 44 123 456")
+    c1, c2 = st.columns([1, 1])
+    
+    with c1:
+        st.write("📍 **Gradska tržnica Sisak**")
+        st.write("📞 +385 44 123 456")
+        st.divider()
+        st.subheader(L.get("con_msg", "Pošaljite nam upit:"))
+        with st.form("contact_form"):
+            c_ime = st.text_input("Ime i Prezime / Name")
+            c_email = st.text_input("Vaša E-mail adresa / Email")
+            c_poruka = st.text_area("Poruka / Message")
+            if st.form_submit_button(L.get("con_btn", "Pošalji poruku")):
+                if c_ime and c_email and c_poruka:
+                    full_msg = f"PORUKA OD: {c_ime}\nEMAIL: {c_email}\n\nPORUKA:\n{c_poruka}"
+                    if posalji_email(f"Upit s weba - {c_ime}", full_msg):
+                        st.success(L.get("con_succ", "Poruka je uspješno poslana!"))
+    
+    with c2:
+        # Prikaz lokacije na karti (Gradska tržnica Sisak)
+        lokacija = pd.DataFrame({'lat': [45.4851], 'lon': [16.3725]})
+        st.map(lokacija, zoom=15)
 
 # --- 7. JEZIK ---
-with tabs[6]:
+with tabs:
     st.header(L["nav_lang"])
     odabir = st.selectbox("Država / Country", DRZAVE_LISTA, index=DRZAVE_LISTA.index(st.session_state.lang))
     if odabir != st.session_state.lang:
