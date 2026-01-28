@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 import time
 
 # =================================================================
-# 🥩 KOJUNDŽIĆ SISAK 2026. - FIXED PRESTIGE EDITION
+# 🥩 KOJUNDŽIĆ SISAK 2026. - LUXURY FINAL EDITION (REVIZIJA 1.1)
 # =================================================================
 
 st.set_page_config(
@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- CUSTOM CSS ZA LUKSUZAN IZGLED I MODAL ---
+# --- CUSTOM CSS ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com');
@@ -90,38 +90,20 @@ LANG = {
         "cart_title": "🛒 KOŠARICA", "cart_empty_msg": "Vaša košarica je trenutno prazna.", "total_label": "Informativni iznos narudžbe",
         "weight_note": "### ⚖️ Važna napomena o obračunu\nIstaknute cijene su točne i fiksne. Konačan iznos računa saznat ćete pri dostavi.",
         "form_title": "🚚 PODACI ZA DOSTAVU", "f_name": "Ime*", "f_lname": "Prezime*", "f_country": "Država EU*", "f_city": "Grad*", "f_zip": "Poštanski broj*", "f_addr": "Adresa*", "f_phone": "Mobitel*",
-        "btn_order": "🚀 POŠALJI NARUDŽBU", "success_msg": "USPJEŠNO STE PREDALI NARUDŽBU!<br><br>HVALA!",
+        "btn_order": "🚀 POŠALJI NARUDŽBU", "btn_clear": "🗑️ Obriši sve", "success_msg": "USPJEŠNO STE PREDALI NARUDŽBU!<br><br>HVALA!",
         "err_cart": "Košarica je prazna!", "err_form": "Popunite podatke!",
-        "about_txt": "### Obiteljska tradicija...\nNaša priča počinje u Sisku...",
-        "dob_txt": "### Partnerstvo s OPG-ovima...",
+        "about_txt": "### Obiteljska tradicija i vizija kvalitete...",
+        "dob_txt": "### Partnerstvo s lokalnim OPG-ovima...",
         "haccp_txt": "### Sigurnost hrane...",
         "ugostitelji_txt": "### Za ugostitelje..."
     },
     "EN 🇬🇧": {
         "nav_shop": "🏬 SHOP", "nav_ug": "🏨 FOR CHEFS", "nav_dob": "🚜 SUPPLIERS", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ABOUT US", "nav_lang": "🌍 LANGUAGE",
-        "title": "KOJUNDŽIĆ", "subtitle": "BUTCHERY & MEAT PROCESSING SISAK",
-        "cart_title": "🛒 SHOPPING CART", "cart_empty_msg": "Your cart is currently empty.", "total_label": "Total Amount",
-        "weight_note": "### ⚖️ Billing Note\nFinal amount determined at delivery.",
-        "form_title": "🚚 DELIVERY DETAILS", "f_name": "First Name*", "f_lname": "Last Name*", "f_country": "Country*", "f_city": "City*", "f_zip": "ZIP*", "f_addr": "Address*", "f_phone": "Phone*",
-        "btn_order": "🚀 PLACE ORDER", "success_msg": "ORDER PLACED!<br><br>THANK YOU!",
-        "err_cart": "Cart empty!", "err_form": "Fill details!",
-        "about_txt": "### Family Tradition...",
-        "dob_txt": "### Suppliers...",
-        "haccp_txt": "### Safety...",
-        "ugostitelji_txt": "### For Chefs..."
+        "cart_title": "🛒 SHOPPING CART", "btn_clear": "🗑️ Clear all", "success_msg": "ORDER PLACED!<br><br>THANK YOU!"
     },
     "DE 🇩🇪": {
         "nav_shop": "🏬 SHOP", "nav_ug": "🏨 GASTRONOMIE", "nav_dob": "🚜 LIEFERANTEN", "nav_haccp": "🛡️ HACCP", "nav_info": "ℹ️ ÜBER UNS", "nav_lang": "🌍 SPRACHE",
-        "title": "KOJUNDŽIĆ", "subtitle": "METZGEREI UND FLEISCHVERARBEITUNG SISAK",
-        "cart_title": "🛒 WARENKORB", "cart_empty_msg": "Ihr Warenkorb ist derzeit leer.", "total_label": "Gesamtbetrag",
-        "weight_note": "### ⚖️ Abrechnungshinweis\nEndgültiger Betrag bei Lieferung.",
-        "form_title": "🚚 LIEFERDATEN", "f_name": "Vorname*", "f_lname": "Nachname*", "f_country": "Land*", "f_city": "Stadt*", "f_zip": "PLZ*", "f_addr": "Adresse*", "f_phone": "Telefon*",
-        "btn_order": "🚀 BESTELLEN", "success_msg": "BESTELLUNG ERFOLGREICH!<br><br>DANKE!",
-        "err_cart": "Korb leer!", "err_form": "Daten ausfüllen!",
-        "about_txt": "### Tradition...",
-        "dob_txt": "### Lieferanten...",
-        "haccp_txt": "### Sicherheit...",
-        "ugostitelji_txt": "### Gastronomie..."
+        "cart_title": "🛒 WARENKORB", "btn_clear": "🗑️ Alles löschen", "success_msg": "BESTELLUNG ERFOLGREICH!<br><br>DANKE!"
     }
 }
 
@@ -134,19 +116,19 @@ L = LANG[st.session_state.lang]
 
 # --- SUCCESS MODAL ---
 if st.session_state.order_done:
-    st.markdown(f"""<div class="success-overlay"><div class="success-modal"><div class="success-text">{L['success_msg']}</div></div></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="success-overlay"><div class="success-modal"><div class="success-text">{L.get('success_msg', 'SUCCESS!')}</div></div></div>""", unsafe_allow_html=True)
     time.sleep(5)
     st.session_state.order_done = False
     st.session_state.cart = {}
     st.rerun()
 
 # --- PRESTIGE HEADER ---
-st.markdown(f"""<div class="main-header"><div class="luxury-title">{L['title']}</div><div class="luxury-subtitle">{L['subtitle']}</div></div>""", unsafe_allow_html=True)
+st.markdown(f"""<div class="main-header"><div class="luxury-title">{L.get('title','')}</div><div class="luxury-subtitle">{L.get('subtitle','')}</div></div>""", unsafe_allow_html=True)
 
 # --- MAIN TABS ---
 tabs = st.tabs([L["nav_shop"], L["nav_ug"], L["nav_dob"], L["nav_haccp"], L["nav_info"], L["nav_lang"]])
 
-# --- SHOP ---
+# --- SHOP (TAB 1) ---
 with tabs[0]:
     col_trgovina, col_kosarica = st.columns([1.4, 1], gap="large")
     with col_trgovina:
@@ -162,7 +144,6 @@ with tabs[0]:
                         with st.container(border=True):
                             st.subheader(naziv)
                             st.write(f"Cijena: **{info['cijena']:.2f} € / {jed}**")
-                            # POPRAVLJENO: Dodan broj 3 u st.columns(3)
                             c_min, c_qty, c_plus = st.columns(3)
                             with c_min:
                                 if st.button("➖", key=f"min_{naziv}", use_container_width=True):
@@ -174,8 +155,8 @@ with tabs[0]:
                                         st.rerun()
                             with c_qty:
                                 val = st.session_state.cart.get(naziv, 0.0)
-                                q_txt = f"{int(val) if val.is_integer() else val} {jed}" if val > 0 else "0"
-                                st.markdown(f'<div class="qty-display">{q_txt}</div>', unsafe_allow_html=True)
+                                q_prikaz = f"{int(val) if val.is_integer() else val} {jed}" if val > 0 else "0"
+                                st.markdown(f'<div class="qty-display">{q_prikaz}</div>', unsafe_allow_html=True)
                             with c_plus:
                                 if st.button("➕", key=f"plus_{naziv}", use_container_width=True):
                                     curr = st.session_state.cart.get(naziv, 0.0)
@@ -183,48 +164,60 @@ with tabs[0]:
                                     st.rerun()
 
     with col_kosarica:
-        st.header(L["cart_title"])
+        # Naslov košarice i gumb "Obriši sve" u istom redu
+        c_cart1, c_cart2 = st.columns([2, 1])
+        with c_cart1:
+            st.header(L["cart_title"])
+        with c_cart2:
+            if st.session_state.cart:
+                # Sitniji gumb za brisanje
+                if st.button(L["btn_clear"], key="clear_all", type="secondary", use_container_width=True):
+                    st.session_state.cart = {}
+                    st.rerun()
+
         inf_total = 0
         if not st.session_state.cart:
-            st.warning(L["cart_empty_msg"])
+            st.warning(L.get("cart_empty_msg", "Empty"))
         else:
             for it, q in st.session_state.cart.items():
                 sub = q * PROIZVODI[it]["cijena"]
                 inf_total += sub
                 st.write(f"🥩 **{it}** ({int(q) if q.is_integer() else q}{PROIZVODI[it]['jedinica']}) = {sub:.2f} €")
-            st.markdown(f"### {L['total_label']}: {inf_total:.2f} €")
+            st.markdown(f"### {L.get('total_label','Total')}: {inf_total:.2f} €")
         
-        st.info(L["weight_note"])
+        st.info(L.get("weight_note", ""))
         st.divider()
-        st.header(L["form_title"])
-        f_i = st.text_input(L["f_name"])
-        f_p = st.text_input(L["f_lname"])
+        
+        st.header(L.get("form_title", "Delivery"))
+        f_i = st.text_input(L.get("f_name","Name"))
+        f_p = st.text_input(L.get("f_lname","Surname"))
         idx_hr = DRZAVE_LISTA.index("Hrvatska")
-        f_d = st.selectbox(L["f_country"], DRZAVE_LISTA, index=idx_hr)
+        f_d = st.selectbox(L.get("f_country","Country"), DRZAVE_LISTA, index=idx_hr)
         
         gradovi = EU_DATA.get(f_d, [])
-        f_g_sel = st.selectbox(L["f_city"], [""] + gradovi + ["Ostalo (Upiši ručno)"], index=0)
-        f_g = st.text_input(f"{L['f_city']}*") if f_g_sel == "Ostalo (Upiši ručno)" else f_g_sel
+        f_g_sel = st.selectbox(L.get("f_city","City"), [""] + gradovi + ["Ostalo/Other"], index=0)
+        f_g = st.text_input(f"{L.get('f_city','City')} (Manual)*") if f_g_sel == "Ostalo/Other" else f_g_sel
         
-        f_z = st.text_input(L["f_zip"])
-        f_a = st.text_input(L["f_addr"])
-        f_m = st.text_input(L["f_phone"])
+        f_z = st.text_input(L.get("f_zip","ZIP"))
+        f_a = st.text_input(L.get("f_addr","Address"))
+        f_m = st.text_input(L.get("f_phone","Phone"))
 
         valid = all([f_i, f_p, f_g, f_z, f_a, f_m]) and f_g != "" and len(st.session_state.cart) > 0
-        if st.button(L["btn_order"], type="primary", use_container_width=True, disabled=not valid):
+        if st.button(L.get("btn_order","Order"), type="primary", use_container_width=True, disabled=not valid):
             st.session_state.order_done = True
             st.rerun()
 
-with tabs[1]: st.markdown(L["ugostitelji_txt"])
-with tabs[2]: st.markdown(L["dob_txt"])
-with tabs[3]: st.markdown(L["haccp_txt"])
+# --- OSTALI TABOVI ---
+with tabs[1]: st.markdown(L.get("ugostitelji_txt",""))
+with tabs[2]: st.markdown(L.get("dob_txt",""))
+with tabs[3]: st.markdown(L.get("haccp_txt",""))
 with tabs[4]: 
-    st.markdown(L["about_txt"])
+    st.markdown(L.get("about_txt",""))
     components.html('<iframe src="https://www.google.com" width="100%" height="350" style="border:0; border-radius:15px;"></iframe>', height=380)
 
 with tabs[5]:
     st.header(L["nav_lang"])
-    nova = st.radio("Select:", list(LANG.keys()), index=list(LANG.keys()).index(st.session_state.lang))
+    nova = st.radio("Select language:", list(LANG.keys()), index=list(LANG.keys()).index(st.session_state.lang))
     if nova != st.session_state.lang:
         st.session_state.lang = nova
         st.rerun()
