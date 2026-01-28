@@ -17,14 +17,13 @@ st.set_page_config(page_title="Kojundžić Mesnica", page_icon="🥩", layout="w
 # --- POPIS PROIZVODA I CIJENA (EUR) ---
 # Ovdje možeš mijenjati cijene po potrebi
 PROIZVODI = {
-    "Dimljeni hamburger (1kg)": 15.00,
-    "Panceta (1kg)": 12.00,
-    "Čvarci (1kg)": 5.00,
-    "Suha rebra (1kg)": 9.00,
-    "Domaća mast (1kg)": 10.00,
-    "Slavonska kobasica (1kg)": 8.50,
-    "Dimljeni buncek (1kg)": 9.00,
-   
+    "Domaća slanina (cca 1kg)": 15.00,
+    "Kulenova seka (cca 0.5kg)": 12.00,
+    "Domaći čvarci (250g)": 5.00,
+    "Suha rebra (cca 1kg)": 9.00,
+    "Domaća mast (kanta 2.5kg)": 10.00,
+    "Slavonska kobasica (par)": 8.50,
+    "Panceta narezana (100g)": 3.50
 }
 
 # --- NASLOV I INFO ---
@@ -48,17 +47,9 @@ for idx, (proizvod, cijena) in enumerate(PROIZVODI.items()):
     with cols[idx % 3]:
         st.write(f"### {proizvod}")
         st.write(f"Cijena: **{cijena:.2f} €**")
-        
         if st.button(f"Dodaj u košaricu", key=proizvod):
-            # Logika: Prvi klik 1kg, svaki sljedeći +0.5kg
-            trenutna = st.session_state.cart.get(proizvod, 0)
-            if trenutna == 0:
-                nova_kolicina = 1.0
-            else:
-                nova_kolicina = trenutna + 0.5
-            
-            st.session_state.cart[proizvod] = nova_kolicina
-            st.success(f"U košarici: {nova_kolicina} kg")
+            st.session_state.cart[proizvod] = st.session_state.cart.get(proizvod, 0) + 1
+            st.success(f"Dodano u košaricu!")
 
 # --- PREGLED NARUDŽBE ---
 st.divider()
